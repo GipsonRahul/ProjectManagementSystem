@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "ProjectManagement",
+    "environment": "spo",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "ProjectManagementSystem",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "project-management",
+    "libraryId": "03b902d6-bd03-445b-85b7-0f3b3ca28128",
+    "packageManager": "npm",
+    "solutionShortDescription": "ProjectManagement description"
+  }
+}
