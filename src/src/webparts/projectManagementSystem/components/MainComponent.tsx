@@ -13,11 +13,18 @@ const MainComponent = () => {
   }, []);
 
   return (
-    <div style={{ width: "100%", display: 'flex' }}>
-      <div style={{ width: "15%", background: '#000', height: '100vh' }}>
+    <div style={{ width: "100%", display: "flex" }}>
+      <div
+        style={{
+          background: "#fff",
+          width: "15%",
+          height: "100vh",
+          border: "1px solid #000",
+        }}
+      >
         <SideNavebar />
       </div>
-      <div style={{ width: "85%", background: '#0f0', height: '100vh' }}>
+      <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
         <Dashboard />
       </div>
     </div>
