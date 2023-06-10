@@ -1,8 +1,6 @@
 import * as React from "react";
-
 import { Label } from "@fluentui/react";
-import { Apps, Group } from "@material-ui/icons";
-
+import { Dashboard, Group } from "@material-ui/icons";
 import { Icon } from "@material-ui/core";
 
 const logo: string = require("../../../ExternalDocs/Technorucs_Logo.png");
@@ -27,43 +25,43 @@ const SideNavebar = () => {
     },
   ];
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       {/* Logo Section Starts */}
       <div
         style={{
           display: "flex",
-          marginTop: 20,
-          marginBottom: 20,
-          marginLeft: 20,
+          margin: 30,
         }}
       >
         <img src={logo} alt="Logo" />
         <Label style={{ fontSize: 20, marginLeft: 10 }}>Technorucs</Label>
       </div>
       {/* Logo Section Ends */}
+
       {/* Side Nav Section Starts */}
       <div>
         <div
           style={{
             display: "flex",
-            marginTop: 20,
-            marginBottom: 20,
-            marginLeft: 50,
+            padding: "10px 30px",
+            marginBottom: 16,
+            cursor: "pointer",
+            background: true ? "#e2ffd1" : "#fff",
           }}
         >
-          <Apps />
-          <Label style={{ marginLeft: 10 }}>ws</Label>
+          <Dashboard />
+          <Label style={{ marginLeft: 10, cursor: "pointer" }}>Dashboard</Label>
         </div>
         <div
           style={{
             display: "flex",
-            marginTop: 20,
-            marginBottom: 20,
-            marginLeft: 50,
+            padding: "10px 30px",
+            marginBottom: 16,
+            cursor: "pointer",
           }}
         >
           <Group />
-          <Label style={{ marginLeft: 10 }}>sdf</Label>
+          <Label style={{ marginLeft: 10, cursor: "pointer" }}>Members</Label>
         </div>
       </div>
       {/* Side Nav Section Ends */}
