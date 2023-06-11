@@ -117,6 +117,23 @@ const ProjectForm = (props: any) => {
     setItemDatas({ ...itemDatas });
   };
 
+  // update function section
+  const getUpdate = () => {
+    itemDatas.isSelect = false;
+    let _masterList: IObjectData[] = [];
+    let _masterIndex: any = props.masterRecords.findIndex(checkId);
+    _masterList = [...props.masterRecords];
+    _masterList.splice(_masterIndex, 1);
+    _masterList.unshift({ ...itemDatas });
+    props.getMasterDatas("edit", _masterList);
+    props.navigation("dashboard");
+  };
+
+  // check id function
+  const checkId = (value: IObjectData) => {
+    return value.ID == props.item.ID;
+  };
+
   // current items get function
   const getCurrentItem = () => {
     let editFormText: string = props.item ? "edit" : "add";
@@ -356,6 +373,7 @@ const ProjectForm = (props: any) => {
       <div style={{ display: "flex", margin: "10px 20px" }}>
         {/* Left section */}
         <div style={{ width: "50%" }}>
+          <Label>Financials Details</Label>
           {/* Project Cost section */}
           <div
             style={{
@@ -416,6 +434,7 @@ const ProjectForm = (props: any) => {
 
         {/* Right section */}
         <div style={{ width: "50%" }}>
+          <Label>Total Contributors</Label>
           {/* Project Manager section */}
           <div
             style={{
@@ -506,11 +525,15 @@ const ProjectForm = (props: any) => {
               background: "#A9F37F",
             }}
             onClick={() => {
-              viewFormText == "add" &&
-                ((itemDatas.ID = props._count + 1),
-                setItemDatas({ ...itemDatas }));
-              props.getMasterDatas(itemDatas);
-              props.navigation("dashboard");
+              viewFormText == "add"
+                ? ((itemDatas.ID = props._count + 1),
+                  (itemDatas.isSelect = false),
+                  setItemDatas({ ...itemDatas }),
+                  props.getMasterDatas(
+                    "add",
+                    itemDatas
+                  )(props.navigation("dashboard")))
+                : getUpdate();
             }}
           >
             {viewFormText == "add" ? "Save" : "Update"}

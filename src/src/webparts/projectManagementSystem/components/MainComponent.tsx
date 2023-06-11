@@ -67,7 +67,7 @@ let _DesDropdown: IDrop[] = [];
 let _TesterDropdown: IDrop[] = [];
 let _masterUsersDetails: any[] = [];
 let _masterUsersDropDown: any[] = [];
-let _masterListData: any[] = [];
+let _masterListData: IMasterData[] = [];
 let _count: number = 0;
 
 const MainComponent = () => {
@@ -160,9 +160,13 @@ const MainComponent = () => {
   };
 
   // master details array function
-  const getMasterDatas = (obj: IMasterData) => {
-    _masterListData.push(obj);
-    setMasterRecords(_masterListData);
+  const getMasterDatas = (action: string, value: any) => {
+    if (action == "add") {
+      _masterListData.unshift(value);
+      setMasterRecords(_masterListData);
+    } else {
+      setMasterRecords([...value]);
+    }
   };
 
   // life cycle function for onload
@@ -196,8 +200,11 @@ const MainComponent = () => {
                 _masterUsersDropDown={_masterUsersDropDown}
                 masterRecords={masterRecords}
                 getMasterDatas={getMasterDatas}
-                _count={_masterListData.length}
-                _masterListData={_masterListData}
+                _count={
+                  masterRecords.length == 0
+                    ? 0
+                    : masterRecords[masterRecords.length - 1].ID
+                }
               />
             )
           ) : (
@@ -208,7 +215,7 @@ const MainComponent = () => {
             />
           )
         ) : (
-          _masterUsersDetails.length && <Members />
+          _masterUsersDetails.length && <Members _masterUsersDetails={_masterUsersDetails} />
         )}
       </div>
     </div>
