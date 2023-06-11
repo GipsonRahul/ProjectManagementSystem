@@ -163,8 +163,12 @@ const MainComponent = () => {
   const getMasterDatas = (action: string, value: any) => {
     if (action == "add") {
       _masterListData.unshift(value);
+      _masterListData.length &&
+        _masterListData.forEach((item: IMasterData) => (item.isSelect = false));
       setMasterRecords(_masterListData);
     } else {
+      value.length &&
+        value.forEach((item: IMasterData) => (item.isSelect = false));
       setMasterRecords([...value]);
     }
   };
@@ -215,7 +219,9 @@ const MainComponent = () => {
             />
           )
         ) : (
-          _masterUsersDetails.length && <Members _masterUsersDetails={_masterUsersDetails} />
+          _masterUsersDetails.length && (
+            <Members _masterUsersDetails={_masterUsersDetails} />
+          )
         )}
       </div>
     </div>
