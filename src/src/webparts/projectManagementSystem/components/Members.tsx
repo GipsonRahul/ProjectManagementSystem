@@ -390,7 +390,7 @@ const Members = () => {
                 </div>
 
                 <div style={{ marginTop: "30px" }}>
-                  <Label style={{ textAlign: "center" }}>
+                  <Label style={{ textAlign: "center", color: "#4B4B4B" }}>
                     Total Projects{" "}
                     <span
                       style={{
