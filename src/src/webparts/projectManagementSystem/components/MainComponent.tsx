@@ -215,7 +215,7 @@ const MainComponent = () => {
             />
           )
         ) : (
-          _masterUsersDetails.length && <Members />
+          _masterUsersDetails.length && <Members _masterUsersDetails={_masterUsersDetails} />
         )}
       </div>
     </div>
