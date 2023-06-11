@@ -7,6 +7,8 @@ import {
   PersonaSize,
   Dropdown,
   Modal,
+  IDropdownStyles,
+  mergeStyleSets,
 } from "@fluentui/react";
 import {
   Add,
@@ -104,7 +106,7 @@ const Dashboard = (props: any) => {
       maxWidth: 200,
       onRender: (item: any) => {
         return (
-          <p style={{ display: "flex" }}>
+          <p style={{ display: "flex", margin: 0 }}>
             <Persona
               size={PersonaSize.size32}
               imageUrl={
@@ -125,7 +127,7 @@ const Dashboard = (props: any) => {
       maxWidth: 200,
       onRender: (item: any) => {
         return (
-          <p style={{ display: "flex" }}>
+          <p style={{ display: "flex", margin: 0 }}>
             <Persona
               size={PersonaSize.size32}
               imageUrl={
@@ -146,7 +148,7 @@ const Dashboard = (props: any) => {
       maxWidth: 200,
       onRender: (item: any) => {
         return (
-          <p style={{ display: "flex" }}>
+          <p style={{ display: "flex", margin: 0 }}>
             {item.Members.length
               ? item.Members.map((e: any) => {
                   return (
@@ -350,9 +352,76 @@ const Dashboard = (props: any) => {
       isSelect: false,
     },
   ];
-
+  // style variable
+  const dropDownStyle: Partial<IDropdownStyles> = {
+    root: {
+      width: "80%",
+    },
+    title: {
+      borderRadius: 5,
+      border: "1px solid rgb(138, 138, 138) !important",
+    },
+    dropdown: {
+      ":focus::after": {
+        border: "1px solid rgb(138, 138, 138) !important",
+        content: "none !important",
+        postition: "unset !important",
+      },
+    },
+  };
+  const statusStyle = mergeStyleSets({
+    NotAuthenticated: [
+      {
+        color: "rgb(255 26 26)",
+        padding: "5px 10px",
+        fontWeight: 600,
+        borderRadius: "15px",
+        textAlign: "center",
+        margin: "0",
+        width: "150px",
+        backgroundColor: "rgb(243 184 179)",
+      },
+    ],
+    // InProgress: [
+    //   {
+    //     color: "#007853",
+    //     padding: "5px 10px",
+    //     fontWeight: 600,
+    //     borderRadius: "15px",
+    //     textAlign: "center",
+    //     margin: "0",
+    //     width: "150px",
+    //     backgroundColor: "#D2F3E9",
+    //   },
+    // ],
+    Authenticated: [
+      {
+        color: "#007853",
+        padding: "5px 10px",
+        fontWeight: 600,
+        borderRadius: "15px",
+        textAlign: "center",
+        margin: "0",
+        width: "150px",
+        backgroundColor: "#D2F3E9",
+      },
+    ],
+    Pending: [
+      {
+        color: "#000",
+        padding: "5px 10px",
+        fontWeight: 600,
+        borderRadius: "15px",
+        textAlign: "center",
+        margin: "0",
+        width: "150px",
+        backgroundColor: "rgb(226 221 167)",
+      },
+    ],
+  });
   // State section start
-  const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
+  const [masterFilData, setMasterFilData] =
+    useState<IMasterData[]>(sampleDatas);
   const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
   const [modalObj, setModalObj] = useState<IMasterData>();
   const [isListView, setIsListView] = useState<boolean>(true);
@@ -409,7 +478,7 @@ const Dashboard = (props: any) => {
     } else {
       setMasterFilData([]);
     }
-    getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
+    // getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
   };
 
   // filter dropdown function
@@ -432,39 +501,49 @@ const Dashboard = (props: any) => {
   // life cycle function for onload
   useEffect(() => {
     _masterData = props.masterRecords ? props.masterRecords : [];
-    setFinalFilData([..._masterData]);
-    setMasterFilData([..._masterData]);
-    getFilterValue([..._masterData]);
+    // setFinalFilData([..._masterData]);
+    // setMasterFilData([..._masterData]);
+    // getFilterValue([..._masterData]);
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div
+      //  style={{ width: "100%" }}
+      className="FormContainer"
+    >
       {/* Project Heading */}
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          margin: "10px 20px",
-          alignItems: "center",
-        }}
+        // style={{
+        //   display: "flex",
+        //   justifyContent: "space-between",
+        //   margin: "10px 20px",
+        //   alignItems: "center",
+        // }}
+        className="formHeaderFlex"
       >
-        <Label>Projects</Label>
+        <div className="arrowRightFlex">
+          <Label>Projects</Label>
+        </div>
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
+          // style={{
+          //   display: "flex",
+          //   alignItems: "center",
+          // }}
+          className="loginLeftFlex"
         >
           <div
-            style={{
-              marginRight: "20px",
-            }}
+            // style={{
+            //   marginRight: "20px",
+            // }}
+            className="nameandEmail"
           >
             <div>
-              <Label>Deva Raj</Label>
+              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
             </div>
             <div>
-              <Label>devaraj@chandrudemo.onmicrosoft.com</Label>
+              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
+                devaraj@chandrudemo.onmicrosoft.com
+              </Label>
             </div>
           </div>
           <Persona
@@ -492,44 +571,51 @@ const Dashboard = (props: any) => {
           }}
         >
           <button
-            style={{
-              background: "#A9F37F",
-              display: "flex",
-              border: "none",
-              width: "60%",
-              borderRadius: "50px",
-              cursor: "pointer",
-              height: "40px",
-            }}
+            // style={{
+            //   background: "#A9F37F",
+            //   display: "flex",
+            //   border: "none",
+            //   width: "60%",
+            //   borderRadius: "50px",
+            //   cursor: "pointer",
+            //   height: "40px",
+            // }}
+            className="addBtnStyle"
             onClick={() => {
               props.getMasterDatas("new", masterFilData);
               props.navigation("formdashboard");
             }}
           >
             <Add />
-            <Label style={{ cursor: "pointer", color: "#000" }}>New</Label>
+            <Label
+            // style={{ cursor: "pointer", color: "#000" }}
+            >
+              New
+            </Label>
           </button>
         </div>
 
         {/* Right navebar section */}
         <div
-          style={{
-            border: "1px solid #dfdfdf",
-            display: "flex",
-            justifyContent: "space-between",
-            width: "85%",
-            alignItems: "center",
-            height: "40px",
-            padding: "4px",
-          }}
+          // style={{
+          //   border: "1px solid #dfdfdf",
+          //   display: "flex",
+          //   justifyContent: "space-between",
+          //   width: "85%",
+          //   alignItems: "center",
+          //   height: "40px",
+          //   padding: "4px",
+          // }}
+          className="rightNavbarContainer"
         >
           {/* Status filter secction */}
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            // style={{
+            //   display: "flex",
+            //   justifyContent: "space-between",
+            //   alignItems: "center",
+            // }}
+            className="filterSection"
           >
             {/* All datas */}
             <Label
@@ -616,9 +702,10 @@ const Dashboard = (props: any) => {
           >
             {isListView ? (
               <Apps
-                style={{
-                  cursor: "pointer",
-                }}
+                // style={{
+                //   cursor: "pointer",
+                // }}
+                className="listview"
                 onClick={() => {
                   masterFilData.length &&
                     masterFilData.forEach(
@@ -629,9 +716,10 @@ const Dashboard = (props: any) => {
               />
             ) : (
               <List
-                style={{
-                  cursor: "pointer",
-                }}
+                // style={{
+                //   cursor: "pointer",
+                // }}
+                className="listview"
                 onClick={() => {
                   masterFilData.length &&
                     masterFilData.forEach(
@@ -647,39 +735,54 @@ const Dashboard = (props: any) => {
 
       {/* Details list filter section */}
       <div
-        style={{
-          margin: "10px 20px",
-          display: "flex",
-          justifyContent: "end",
-          gap: "2%",
-        }}
+        // style={{
+        //   margin: "10px 20px",
+        //   display: "flex",
+        //   justifyContent: "end",
+        //   gap: "2%",
+        // }}
+        className="detailListSection"
       >
         {/* Status filter section */}
-        <div style={{ width: "26%" }}>
-          <Dropdown
-            placeholder="Select an project"
-            options={dropValue.Project}
-            selectedKey={filterValue._filProject}
-            onChange={(e, text) => {
-              filterValue._filProject = text.key as string;
-              getFilter(text.key as string);
-              setFilterValue({ ...filterValue });
-            }}
-          />
+        <div
+          // style={{ width: "26%" }}
+          className="ddFilterWidth"
+        >
+          <div className="ddFilterFlex">
+            <p style={{ width: "29%", fontWeight: 600 }}>Project</p>
+            <Dropdown
+              styles={dropDownStyle}
+              placeholder="Select an project"
+              options={dropValue.Project}
+              selectedKey={filterValue._filProject}
+              onChange={(e, text) => {
+                filterValue._filProject = text.key as string;
+                getFilter(text.key as string);
+                setFilterValue({ ...filterValue });
+              }}
+            />
+          </div>
         </div>
 
         {/* Project type filter section */}
-        <div style={{ width: "26%" }}>
-          <Dropdown
-            placeholder="Select an project type"
-            options={dropValue.ProjType}
-            selectedKey={filterValue._filProjType}
-            onChange={(e, text) => {
-              filterValue._filProjType = text.key as string;
-              getFilter(text.key as string);
-              setFilterValue({ ...filterValue });
-            }}
-          />
+        <div
+          // style={{ width: "26%" }}
+          className="ddFilterWidth"
+        >
+          <div className="ddFilterFlex">
+            <p>Project Type</p>
+            <Dropdown
+              styles={dropDownStyle}
+              placeholder="Select an project type"
+              options={dropValue.ProjType}
+              selectedKey={filterValue._filProjType}
+              onChange={(e, text) => {
+                filterValue._filProjType = text.key as string;
+                getFilter(text.key as string);
+                setFilterValue({ ...filterValue });
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -690,44 +793,64 @@ const Dashboard = (props: any) => {
         }}
       >
         {isListView ? (
-          <div>
+          <div className="scrollContainer">
             {masterFilData.length ? (
               <div
-                style={{
-                  display: "flex",
-                  gap: "4%",
-                  //   position: "absolute",
-                  flexWrap: "wrap",
-                  margin: "10px 0px",
-                  height: "500px",
-                  width: "100%",
-                }}
+                // style={{
+                //   display: "flex",
+                //   gap: "4%",
+                //   //   position: "absolute",
+                //   flexWrap: "wrap",
+                //   margin: "10px 0px",
+                //   height: "500px",
+                //   width: "100%",
+                // }}
+                className="projectcardSection"
               >
                 {masterFilData.map((e: any, i: number) => {
                   return (
-                    <div style={{ width: "30%", position: "relative" }}>
+                    <div style={{ width: "33%", position: "relative" }}>
                       <div
-                        style={{
-                          border: "1px solid #dfdfdf",
-                          borderRadius: "5px",
-                          padding: "15px",
-                          display: "flex",
-                          height: "178px",
-                        }}
+                        // style={{
+                        //   border: "1px solid #dfdfdf",
+                        //   borderRadius: "5px",
+                        //   padding: "15px",
+                        //   display: "flex",
+                        //   height: "178px",
+                        // }}
+                        className="cardDesign"
                       >
-                        <div style={{ width: "70%" }}>
-                          <Label>{e.ProjectName}</Label>
+                        <div
+                          // style={{ width: "70%" }}
+                          className="cardSize"
+                        >
+                          <Label style={{ color: "#1d1d7c", fontSize: 20 }}>
+                            {e.ProjectName}
+                          </Label>
                           <Label>{e.Status}</Label>
-                          <Label>Start Date</Label>
+                          <Label style={{ fontSize: 14, fontWeight: 400 }}>
+                            Start Date
+                          </Label>
                           <Label>
                             {moment(e.StartDate).format("MM/DD/YYYY")}
                           </Label>
-                          <Label>Members</Label>
+                          <Label style={{ fontSize: 14, fontWeight: 400 }}>
+                            Project Type
+                          </Label>
+                          <Label>E-Commerce</Label>
+                          <Label style={{ fontSize: 14, fontWeight: 400 }}>
+                            Members
+                          </Label>
                           <div style={{ display: "flex" }}>
                             {e.Members.length
                               ? e.Members.map((user: string) => {
                                   return (
                                     <Persona
+                                      styles={{
+                                        root: {
+                                          display: "unset",
+                                        },
+                                      }}
                                       size={PersonaSize.size32}
                                       imageUrl={
                                         "/_layouts/15/userphoto.aspx?size=S&username=" +
@@ -748,7 +871,15 @@ const Dashboard = (props: any) => {
                               }}
                             />
                           </div>
-                          <Label>Project Manager</Label>
+                          <Label
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              textAlign: "center",
+                            }}
+                          >
+                            Project Manager
+                          </Label>
                           <div
                             style={{
                               display: "flex",
@@ -756,6 +887,11 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Persona
+                              styles={{
+                                root: {
+                                  display: "unset",
+                                },
+                              }}
                               size={PersonaSize.size32}
                               imageUrl={
                                 "/_layouts/15/userphoto.aspx?size=S&username=" +
@@ -763,7 +899,15 @@ const Dashboard = (props: any) => {
                               }
                             />
                           </div>
-                          <Label>Team Lead</Label>
+                          <Label
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              textAlign: "center",
+                            }}
+                          >
+                            Team Lead
+                          </Label>
                           <div
                             style={{
                               display: "flex",
@@ -771,6 +915,11 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Persona
+                              styles={{
+                                root: {
+                                  display: "unset",
+                                },
+                              }}
                               size={PersonaSize.size32}
                               imageUrl={
                                 "/_layouts/15/userphoto.aspx?size=S&username=" +
@@ -782,25 +931,27 @@ const Dashboard = (props: any) => {
                       </div>
                       {e.isSelect ? (
                         <div
-                          style={{
-                            width: "30%",
-                            height: "106px",
-                            position: "absolute",
-                            background: "#fff",
-                            left: "258px",
-                            bottom: "96px",
-                            borderRadius: "5px",
-                            boxShadow: "#c7c7c7 0px 0px 10px 2px",
-                            padding: "10px",
-                          }}
+                          // style={{
+                          //   width: "30%",
+                          //   height: "106px",
+                          //   position: "absolute",
+                          //   background: "#fff",
+                          //   left: "258px",
+                          //   bottom: "96px",
+                          //   borderRadius: "5px",
+                          //   boxShadow: "#c7c7c7 0px 0px 10px 2px",
+                          //   padding: "10px",
+                          // }}
+                          className="menuIconPlacement"
                         >
                           <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginBottom: "10px",
-                              cursor: "pointer",
-                            }}
+                            // style={{
+                            //   display: "flex",
+                            //   justifyContent: "space-between",
+                            //   marginBottom: "10px",
+                            //   cursor: "pointer",
+                            // }}
+                            className="menus"
                             onClick={() => {
                               getOnClick(0);
                               setModalObj({ ...e });
@@ -811,12 +962,13 @@ const Dashboard = (props: any) => {
                             <Visibility />
                           </div>
                           <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginBottom: "10px",
-                              cursor: "pointer",
-                            }}
+                            // style={{
+                            //   display: "flex",
+                            //   justifyContent: "space-between",
+                            //   marginBottom: "10px",
+                            //   cursor: "pointer",
+                            // }}
+                            className="menus"
                             onClick={() => {
                               props.getMasterDatas("edit", masterFilData);
                               props.navigation("formdashboard", e);
@@ -826,12 +978,14 @@ const Dashboard = (props: any) => {
                             <Edit />
                           </div>
                           <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginBottom: "10px",
-                              cursor: "pointer",
-                            }}
+                            // style={{
+                            //   display: "flex",
+                            //   justifyContent: "space-between",
+                            //   marginBottom: "10px",
+                            //   cursor: "pointer",
+                            // }}
+                            className="menus"
+                            style={{ marginBottom: 0 }}
                             onClick={() => {
                               masterFilData.splice(i, 1);
                               setFinalFilData([...masterFilData]);

@@ -1,11 +1,11 @@
 * {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-.membersProjectName {
+/* .membersProjectName {
   color: green;
   font-size: 22px;
   font-weight: 600;
-}
+} */
 
 /* Project Form Designs */
 .FormContainer {
@@ -60,4 +60,118 @@
 }
 .required {
   color: red;
+}
+
+/* Dashboard Design */
+.addBtnStyle {
+  background: rgb(169, 243, 127);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  width: 50%;
+  /* width: 60%; */
+  border-radius: 50px;
+  cursor: pointer;
+  height: 40px;
+}
+.addBtnStyle label {
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+}
+.rightNavbarContainer {
+  border: 1px solid rgb(223, 223, 223);
+  display: flex;
+  justify-content: space-between;
+  width: 85%;
+  align-items: center;
+  height: 40px;
+  padding: 4px;
+}
+.rightNavbarContainer .filterSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.listview {
+  cursor: pointer;
+  color: #1d1d7c;
+}
+.detailListSection {
+  margin: 10px 20px;
+  display: flex;
+  justify-content: end;
+  gap: 2%;
+}
+.detailListSection .ddFilterWidth {
+  width: 25%;
+}
+.ddFilterFlex {
+  display: flex;
+  align-items: center;
+}
+.ddFilterFlex p {
+  margin: 0;
+  width: 36%;
+  font-weight: 600;
+}
+.projectcardSection {
+  display: flex;
+  /* gap: 4%; */
+  flex-wrap: wrap;
+  margin: 10px 0px;
+  /* height: 500px; */
+  background: #fff;
+  width: 100%;
+}
+.projectcardSection .cardDesign {
+  border: 1px solid rgb(223, 223, 223);
+  border-radius: 5px;
+  padding: 15px;
+  margin: 8px;
+  display: flex;
+  /* height: 228px; */
+  height: 236px;
+}
+.cardSize {
+  width: 70%;
+}
+.menuIconPlacement {
+  width: 30%;
+  /* height: 106px; */
+  height: auto;
+  position: absolute;
+  background: rgb(255, 255, 255);
+  /* left: 251px; */
+  right: 21px;
+  top: 56px;
+  /* bottom: 96px; */
+  border-radius: 5px;
+  box-shadow: rgb(199, 199, 199) 0px 0px 10px 2px;
+  /* padding: 10px; */
+  padding: 5px;
+}
+.menus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 0px 11px;
+  border-radius: 5px;
+}
+.menus:hover {
+  background-color: rgb(226, 255, 209);
+}
+.scrollContainer {
+  height: 528px;
+  overflow: auto;
+}
+.scrollContainer::-webkit-scrollbar {
+  width: 12px;
+}
+.scrollContainer::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #e4e4e4;
 }
