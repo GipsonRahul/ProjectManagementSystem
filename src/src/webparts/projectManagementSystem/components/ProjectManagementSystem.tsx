@@ -3,6 +3,7 @@ import * as React from "react";
 import { IProjectManagementSystemProps } from "./IProjectManagementSystemProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import MainComponent from "./MainComponent";
+import "../../../ExternalRef/CSS/style.css";
 
 export default class ProjectManagementSystem extends React.Component<
   IProjectManagementSystemProps,

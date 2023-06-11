@@ -384,6 +384,8 @@ const Members = (props: any) => {
                 />
               </div>
               <div style={{ marginTop: "30px" }}>
+                <Label className="membersProjectName">Projects</Label>
+
                 {x.map((val) => {
                   return (
                     <div
@@ -391,9 +393,11 @@ const Members = (props: any) => {
                         display: "flex",
                         gap: "30px",
                         alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       <Label>{val.Pname}</Label>
+
                       <Visibility
                         style={{ cursor: "pointer", marginRight: "5px" }}
                         onClick={() => {
