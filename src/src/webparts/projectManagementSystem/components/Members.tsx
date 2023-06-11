@@ -9,12 +9,14 @@ import {
   ICommandBarItemProps,
   CommandBar,
   IButtonProps,
+  Modal,
 } from "@fluentui/react";
 import { Position } from "office-ui-fabric-react";
+import { Close, Visibility } from "@material-ui/icons";
 
 const Users: any[] = require("../../../ExternalJSON/Users.json");
 
-const Members = () => {
+const Members = (props: any) => {
   let _masterMembers: any[] = [
     {
       PM: [],
@@ -22,11 +24,21 @@ const Members = () => {
       TL: [],
       DEV: [],
       DES: [],
+      setModal: {},
     },
   ];
 
-  const [detail, setDeatail] = useState(null);
+  const [detail, setDeatail] = useState({
+    Displayname: "Devaraj P",
+    Firstname: "Devaraj",
+    Lastname: "P",
+    Email: "devaraj@gmail.com",
+    Position: "Developer",
+    Availablity: 100,
+    ID: 1,
+  });
   const [datas, setDatas] = useState(_masterMembers);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // setDatas({ ...datas });
 
@@ -37,6 +49,18 @@ const Members = () => {
     DES: 5,
     QA: 5,
   });
+  let x = [
+    {
+      Pname: "Hectic Projects For ZOHO",
+      Availability: "100%",
+      Status: "completed",
+    },
+    {
+      Pname: "name2",
+      Availability: "50%",
+      Status: "inProgress",
+    },
+  ];
 
   const handleViewAll = (section, number) => {
     setVisibleSections((prevState) => ({
@@ -51,11 +75,13 @@ const Members = () => {
     //   return item.Position;
     // });
     // setPosition([..._masterArray]);
-    let PM = Users.filter((val) => val.Position == "Project Manager");
-    let DEV = Users.filter((val) => val.Position == "Developer");
-    let TL = Users.filter((val) => val.Position == "Team Lead");
-    let QA = Users.filter((val) => val.Position == "Tester");
-    let Designer = Users.filter((val) => val.Position == "Designer");
+    let PM = props._masterUsersDetails[0].ProjectManagers;
+    let DEV = props._masterUsersDetails[0].Developers;
+    let TL = props._masterUsersDetails[0].TeamLeads;
+
+    let QA = props._masterUsersDetails[0].Testers;
+
+    let Designer = props._masterUsersDetails[0].Designers;
 
     datas[0].PM = PM.length ? PM : [];
     datas[0].TL = TL.length ? TL : [];
@@ -102,6 +128,8 @@ const Members = () => {
   };
 
   useEffect(() => {
+    console.log(props._masterUsersDetails);
+
     getPosition();
   }, []);
 
@@ -356,55 +384,52 @@ const Members = () => {
                 />
               </div>
               <div style={{ marginTop: "30px" }}>
-                <Label style={{ textAlign: "center" }}>
-                  Total Projects{" "}
-                  <span
-                    style={{
-                      marginLeft: "50px",
-                      border: "1px solid #ddd",
-                      padding: "8px 15px",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    1
-                  </span>
-                </Label>
-              </div>
-              <div style={{ marginTop: "50px" }}>
-                <Label style={{ textAlign: "center" }}>Team Count</Label>
-
-                <div style={{ marginTop: "30px" }}>
-                  <Label style={{ textAlign: "center" }}>
-                    Total Projects{" "}
-                    <span
+                {x.map((val) => {
+                  return (
+                    <div
                       style={{
-                        marginLeft: "50px",
-                        border: "1px solid #ddd",
-                        padding: "8px 15px",
-                        borderRadius: "4px",
+                        display: "flex",
+                        gap: "30px",
+                        alignItems: "center",
                       }}
                     >
-                      1
-                    </span>
-                  </Label>
-                </div>
+                      <Label>{val.Pname}</Label>
+                      <Visibility
+                        style={{ cursor: "pointer", marginRight: "5px" }}
+                        onClick={() => {
+                          datas[0].setModal = { ...val };
+                          setDatas([...datas]);
 
-                <div style={{ marginTop: "30px" }}>
-                  <Label style={{ textAlign: "center", color: "#4B4B4B" }}>
-                    Total Projects{" "}
-                    <span
-                      style={{
-                        marginLeft: "50px",
-                        border: "1px solid #ddd",
-                        padding: "8px 15px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      1
-                    </span>
-                  </Label>
-                </div>
+                          setIsModalOpen(true);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
+
+              {isModalOpen && (
+                <Modal isOpen={isModalOpen}>
+                  <div style={{ display: "flex", justifyContent: "end" }}>
+                    {" "}
+                    <Close
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                      }}
+                    />
+                  </div>
+
+                  <Label>
+                    <span>Availability :</span>
+                    {datas[0].setModal.Availability}
+                  </Label>
+                  <Label>
+                    <span>Status :</span>
+                    {datas[0].setModal.Status}
+                  </Label>
+                </Modal>
+              )}
             </div>
           ) : null}
         </div>
