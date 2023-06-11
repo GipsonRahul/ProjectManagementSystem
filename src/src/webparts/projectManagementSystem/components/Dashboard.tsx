@@ -6,9 +6,7 @@ import {
   Persona,
   PersonaSize,
   Dropdown,
-  ICommandBarItemProps,
-  CommandBar,
-  IButtonProps,
+  Modal,
 } from "@fluentui/react";
 import {
   Add,
@@ -18,10 +16,10 @@ import {
   Visibility,
   Edit,
   Delete,
+  Close,
 } from "@material-ui/icons";
 import { SelectionMode } from "office-ui-fabric-react";
-
-const Users = require("../../../ExternalJSON/Users.json");
+import * as moment from "moment";
 
 interface IDetails {
   DisplayName: string;
@@ -29,16 +27,29 @@ interface IDetails {
 }
 
 interface IMasterData {
+  ID: number;
   ProjectName: string;
+  ProjectType: string;
+  ProjectDescription: string;
   Status: string;
   StartDate: any;
+  EndDate: any;
   ProjectManager: IDetails;
   TeamLead: IDetails;
-  Developers: string[];
-  ID: number;
+  Developers: IDetails[];
+  DevelopersEmail: string[];
+  Designers: IDetails;
+  Testers: IDetails;
+  Members: IDetails[];
+  ProjectCost: string;
+  ProjectEstimate: string;
+  ActualCost: string;
+  isSelect: boolean;
 }
 
-const Dashboard = () => {
+let _masterData: IMasterData[] = [];
+
+const Dashboard = (props: any) => {
   // list column names
   let DetailListColumn: any[] = [
     {
@@ -52,13 +63,21 @@ const Dashboard = () => {
       key: "column2",
       name: "Status",
       fieldName: "Status",
-      minWidth: 100,
-      maxWidth: 200,
+      minWidth: 80,
+      maxWidth: 100,
     },
     {
       key: "column3",
       name: "Start date",
       fieldName: "StartDate",
+      minWidth: 100,
+      maxWidth: 120,
+      onRender: (item: any) => moment(item.StartDate).format("MM/DD/YYYY"),
+    },
+    {
+      key: "column4",
+      name: "Project Type",
+      fieldName: "ProjectType",
       minWidth: 100,
       maxWidth: 200,
     },
@@ -106,15 +125,15 @@ const Dashboard = () => {
     },
     {
       key: "column6",
-      name: "Developer",
-      fieldName: "Developers",
+      name: "Members",
+      fieldName: "Members",
       minWidth: 100,
       maxWidth: 200,
       onRender: (item: any) => {
         return (
           <p style={{ display: "flex" }}>
-            {item.Developers.length
-              ? item.Developers.map((e: any) => {
+            {item.Members.length
+              ? item.Members.map((e: any) => {
                   return (
                     <Persona
                       size={PersonaSize.size32}
@@ -133,14 +152,32 @@ const Dashboard = () => {
       key: "column7",
       name: "Actions",
       fieldName: "Actions",
-      minWidth: 100,
-      maxWidth: 200,
-      onRender: (item: any) => {
+      minWidth: 80,
+      maxWidth: 100,
+      onRender: (item: any, i: number) => {
         return (
           <div style={{ display: "flex", gap: "1%" }}>
-            <Visibility />
-            <Edit />
-            <Delete />
+            <Visibility
+              style={{ cursor: "pointer", marginRight: "5px" }}
+              onClick={() => {
+                getOnClick(0);
+                setModalObj({ ...item });
+                setIsModalOpen(true);
+              }}
+            />
+            <Edit
+              style={{ cursor: "pointer", marginRight: "5px" }}
+              onClick={() => {
+                props.navigation("formdashboard", item);
+              }}
+            />
+            <Delete
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                masterFilData.splice(i, 1);
+                setMasterFilData([...masterFilData]);
+              }}
+            />
           </div>
         );
       },
@@ -148,11 +185,12 @@ const Dashboard = () => {
   ];
 
   // list Datas
-  let sampleDatas: IMasterData[] = [
+  let sampleDatas: any[] = [
     {
       ProjectName: "Project Test 001",
       Status: "Active",
       StartDate: "06/09/2023",
+      ProjectType: "SPFx",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -161,7 +199,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -169,11 +207,13 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 1,
+      isSelect: false,
     },
     {
       ProjectName: "Project Test 002",
       Status: "Inactive",
       StartDate: "06/10/2023",
+      ProjectType: "PowerApps",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -182,7 +222,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -190,11 +230,13 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 2,
+      isSelect: false,
     },
     {
       ProjectName: "Project Test 003",
       Status: "On hold",
       StartDate: "06/11/2023",
+      ProjectType: "PowerAutoMate",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -203,7 +245,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -211,11 +253,13 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 3,
+      isSelect: false,
     },
     {
       ProjectName: "Project Test 004",
       Status: "Active",
       StartDate: "06/12/2023",
+      ProjectType: "Full Stack",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -224,7 +268,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -232,11 +276,13 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 4,
+      isSelect: false,
     },
     {
       ProjectName: "Project Test 005",
-      Status: "Active",
+      Status: "Completed",
       StartDate: "06/13/2023",
+      ProjectType: "Sales Force",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -245,7 +291,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -253,11 +299,13 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 5,
+      isSelect: false,
     },
     {
       ProjectName: "Project Test 006",
       Status: "Active",
       StartDate: "06/14/2023",
+      ProjectType: "SPFx",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -266,7 +314,7 @@ const Dashboard = () => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Developers: [
+      Members: [
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
         "devaraj@chandrudemo.onmicrosoft.com",
@@ -274,18 +322,61 @@ const Dashboard = () => {
         "devaraj@chandrudemo.onmicrosoft.com",
       ],
       ID: 6,
+      isSelect: false,
     },
   ];
 
   // State section start
-  const [masterData, setMasterData] = useState<IMasterData[]>(sampleDatas);
+  const [masterFilData, setMasterFilData] =
+    useState<IMasterData[]>([]);
+  const [modalObj, setModalObj] = useState<IMasterData>();
   const [isListView, setIsListView] = useState<boolean>(true);
-  const [isPopup, setIsPopup] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [filStatusBar, setFilStatusBar] = useState<string>("all");
   // State section end
+
+  // onClick change function
+  const getOnClick = (Id: number) => {
+    let _masterPopupArray: IMasterData[] = [];
+    masterFilData.forEach((e: IMasterData) => {
+      if (e.ID == Id) {
+        e.isSelect = e.isSelect ? false : true;
+        _masterPopupArray.push({ ...e });
+      } else {
+        e.isSelect = false;
+        _masterPopupArray.push({ ...e });
+      }
+    });
+    setMasterFilData([..._masterPopupArray]);
+  };
+
+  // Filter function section
+  const getFilter = (value: string) => {
+    setFilStatusBar(value);
+    let _masterRecord: IMasterData[] = [..._masterData];
+    let _filterMasterDatas: IMasterData[] = [];
+    if (_masterRecord.length) {
+      for (let i = 0; _masterRecord.length > i; i++) {
+        if (value == "all") {
+          _masterRecord[i].isSelect = false;
+          _filterMasterDatas.push({ ..._masterRecord[i] });
+        } else if (_masterRecord[i].Status.toLowerCase() == value) {
+          _masterRecord[i].isSelect = false;
+          _filterMasterDatas.push({ ..._masterRecord[i] });
+        }
+        if (_masterRecord.length == i + 1) {
+          setMasterFilData([..._filterMasterDatas]);
+        }
+      }
+    } else {
+      setMasterFilData([]);
+    }
+  };
 
   // life cycle function for onload
   useEffect(() => {
-    console.log(Users);
+    _masterData = props.masterRecords ? props.masterRecords : [];
+    setMasterFilData([..._masterData]);
   }, []);
 
   return (
@@ -333,8 +424,10 @@ const Dashboard = () => {
         style={{
           display: "flex",
           margin: "10px 20px",
+          alignItems: "center",
         }}
       >
+        {/* New btn section */}
         <div
           style={{
             width: "15%",
@@ -350,11 +443,16 @@ const Dashboard = () => {
               cursor: "pointer",
               height: "40px",
             }}
+            onClick={() => {
+              props.navigation("formdashboard");
+            }}
           >
             <Add />
-            <Label style={{ color: "#000" }}>New</Label>
+            <Label style={{ cursor: "pointer", color: "#000" }}>New</Label>
           </button>
         </div>
+
+        {/* Right navebar section */}
         <div
           style={{
             border: "1px solid #dfdfdf",
@@ -363,8 +461,10 @@ const Dashboard = () => {
             width: "85%",
             alignItems: "center",
             height: "40px",
+            padding: "4px",
           }}
         >
+          {/* Status filter secction */}
           <div
             style={{
               display: "flex",
@@ -372,28 +472,84 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
+            {/* All datas */}
             <Label
               style={{
                 margin: "5px 10px",
                 cursor: "pointer",
-                color: "All" == "All" && "#5cff00",
+                color: filStatusBar == "all" && "#5cff00",
+                borderBottom: filStatusBar == "all" && "2px solid #5cff00",
+              }}
+              onClick={() => {
+                getFilter("all");
               }}
             >
               All
             </Label>
-            <Label style={{ margin: "5px 10px", cursor: "pointer" }}>
+
+            {/* Active datas */}
+            <Label
+              style={{
+                margin: "5px 10px",
+                cursor: "pointer",
+                color: filStatusBar == "active" && "#5cff00",
+                borderBottom: filStatusBar == "active" && "2px solid #5cff00",
+              }}
+              onClick={() => {
+                getFilter("active");
+              }}
+            >
               Active
             </Label>
-            <Label style={{ margin: "5px 10px", cursor: "pointer" }}>
+
+            {/* Inactive datas */}
+            <Label
+              style={{
+                margin: "5px 10px",
+                cursor: "pointer",
+                color: filStatusBar == "inactive" && "#5cff00",
+                borderBottom: filStatusBar == "inactive" && "2px solid #5cff00",
+              }}
+              onClick={() => {
+                getFilter("inactive");
+              }}
+            >
               Inactive
             </Label>
-            <Label style={{ margin: "5px 10px", cursor: "pointer" }}>
+
+            {/* On hold datas */}
+            <Label
+              style={{
+                margin: "5px 10px",
+                cursor: "pointer",
+                color: filStatusBar == "on hold" && "#5cff00",
+                borderBottom: filStatusBar == "on hold" && "2px solid #5cff00",
+              }}
+              onClick={() => {
+                getFilter("on hold");
+              }}
+            >
               On hold
             </Label>
-            <Label style={{ margin: "5px 10px", cursor: "pointer" }}>
+
+            {/* Completed datas */}
+            <Label
+              style={{
+                margin: "5px 10px",
+                cursor: "pointer",
+                color: filStatusBar == "completed" && "#5cff00",
+                borderBottom:
+                  filStatusBar == "completed" && "2px solid #5cff00",
+              }}
+              onClick={() => {
+                getFilter("completed");
+              }}
+            >
               Completed
             </Label>
           </div>
+
+          {/* List and Cards navigation section */}
           <div
             style={{
               margin: "10px",
@@ -431,6 +587,7 @@ const Dashboard = () => {
           gap: "2%",
         }}
       >
+        {/* Status filter section */}
         <div style={{ width: "26%" }}>
           <Dropdown
             placeholder="Select an project"
@@ -441,9 +598,11 @@ const Dashboard = () => {
             ]}
           />
         </div>
+
+        {/* Project type filter section */}
         <div style={{ width: "26%" }}>
           <Dropdown
-            placeholder="Select an Status"
+            placeholder="Select an project type"
             options={[
               { key: "1", text: "1" },
               { key: "2", text: "2" },
@@ -461,7 +620,7 @@ const Dashboard = () => {
       >
         {isListView ? (
           <div>
-            {masterData.length ? (
+            {masterFilData.length ? (
               <div
                 style={{
                   display: "flex",
@@ -473,7 +632,7 @@ const Dashboard = () => {
                   width: "100%",
                 }}
               >
-                {masterData.map((e: any) => {
+                {masterFilData.map((e: any, i: number) => {
                   return (
                     <div style={{ width: "30%", position: "relative" }}>
                       <div
@@ -489,11 +648,13 @@ const Dashboard = () => {
                           <Label>{e.ProjectName}</Label>
                           <Label>{e.Status}</Label>
                           <Label>Start Date</Label>
-                          <Label>{e.StartDate}</Label>
+                          <Label>
+                            {moment(e.StartDate).format("MM/DD/YYYY")}
+                          </Label>
                           <Label>Members</Label>
                           <div style={{ display: "flex" }}>
-                            {e.Developers.length
-                              ? e.Developers.map((user: string) => {
+                            {e.Members.length
+                              ? e.Members.map((user: string) => {
                                   return (
                                     <Persona
                                       size={PersonaSize.size32}
@@ -512,11 +673,7 @@ const Dashboard = () => {
                             <MoreVert
                               style={{ cursor: "pointer" }}
                               onClick={() => {
-                                if (isPopup) {
-                                  setIsPopup(false);
-                                } else {
-                                  setIsPopup(true);
-                                }
+                                getOnClick(e.ID);
                               }}
                             />
                           </div>
@@ -552,7 +709,7 @@ const Dashboard = () => {
                           </div>
                         </div>
                       </div>
-                      {isPopup ? (
+                      {e.isSelect ? (
                         <div
                           style={{
                             width: "30%",
@@ -573,6 +730,11 @@ const Dashboard = () => {
                               marginBottom: "10px",
                               cursor: "pointer",
                             }}
+                            onClick={() => {
+                              getOnClick(0);
+                              setModalObj({ ...e });
+                              setIsModalOpen(true);
+                            }}
                           >
                             <Label style={{ cursor: "pointer" }}>View</Label>
                             <Visibility />
@@ -584,6 +746,9 @@ const Dashboard = () => {
                               marginBottom: "10px",
                               cursor: "pointer",
                             }}
+                            onClick={() => {
+                              props.navigation("formdashboard", e);
+                            }}
                           >
                             <Label style={{ cursor: "pointer" }}>Edit</Label>
                             <Edit />
@@ -594,6 +759,10 @@ const Dashboard = () => {
                               justifyContent: "space-between",
                               marginBottom: "10px",
                               cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              masterFilData.splice(i, 1);
+                              setMasterFilData([...masterFilData]);
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Delete</Label>
@@ -620,11 +789,11 @@ const Dashboard = () => {
         ) : (
           <div>
             <DetailsList
-              items={[...masterData]}
+              items={[...masterFilData]}
               columns={DetailListColumn}
               selectionMode={SelectionMode.none}
             />
-            {masterData.length == 0 && (
+            {masterFilData.length == 0 && (
               <Label
                 style={{
                   textAlign: "center",
@@ -636,6 +805,19 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Modal box section */}
+      {modalObj && (
+        <Modal isOpen={isModalOpen}>
+          <Close
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          />
+          <Label>{modalObj.ProjectName}</Label>
+        </Modal>
+      )}
     </div>
   );
 };

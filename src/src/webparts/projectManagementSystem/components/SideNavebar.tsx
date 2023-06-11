@@ -1,29 +1,12 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@fluentui/react";
 import { Dashboard, Group } from "@material-ui/icons";
 import { Icon } from "@material-ui/core";
 
 const logo: string = require("../../../ExternalDocs/Technorucs_Logo.png");
 
-interface ISideNav {
-  name: string;
-  key: string;
-  iconName: string;
-}
-
-const SideNavebar = () => {
-  const sideNavInfo: ISideNav[] = [
-    {
-      name: "Dashboard",
-      key: "Dashboard",
-      iconName: "Apps",
-    },
-    {
-      name: "Members",
-      key: "Members",
-      iconName: "People",
-    },
-  ];
+const SideNavebar = (props: any) => {
   return (
     <div style={{ width: "100%" }}>
       {/* Logo Section Starts */}
@@ -46,7 +29,10 @@ const SideNavebar = () => {
             padding: "10px 30px",
             marginBottom: 16,
             cursor: "pointer",
-            background: true ? "#e2ffd1" : "#fff",
+            background: props._selectNave ? "#e2ffd1" : "#fff",
+          }}
+          onClick={() => {
+            props.navigation("dashboard");
           }}
         >
           <Dashboard />
@@ -58,6 +44,10 @@ const SideNavebar = () => {
             padding: "10px 30px",
             marginBottom: 16,
             cursor: "pointer",
+            background: !props._selectNave ? "#e2ffd1" : "#fff",
+          }}
+          onClick={() => {
+            props.navigation("membersdashboard");
           }}
         >
           <Group />
