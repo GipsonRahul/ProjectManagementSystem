@@ -117,11 +117,20 @@ const ProjectForm = (props: any) => {
     setItemDatas({ ...itemDatas });
   };
 
+  // current items get function
+  const getCurrentItem = () => {
+    let editFormText: string = props.item ? "edit" : "add";
+    let _currentItem: IObjectData = _readyObj;
+    if (editFormText == "edit") {
+      _currentItem = props.item;
+    }
+    setItemDatas(_currentItem);
+    setViewFormText(editFormText);
+  };
+
   // life cycle for onload
   useEffect(() => {
-    let editFormText: string = props.item ? "edit" : "add";
-    editFormText == "add" && setItemDatas({ ..._readyObj });
-    setViewFormText(editFormText);
+    getCurrentItem();
   }, []);
 
   return (
@@ -183,7 +192,7 @@ const ProjectForm = (props: any) => {
           <div style={{ width: "50%" }}>
             <Label>Project Name *</Label>
             <TextField
-              value={itemDatas.ProjectName}
+              value={itemDatas.ProjectName ? itemDatas.ProjectName : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectName = e.target.value;
                 setItemDatas({ ...itemDatas });
@@ -197,7 +206,7 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select project type"
               options={IDropDown.ProjectType}
-              selectedKey={itemDatas.ProjectType}
+              selectedKey={itemDatas.ProjectType ? itemDatas.ProjectType : ""}
               onChange={(e, text) => {
                 itemDatas.ProjectType = text.key as string;
                 setItemDatas({ ...itemDatas });
@@ -211,7 +220,7 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select status"
               options={IDropDown.Status}
-              selectedKey={itemDatas.Status}
+              selectedKey={itemDatas.Status ? itemDatas.Status : ""}
               onChange={(e, text) => {
                 itemDatas.Status = text.key as string;
                 setItemDatas({ ...itemDatas });
@@ -238,7 +247,9 @@ const ProjectForm = (props: any) => {
             <Label>Project Description</Label>
             <TextField
               multiple
-              value={itemDatas.ProjectDescription}
+              value={
+                itemDatas.ProjectDescription ? itemDatas.ProjectDescription : ""
+              }
               onChange={(e: any) => {
                 itemDatas.ProjectDescription = e.target.value;
                 setItemDatas({ ...itemDatas });
@@ -255,7 +266,11 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select project manager"
               options={props._masterUsersDropDown[0].manaDropdown}
-              selectedKey={itemDatas.ProjectManager.Email}
+              selectedKey={
+                itemDatas.ProjectManager.Email
+                  ? itemDatas.ProjectManager.Email
+                  : ""
+              }
               onChange={(e, text) => {
                 itemDatas.ProjectManager.Email = text.key as string;
                 itemDatas.ProjectManager.DisplayName = text.text as string;
@@ -270,7 +285,9 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select team lead"
               options={props._masterUsersDropDown[0].TLDropdown}
-              selectedKey={itemDatas.TeamLead.Email}
+              selectedKey={
+                itemDatas.TeamLead.Email ? itemDatas.TeamLead.Email : ""
+              }
               onChange={(e, text) => {
                 itemDatas.TeamLead.Email = text.key as string;
                 itemDatas.TeamLead.DisplayName = text.text as string;
@@ -285,7 +302,9 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select tester"
               options={props._masterUsersDropDown[0].TesterDropdown}
-              selectedKey={itemDatas.Testers.Email}
+              selectedKey={
+                itemDatas.Testers.Email ? itemDatas.Testers.Email : ""
+              }
               onChange={(e, text) => {
                 itemDatas.Testers.Email = text.key as string;
                 itemDatas.Testers.DisplayName = text.text as string;
@@ -301,14 +320,12 @@ const ProjectForm = (props: any) => {
             <Dropdown
               placeholder="Please select designer"
               options={props._masterUsersDropDown[0].DesDropdown}
-              selectedKey={itemDatas.Designers.Email}
+              selectedKey={
+                itemDatas.Designers.Email ? itemDatas.Designers.Email : ""
+              }
               onChange={(e, text) => {
                 itemDatas.Designers.Email = text.key as string;
                 itemDatas.Designers.DisplayName = text.text as string;
-                // itemDatas.Members.push({
-                //   Email: text.key as string,
-                //   DisplayName: text.text as string,
-                // });
                 setItemDatas({ ...itemDatas });
                 getMasterArray();
               }}
@@ -350,7 +367,7 @@ const ProjectForm = (props: any) => {
           >
             <Label>Project Cost</Label>
             <TextField
-              value={itemDatas.ProjectCost}
+              value={itemDatas.ProjectCost ? itemDatas.ProjectCost : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectCost = e.target.value;
                 setItemDatas({ ...itemDatas });
@@ -369,7 +386,7 @@ const ProjectForm = (props: any) => {
           >
             <Label>Project Estimate</Label>
             <TextField
-              value={itemDatas.ProjectEstimate}
+              value={itemDatas.ProjectEstimate ? itemDatas.ProjectEstimate : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectEstimate = e.target.value;
                 setItemDatas({ ...itemDatas });
@@ -388,7 +405,7 @@ const ProjectForm = (props: any) => {
           >
             <Label>Actual Cost</Label>
             <TextField
-              value={itemDatas.ActualCost}
+              value={itemDatas.ActualCost ? itemDatas.ActualCost : ""}
               onChange={(e: any) => {
                 itemDatas.ActualCost = e.target.value;
                 setItemDatas({ ...itemDatas });

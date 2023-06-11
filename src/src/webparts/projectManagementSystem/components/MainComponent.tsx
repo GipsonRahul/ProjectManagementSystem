@@ -197,6 +197,7 @@ const MainComponent = () => {
                 masterRecords={masterRecords}
                 getMasterDatas={getMasterDatas}
                 _count={_masterListData.length}
+                _masterListData={_masterListData}
               />
             )
           ) : (
