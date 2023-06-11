@@ -454,6 +454,7 @@ const ProjectForm = (props: any) => {
           <div className="costs">
             <Label>Project Cost</Label>
             <TextField
+              styles={textFieldStyle}
               value={itemDatas.ProjectCost ? itemDatas.ProjectCost : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectCost = e.target.value;
@@ -466,6 +467,7 @@ const ProjectForm = (props: any) => {
           <div className="costs">
             <Label>Project Estimate</Label>
             <TextField
+              styles={textFieldStyle}
               value={itemDatas.ProjectEstimate ? itemDatas.ProjectEstimate : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectEstimate = e.target.value;
@@ -478,6 +480,7 @@ const ProjectForm = (props: any) => {
           <div className="costs">
             <Label>Actual Cost</Label>
             <TextField
+              styles={textFieldStyle}
               value={itemDatas.ActualCost ? itemDatas.ActualCost : ""}
               onChange={(e: any) => {
                 itemDatas.ActualCost = e.target.value;
