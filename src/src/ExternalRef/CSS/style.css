@@ -6,3 +6,58 @@
   font-size: 22px;
   font-weight: 600;
 }
+
+/* Project Form Designs */
+.FormContainer {
+  width: 100%;
+}
+.formHeaderFlex {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px;
+  align-items: center;
+}
+.arrowRightFlex {
+  display: flex;
+}
+.arrowRightFlex label {
+  font-size: 20px;
+  color: #1d1d7c;
+  padding: 0;
+}
+.loginLeftFlex {
+  display: flex;
+  align-items: center;
+}
+.loginLeftFlex .nameandEmail {
+  margin-right: 20px;
+}
+.nameandEmail label {
+  padding: 0;
+}
+.formSection {
+  display: flex;
+  margin: 10px 20px;
+}
+.formSection .rightSection {
+  width: 50%;
+}
+.formSection .rightSection label {
+  /* color: #a9f37f; */
+  color: #4d9748;
+}
+.leftSection label {
+  color: #4d9748;
+}
+.leftSection {
+  width: 50%;
+}
+.leftSection .costs {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.required {
+  color: red;
+}
