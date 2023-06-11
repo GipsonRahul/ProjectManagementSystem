@@ -47,6 +47,21 @@ interface IMasterData {
   isSelect: boolean;
 }
 
+interface IDrop {
+  key: string;
+  text: string;
+}
+
+interface IMastDrop {
+  Project: IDrop[];
+  ProjType: IDrop[];
+}
+
+interface IFillValue {
+  _filProject: string;
+  _filProjType: string;
+}
+
 let _masterData: IMasterData[] = [];
 
 const Dashboard = (props: any) => {
@@ -183,6 +198,16 @@ const Dashboard = (props: any) => {
       },
     },
   ];
+
+  let _listDropDown: IMastDrop = {
+    Project: [{ key: "all", text: "All" }],
+    ProjType: [{ key: "all", text: "All" }],
+  };
+
+  let _curFilterData: IFillValue = {
+    _filProject: "all",
+    _filProjType: "all",
+  };
 
   // list Datas
   let sampleDatas: any[] = [
@@ -333,6 +358,8 @@ const Dashboard = (props: any) => {
   const [isListView, setIsListView] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filStatusBar, setFilStatusBar] = useState<string>("all");
+  const [dropValue, setDropValue] = useState<IMastDrop>(_listDropDown);
+  const [filterValue, setFilterValue] = useState<IFillValue>(_curFilterData);
   // State section end
 
   // onClick change function
@@ -360,7 +387,18 @@ const Dashboard = (props: any) => {
         if (value == "all") {
           _masterRecord[i].isSelect = false;
           _filterMasterDatas.push({ ..._masterRecord[i] });
+          if (_masterRecord.length == i + 1) {
+            filterValue._filProject = "all";
+            filterValue._filProjType = "all";
+            setFilterValue({ ...filterValue });
+          }
         } else if (_masterRecord[i].Status.toLowerCase() == value) {
+          _masterRecord[i].isSelect = false;
+          _filterMasterDatas.push({ ..._masterRecord[i] });
+        } else if (_masterRecord[i].ProjectName == value) {
+          _masterRecord[i].isSelect = false;
+          _filterMasterDatas.push({ ..._masterRecord[i] });
+        } else if (_masterRecord[i].ProjectType == value) {
           _masterRecord[i].isSelect = false;
           _filterMasterDatas.push({ ..._masterRecord[i] });
         }
@@ -371,6 +409,24 @@ const Dashboard = (props: any) => {
     } else {
       setMasterFilData([]);
     }
+    getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
+  };
+
+  // filter dropdown function
+  const getFilterValue = (masterDataArray: IMasterData[]) => {
+    let _filDropValue: IMastDrop = _listDropDown;
+    masterDataArray.length &&
+      masterDataArray.forEach((drop: IMasterData) => {
+        _filDropValue.Project.push({
+          key: drop.ProjectName,
+          text: drop.ProjectName,
+        });
+        _filDropValue.ProjType.push({
+          key: drop.ProjectType,
+          text: drop.ProjectType,
+        });
+      });
+    setDropValue({ ..._filDropValue });
   };
 
   // life cycle function for onload
@@ -378,6 +434,7 @@ const Dashboard = (props: any) => {
     _masterData = props.masterRecords ? props.masterRecords : [];
     setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
+    getFilterValue([..._masterData]);
   }, []);
 
   return (
@@ -601,11 +658,13 @@ const Dashboard = (props: any) => {
         <div style={{ width: "26%" }}>
           <Dropdown
             placeholder="Select an project"
-            options={[
-              { key: "1", text: "1" },
-              { key: "2", text: "2" },
-              { key: "3", text: "3" },
-            ]}
+            options={dropValue.Project}
+            selectedKey={filterValue._filProject}
+            onChange={(e, text) => {
+              filterValue._filProject = text.key as string;
+              getFilter(text.key as string);
+              setFilterValue({ ...filterValue });
+            }}
           />
         </div>
 
@@ -613,11 +672,13 @@ const Dashboard = (props: any) => {
         <div style={{ width: "26%" }}>
           <Dropdown
             placeholder="Select an project type"
-            options={[
-              { key: "1", text: "1" },
-              { key: "2", text: "2" },
-              { key: "3", text: "3" },
-            ]}
+            options={dropValue.ProjType}
+            selectedKey={filterValue._filProjType}
+            onChange={(e, text) => {
+              filterValue._filProjType = text.key as string;
+              getFilter(text.key as string);
+              setFilterValue({ ...filterValue });
+            }}
           />
         </div>
       </div>
