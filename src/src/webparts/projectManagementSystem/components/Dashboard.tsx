@@ -327,8 +327,8 @@ const Dashboard = (props: any) => {
   ];
 
   // State section start
-  const [masterFilData, setMasterFilData] =
-    useState<IMasterData[]>([]);
+  const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
+  const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
   const [modalObj, setModalObj] = useState<IMasterData>();
   const [isListView, setIsListView] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -353,7 +353,7 @@ const Dashboard = (props: any) => {
   // Filter function section
   const getFilter = (value: string) => {
     setFilStatusBar(value);
-    let _masterRecord: IMasterData[] = [..._masterData];
+    let _masterRecord: IMasterData[] = [...finalFilData];
     let _filterMasterDatas: IMasterData[] = [];
     if (_masterRecord.length) {
       for (let i = 0; _masterRecord.length > i; i++) {
@@ -376,6 +376,7 @@ const Dashboard = (props: any) => {
   // life cycle function for onload
   useEffect(() => {
     _masterData = props.masterRecords ? props.masterRecords : [];
+    setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
   }, []);
 
@@ -444,6 +445,7 @@ const Dashboard = (props: any) => {
               height: "40px",
             }}
             onClick={() => {
+              props.getMasterDatas("new", masterFilData);
               props.navigation("formdashboard");
             }}
           >
@@ -561,6 +563,10 @@ const Dashboard = (props: any) => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
+                  masterFilData.length &&
+                    masterFilData.forEach(
+                      (item: IMasterData) => (item.isSelect = false)
+                    );
                   setIsListView(false);
                 }}
               />
@@ -570,6 +576,10 @@ const Dashboard = (props: any) => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
+                  masterFilData.length &&
+                    masterFilData.forEach(
+                      (item: IMasterData) => (item.isSelect = false)
+                    );
                   setIsListView(true);
                 }}
               />
@@ -747,6 +757,7 @@ const Dashboard = (props: any) => {
                               cursor: "pointer",
                             }}
                             onClick={() => {
+                              props.getMasterDatas("edit", masterFilData);
                               props.navigation("formdashboard", e);
                             }}
                           >
@@ -762,7 +773,7 @@ const Dashboard = (props: any) => {
                             }}
                             onClick={() => {
                               masterFilData.splice(i, 1);
-                              setMasterFilData([...masterFilData]);
+                              setFinalFilData([...masterFilData]);
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Delete</Label>
