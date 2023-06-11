@@ -8,6 +8,8 @@ import {
   Dropdown,
   TextField,
   DatePicker,
+  ITextFieldStyles,
+  IDropdownStyles,
 } from "@fluentui/react";
 import { IDropDown } from "../CommonDropDown/DropDown";
 import * as moment from "moment";
@@ -69,6 +71,63 @@ const ProjectForm = (props: any) => {
     ProjectEstimate: "",
     ActualCost: "",
     isSelect: false,
+  };
+
+  // style variables
+  const textFieldStyle: Partial<ITextFieldStyles> = {
+    fieldGroup: {
+      borderRadius: 5,
+      border: "1px solid rgb(138, 138, 138) !important",
+      "::after": {
+        border: "1px solid rgb(138, 138, 138) !important",
+        content: "none !important",
+        postition: "unset !important",
+      },
+    },
+  };
+  const dropDownStyle: Partial<IDropdownStyles> = {
+    title: {
+      borderRadius: 5,
+      border: "1px solid rgb(138, 138, 138) !important",
+    },
+    dropdown: {
+      ":focus::after": {
+        border: "1px solid rgb(138, 138, 138) !important",
+        content: "none !important",
+        postition: "unset !important",
+      },
+    },
+  };
+  const datePickerStyle: Partial<ITextFieldStyles> = {
+    root: {
+      ".ms-TextField-fieldGroup": {
+        borderRadius: 5,
+        border: "1px solid rgb(138, 138, 138) !important",
+        "::after": {
+          border: "1px solid rgb(138, 138, 138) !important",
+          content: "none !important",
+          postition: "unset !important",
+        },
+      },
+    },
+  };
+  const multilineTextFieldStyle: Partial<ITextFieldStyles> = {
+    fieldGroup: {
+      height: 100,
+      borderRadius: 5,
+      border: "1px solid rgb(138, 138, 138) !important",
+      alignItems: "flex-start",
+      "::after": {
+        border: "1px solid rgb(138, 138, 138) !important",
+        content: "none !important",
+        postition: "unset !important",
+      },
+    },
+    field: {
+      padding: "5px 8px !important",
+      height: "100% !important",
+      resize: "none",
+    },
   };
 
   // State section start
@@ -151,19 +210,12 @@ const ProjectForm = (props: any) => {
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div className="FormContainer">
       {/* Add and Edit header section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          margin: "10px 20px",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex" }}>
+      <div className="formHeaderFlex">
+        <div className="arrowRightFlex">
           <ArrowBackIos
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", color: "#A9F37F" }}
             onClick={() => {
               props.navigation("dashboard");
             }}
@@ -172,22 +224,15 @@ const ProjectForm = (props: any) => {
             {viewFormText == "add" ? "Add Project" : "Edit Project"}
           </Label>
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              marginRight: "20px",
-            }}
-          >
+        <div className="loginLeftFlex">
+          <div className="nameandEmail">
             <div>
-              <Label>Deva Raj</Label>
+              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
             </div>
             <div>
-              <Label>devaraj@chandrudemo.onmicrosoft.com</Label>
+              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
+                devaraj@chandrudemo.onmicrosoft.com
+              </Label>
             </div>
           </div>
           <Persona
@@ -202,13 +247,16 @@ const ProjectForm = (props: any) => {
 
       {/* Form section start */}
       {/* Project details section */}
-      <div style={{ display: "flex", margin: "10px 20px" }}>
+      <div className="formSection">
         {/* Left section */}
-        <div style={{ width: "50%" }}>
+        <div className="rightSection ">
           {/* Project Name section */}
-          <div style={{ width: "50%" }}>
-            <Label>Project Name *</Label>
+          <div className="rightSection">
+            <Label>
+              Project Name <span className="required">*</span>
+            </Label>
             <TextField
+              styles={textFieldStyle}
               value={itemDatas.ProjectName ? itemDatas.ProjectName : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectName = e.target.value;
@@ -218,9 +266,12 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Project Type section */}
-          <div style={{ width: "50%" }}>
-            <Label>Project Type *</Label>
+          <div className="rightSection">
+            <Label>
+              Project Type <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select project type"
               options={IDropDown.ProjectType}
               selectedKey={itemDatas.ProjectType ? itemDatas.ProjectType : ""}
@@ -232,9 +283,12 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Status section */}
-          <div style={{ width: "50%" }}>
-            <Label>Status *</Label>
+          <div className="rightSection">
+            <Label>
+              Status <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select status"
               options={IDropDown.Status}
               selectedKey={itemDatas.Status ? itemDatas.Status : ""}
@@ -246,9 +300,12 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* start date section */}
-          <div style={{ width: "50%" }}>
-            <Label>Start Date *</Label>
+          <div className="rightSection">
+            <Label>
+              Start Date <span className="required">*</span>
+            </Label>
             <DatePicker
+              styles={datePickerStyle}
               placeholder="MM/DD/YYYY"
               value={itemDatas.StartDate ? new Date(itemDatas.StartDate) : null}
               formatDate={(date) => moment(date).format("MM/DD/YYYY")}
@@ -260,10 +317,11 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Project Description section */}
-          <div style={{ width: "50%" }}>
+          <div className="rightSection">
             <Label>Project Description</Label>
             <TextField
-              multiple
+              multiline
+              styles={multilineTextFieldStyle}
               value={
                 itemDatas.ProjectDescription ? itemDatas.ProjectDescription : ""
               }
@@ -276,11 +334,14 @@ const ProjectForm = (props: any) => {
         </div>
 
         {/* Right section */}
-        <div style={{ width: "50%" }}>
+        <div className="rightSection">
           {/* Project manager section */}
-          <div style={{ width: "50%" }}>
-            <Label>Project Manager *</Label>
+          <div className="rightSection">
+            <Label>
+              Project Manager <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select project manager"
               options={props._masterUsersDropDown[0].manaDropdown}
               selectedKey={
@@ -298,8 +359,11 @@ const ProjectForm = (props: any) => {
 
           {/* Team Lead section */}
           <div style={{ width: "50%" }}>
-            <Label>Team Lead *</Label>
+            <Label>
+              Team Lead <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select team lead"
               options={props._masterUsersDropDown[0].TLDropdown}
               selectedKey={
@@ -315,8 +379,11 @@ const ProjectForm = (props: any) => {
 
           {/* Tester section */}
           <div style={{ width: "50%" }}>
-            <Label>Tester *</Label>
+            <Label>
+              Tester <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select tester"
               options={props._masterUsersDropDown[0].TesterDropdown}
               selectedKey={
@@ -333,8 +400,11 @@ const ProjectForm = (props: any) => {
 
           {/* Designer section */}
           <div style={{ width: "50%" }}>
-            <Label>Designer *</Label>
+            <Label>
+              Designer <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select designer"
               options={props._masterUsersDropDown[0].DesDropdown}
               selectedKey={
@@ -351,8 +421,11 @@ const ProjectForm = (props: any) => {
 
           {/* Developers section */}
           <div style={{ width: "50%" }}>
-            <Label>Developers *</Label>
+            <Label>
+              Developers <span className="required">*</span>
+            </Label>
             <Dropdown
+              styles={dropDownStyle}
               placeholder="Please select developers"
               multiSelect
               options={props._masterUsersDropDown[0].DevDropdown}
@@ -370,19 +443,15 @@ const ProjectForm = (props: any) => {
       </div>
 
       {/* Project cost details section */}
-      <div style={{ display: "flex", margin: "10px 20px" }}>
+      <div style={{ margin: "10px 20px", display: "flex" }}>
         {/* Left section */}
-        <div style={{ width: "50%" }}>
-          <Label>Financials Details</Label>
+        <div
+          // style={{ width: "50%" }}
+          className="leftSection"
+        >
+          <h3>Financials Details</h3>
           {/* Project Cost section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Project Cost</Label>
             <TextField
               value={itemDatas.ProjectCost ? itemDatas.ProjectCost : ""}
@@ -394,14 +463,7 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Project Estimate section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Project Estimate</Label>
             <TextField
               value={itemDatas.ProjectEstimate ? itemDatas.ProjectEstimate : ""}
@@ -413,14 +475,7 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Actual Cost section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Actual Cost</Label>
             <TextField
               value={itemDatas.ActualCost ? itemDatas.ActualCost : ""}
@@ -433,17 +488,10 @@ const ProjectForm = (props: any) => {
         </div>
 
         {/* Right section */}
-        <div style={{ width: "50%" }}>
-          <Label>Total Contributors</Label>
+        <div className="leftSection">
+          <h3>Total Contributors</h3>
           {/* Project Manager section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Project Manager</Label>
             <TextField
               disabled={true}
@@ -452,14 +500,7 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* QA Tester section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Team Lead</Label>
             <TextField
               disabled={true}
@@ -468,14 +509,7 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Developer section */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="costs">
             <Label>Members</Label>
             <TextField
               disabled={true}
