@@ -178,6 +178,64 @@
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #e4e4e4;
 }
+.modalContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 64vw;
+  margin: 10px 20px;
+}
+.modalHeaderFlex {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px;
+}
+.modalHeadRightFlex {
+  margin-right: 20px;
+}
+.modalHeadStatusIndicator {
+  /* margin-right: 20px; */
+  background: #4ba665;
+  color: #fff;
+  border-radius: 18px;
+  padding: 6px 40px;
+}
+.textFlex {
+  align-items: center;
+  display: flex;
+  justify-self: space-between;
+  margin-right: 7px;
+}
+.modalProjectDescrip {
+  margin: 10px 20px 0px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #dee1e6;
+}
+.ProjectDescripLabel {
+  font-size: 15px;
+  color: #4d9748;
+}
+.userIcon {
+  width: 6%;
+  margin-right: 8px;
+}
+.userRole {
+  width: 14%;
+}
+.personWidth {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: 10px;
+  width: 80%;
+}
+.projectCost {
+  width: 15%;
+  font-size: 16px;
+  color: #4ba665;
+}
+.projectCostValue {
+  /* width: 35%; */
+  width: 10%;
+}
 
 /* Members Page Styles */
 .viewAllBtn {
@@ -240,4 +298,27 @@
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #e4e4e4;
+}
+
+/* side nav Styles */
+.logoSection {
+  display: flex;
+  margin: 30px;
+}
+.logoSection label {
+  font-size: 20px;
+  margin-left: 10px;
+}
+.activeTab {
+  display: flex;
+  padding: 10px 30px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.activeTab label {
+  margin-left: 10px;
+  cursor: pointer;
+}
+.activeTab svg {
+  color: #6f6f6f;
 }

@@ -10,6 +10,8 @@ import {
   IDropdownStyles,
   TextField,
   Spinner,
+  ITextFieldStyles,
+  IModalStyles,
 } from "@fluentui/react";
 import {
   Add,
@@ -25,6 +27,7 @@ import {
 } from "@material-ui/icons";
 import { SelectionMode } from "office-ui-fabric-react";
 import * as moment from "moment";
+import { colors } from "@material-ui/core";
 
 interface IDetails {
   DisplayName: string;
@@ -38,11 +41,11 @@ interface IMasterData {
   ProjectDescription: string;
   Status: string;
   StartDate: any;
-  EndDate: any;
+  EndDate?: any;
   ProjectManager: IDetails;
   TeamLead: IDetails;
   Developers: IDetails[];
-  DevelopersEmail: string[];
+  DevelopersEmail?: string[];
   Designers: IDetails;
   Testers: IDetails;
   Members: IDetails[];
@@ -178,7 +181,11 @@ const Dashboard = (props: any) => {
         return (
           <div style={{ display: "flex", gap: "1%" }}>
             <Visibility
-              style={{ cursor: "pointer", marginRight: "5px" }}
+              style={{
+                cursor: "pointer",
+                marginRight: "5px",
+                color: "#4444ad",
+              }}
               onClick={() => {
                 getOnClick(0);
                 setModalObj({ ...item });
@@ -192,7 +199,7 @@ const Dashboard = (props: any) => {
               }}
             />
             <Delete
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", color: "#ff3c3c" }}
               onClick={() => {
                 setDeletePopup({
                   condition: true,
@@ -377,10 +384,78 @@ const Dashboard = (props: any) => {
       },
     },
   };
+  const textFieldStyle: Partial<ITextFieldStyles> = {
+    field: {
+      border: "none !important",
+      textAlign: "center",
+      color: "#666565",
+    },
+  };
+  const modalStyle: Partial<IModalStyles> = {
+    main: {
+      borderRadius: 10,
+      padding: 10,
+    },
+  };
   // State section start
   const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
   const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
-  const [modalObj, setModalObj] = useState<IMasterData>();
+  const [modalObj, setModalObj] = useState<IMasterData>(null);
+  // ProjectName: "Project Test 001",
+  // Status: "Active",
+  // StartDate: "06/09/2023",
+  // ProjectType: "SPFx",
+  // ProjectDescription: "Test",
+  // ProjectManager: {
+  //   DisplayName: "Devaraj P",
+  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
+  // },
+  // TeamLead: {
+  //   DisplayName: "Devaraj P",
+  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
+  // },
+  // Testers: {
+  //   DisplayName: "Devaraj P",
+  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
+  // },
+  // Designers: {
+  //   DisplayName: "Devaraj P",
+  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
+  // },
+  // Developers: [
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  // ],
+  // Members: [
+  //   {
+  //     DisplayName: "Devaraj P",
+  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
+  //   },
+  // ],
+  // ProjectCost: "30",
+  // ProjectEstimate: "30",
+  // ActualCost: "30",
+  // ID: 1,
+  // isSelect: false,
+  // });
   const [isListView, setIsListView] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filStatusBar, setFilStatusBar] = useState<string>("all");
@@ -822,7 +897,7 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>View</Label>
-                            <Visibility />
+                            <Visibility style={{ color: "#4444ad" }} />
                           </div>
                           <div
                             className="menus"
@@ -848,7 +923,7 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Delete</Label>
-                            <Delete />
+                            <Delete style={{ color: "#ff3c3c" }} />
                           </div>
                         </div>
                       ) : (
@@ -890,14 +965,19 @@ const Dashboard = (props: any) => {
 
       {/* Modal box section */}
       {modalObj && (
-        <Modal isOpen={isModalOpen}>
+        <Modal
+          styles={modalStyle}
+          isOpen={isModalOpen}
+          // isOpen={true}
+        >
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "64vw",
-              margin: "10px 20px",
-            }}
+            // style={{
+            //   display: "flex",
+            //   justifyContent: "space-between",
+            //   width: "64vw",
+            //   margin: "10px 20px",
+            // }}
+            className="modalContainer"
           >
             <Label>{modalObj.ProjectType}</Label>
             <Close
@@ -908,57 +988,75 @@ const Dashboard = (props: any) => {
             />
           </div>
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "10px 20px",
-            }}
+            // style={{
+            //   display: "flex",
+            //   justifyContent: "space-between",
+            //   margin: "10px 20px",
+            // }}
+            className="modalHeaderFlex"
           >
-            <Label>{modalObj.ProjectName}</Label>
+            <Label style={{ fontSize: 20, fontWeight: 600 }}>
+              {modalObj.ProjectName}
+            </Label>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
+              // style={{
+              //   display: "flex",
+              //   justifyContent: "space-between",
+              // }}
+              className="textFlex"
             >
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
+                // style={{
+                //   display: "flex",
+                //   justifyContent: "space-between",
+                // }}
+                className="textFlex"
               >
-                <CheckCircleOutline />
-                <Label style={{ marginLeft: "20px" }}>Status</Label>
+                <CheckCircleOutline style={{ marginRight: 10 }} />
+                <Label className="modalHeadRightFlex">Status</Label>
               </div>
-              <Label style={{ marginLeft: "20px" }}>{modalObj.Status}</Label>
+              <Label className="modalHeadStatusIndicator">
+                {modalObj.Status}
+              </Label>
             </div>
           </div>
           <div
-            style={{
-              margin: "10px 20px 0px 20px",
-              paddingBottom: "10px",
-              borderBottom: "2px solid",
-            }}
+            // style={{
+            //   margin: "10px 20px 0px 20px",
+            //   paddingBottom: "10px",
+            //   borderBottom: "2px solid",
+            // }}
+            className="modalProjectDescrip"
           >
-            <Label>Project Description</Label>
+            <Label className="ProjectDescripLabel">Project Description</Label>
             <p>{modalObj.ProjectDescription}</p>
           </div>
           <div
-            style={{
-              margin: "10px 20px 0px 20px",
-              paddingBottom: "10px",
-              borderBottom: "2px solid",
-            }}
+            // style={{
+            //   margin: "10px 20px 0px 20px",
+            //   paddingBottom: "10px",
+            //   borderBottom: "2px solid",
+            // }}
+            className="modalProjectDescrip"
           >
             <Label>Users</Label>
             <div
               style={{
                 display: "flex",
+                margin: "10px 0px",
               }}
             >
-              <PermIdentity style={{ width: "6%" }} />
-              <Label style={{ width: "14%" }}>Project Manager</Label>
-              <div style={{ display: "flex" }}>
+              <PermIdentity
+                // style={{ width: "6%" }}
+                className="userIcon"
+              />
+              <Label
+                //  style={{ width: "14%" }}
+                className="userRole"
+              >
+                Project Manager
+              </Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
                     root: {
@@ -977,11 +1075,20 @@ const Dashboard = (props: any) => {
             <div
               style={{
                 display: "flex",
+                margin: "10px 0px",
               }}
             >
-              <PermIdentity style={{ width: "6%" }} />
-              <Label style={{ width: "14%" }}>Team Lead</Label>
-              <div style={{ display: "flex" }}>
+              <PermIdentity
+                // style={{ width: "6%" }}
+                className="userIcon"
+              />
+              <Label
+                // style={{ width: "14%" }}
+                className="userRole"
+              >
+                Team Lead
+              </Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
                     root: {
@@ -1000,15 +1107,34 @@ const Dashboard = (props: any) => {
             <div
               style={{
                 display: "flex",
+                margin: "10px 0px",
               }}
             >
-              <PermIdentity style={{ width: "6%" }} />
-              <Label style={{ width: "14%" }}>Developers</Label>
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
+              <PermIdentity
+                // style={{ width: "6%" }}
+                className="userIcon"
+              />
+              <Label
+                // style={{ width: "14%" }}
+                className="userRole"
+              >
+                Developers
+              </Label>
+              <div
+                // style={{
+                //   display: "flex",
+                //   flexWrap: "wrap",
+                //   gap: 10,
+                //   width: "80%",
+                // }}
+                className="personWidth"
+              >
                 {modalObj.Developers.length &&
                   modalObj.Developers.map((user: any) => {
                     return (
-                      <div style={{ display: "flex" }}>
+                      <div
+                        style={{ display: "flex", width: "12%", gap: "10%" }}
+                      >
                         <Persona
                           styles={{
                             root: {
@@ -1029,12 +1155,21 @@ const Dashboard = (props: any) => {
             </div>
             <div
               style={{
+                margin: "10px 0px",
                 display: "flex",
               }}
             >
-              <PermIdentity style={{ width: "6%" }} />
-              <Label style={{ width: "14%" }}>Designer</Label>
-              <div style={{ display: "flex" }}>
+              <PermIdentity
+                // style={{ width: "6%" }}
+                className="userIcon"
+              />
+              <Label
+                // style={{ width: "14%" }}
+                className="userRole"
+              >
+                Designer
+              </Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
                     root: {
@@ -1053,11 +1188,20 @@ const Dashboard = (props: any) => {
             <div
               style={{
                 display: "flex",
+                margin: "10px 0px",
               }}
             >
-              <PermIdentity style={{ width: "6%" }} />
-              <Label style={{ width: "14%" }}>QA Tester</Label>
-              <div style={{ display: "flex" }}>
+              <PermIdentity
+                // style={{ width: "6%" }}
+                className="userIcon"
+              />
+              <Label
+                //  style={{ width: "14%" }}
+                className="userRole"
+              >
+                QA Tester
+              </Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
                     root: {
@@ -1076,25 +1220,62 @@ const Dashboard = (props: any) => {
           </div>
           <div
             style={{
-              margin: "10px 20px",
+              // margin: "10px 20px",
+              margin: " 10px 20px 20px 20px",
             }}
           >
-            <div style={{ display: "flex" }}>
-              <Label style={{ width: "15%" }}>Project Cost</Label>
-              <div style={{ width: "35%" }}>
-                <TextField disabled value={modalObj.ProjectCost} />
+            <div style={{ display: "flex", margin: "5px 0px" }}>
+              <Label
+                // style={{ width: "15%" }}
+                className="projectCost"
+              >
+                Project Cost
+              </Label>
+              <div
+                // style={{ width: "35%" }}
+                className="projectCostValue"
+              >
+                <TextField
+                  styles={textFieldStyle}
+                  disabled
+                  value={modalObj.ProjectCost}
+                />
               </div>
             </div>
-            <div style={{ display: "flex" }}>
-              <Label style={{ width: "15%" }}>Project Estimation</Label>
-              <div style={{ width: "35%" }}>
-                <TextField disabled value={modalObj.ProjectEstimate} />
+            <div style={{ display: "flex", margin: "5px 0px" }}>
+              <Label
+                // style={{ width: "15%" }}
+                className="projectCost"
+              >
+                Project Estimation
+              </Label>
+              <div
+                // style={{ width: "35%" }}
+                className="projectCostValue"
+              >
+                <TextField
+                  styles={textFieldStyle}
+                  disabled
+                  value={modalObj.ProjectEstimate}
+                />
               </div>
             </div>
-            <div style={{ display: "flex" }}>
-              <Label style={{ width: "15%" }}>Actual Cost</Label>
-              <div style={{ width: "35%" }}>
-                <TextField disabled value={modalObj.ActualCost} />
+            <div style={{ display: "flex", margin: "5px 0px" }}>
+              <Label
+                // style={{ width: "15%" }}
+                className="projectCost"
+              >
+                Actual Cost
+              </Label>
+              <div
+                //  style={{ width: "35%" }}
+                className="projectCostValue"
+              >
+                <TextField
+                  styles={textFieldStyle}
+                  disabled
+                  value={modalObj.ActualCost}
+                />
               </div>
             </div>
           </div>

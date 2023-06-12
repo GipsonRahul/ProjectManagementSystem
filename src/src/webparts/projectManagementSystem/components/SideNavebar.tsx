@@ -8,16 +8,11 @@ const logo: string = require("../../../ExternalDocs/Technorucs_Logo.png");
 
 const SideNavebar = (props: any) => {
   return (
-    <div style={{ width: "100%" }}>
+    <div className="FormContainer">
       {/* Logo Section Starts */}
-      <div
-        style={{
-          display: "flex",
-          margin: 30,
-        }}
-      >
+      <div className="logoSection">
         <img src={logo} alt="Logo" />
-        <Label style={{ fontSize: 20, marginLeft: 10 }}>Technorucs</Label>
+        <Label>Technorucs</Label>
       </div>
       {/* Logo Section Ends */}
 
@@ -25,33 +20,27 @@ const SideNavebar = (props: any) => {
       <div>
         <div
           style={{
-            display: "flex",
-            padding: "10px 30px",
-            marginBottom: 16,
-            cursor: "pointer",
             background: props._selectNave ? "#e2ffd1" : "#fff",
           }}
+          className="activeTab"
           onClick={() => {
             props.navigation("dashboard");
           }}
         >
           <Dashboard />
-          <Label style={{ marginLeft: 10, cursor: "pointer" }}>Dashboard</Label>
+          <Label>Dashboard</Label>
         </div>
         <div
           style={{
-            display: "flex",
-            padding: "10px 30px",
-            marginBottom: 16,
-            cursor: "pointer",
             background: !props._selectNave ? "#e2ffd1" : "#fff",
           }}
+          className="activeTab"
           onClick={() => {
             props.navigation("membersdashboard");
           }}
         >
           <Group />
-          <Label style={{ marginLeft: 10, cursor: "pointer" }}>Members</Label>
+          <Label>Members</Label>
         </div>
       </div>
       {/* Side Nav Section Ends */}
