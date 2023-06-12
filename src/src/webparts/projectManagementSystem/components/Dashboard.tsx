@@ -9,6 +9,7 @@ import {
   Modal,
   IDropdownStyles,
   mergeStyleSets,
+  TextField,
 } from "@fluentui/react";
 import {
   Add,
@@ -19,6 +20,8 @@ import {
   Edit,
   Delete,
   Close,
+  CheckCircleOutline,
+  PermIdentity,
 } from "@material-ui/icons";
 import { SelectionMode } from "office-ui-fabric-react";
 import * as moment from "moment";
@@ -420,8 +423,7 @@ const Dashboard = (props: any) => {
     ],
   });
   // State section start
-  const [masterFilData, setMasterFilData] =
-    useState<IMasterData[]>(sampleDatas);
+  const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
   const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
   const [modalObj, setModalObj] = useState<IMasterData>();
   const [isListView, setIsListView] = useState<boolean>(true);
@@ -478,7 +480,7 @@ const Dashboard = (props: any) => {
     } else {
       setMasterFilData([]);
     }
-    // getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
+    getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
   };
 
   // filter dropdown function
@@ -501,9 +503,9 @@ const Dashboard = (props: any) => {
   // life cycle function for onload
   useEffect(() => {
     _masterData = props.masterRecords ? props.masterRecords : [];
-    // setFinalFilData([..._masterData]);
-    // setMasterFilData([..._masterData]);
-    // getFilterValue([..._masterData]);
+    setFinalFilData([..._masterData]);
+    setMasterFilData([..._masterData]);
+    getFilterValue([..._masterData]);
   }, []);
 
   return (
@@ -837,7 +839,7 @@ const Dashboard = (props: any) => {
                           <Label style={{ fontSize: 14, fontWeight: 400 }}>
                             Project Type
                           </Label>
-                          <Label>E-Commerce</Label>
+                          <Label>{e.ProjectType}</Label>
                           <Label style={{ fontSize: 14, fontWeight: 400 }}>
                             Members
                           </Label>
@@ -1035,13 +1037,213 @@ const Dashboard = (props: any) => {
       {/* Modal box section */}
       {modalObj && (
         <Modal isOpen={isModalOpen}>
-          <Close
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setIsModalOpen(false);
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "64vw",
+              margin: "10px 20px",
             }}
-          />
-          <Label>{modalObj.ProjectName}</Label>
+          >
+            <Label>{modalObj.ProjectType}</Label>
+            <Close
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setIsModalOpen(false);
+              }}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              margin: "10px 20px",
+            }}
+          >
+            <Label>{modalObj.ProjectName}</Label>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CheckCircleOutline />
+                <Label style={{ marginLeft: "20px" }}>Status</Label>
+              </div>
+              <Label style={{ marginLeft: "20px" }}>{modalObj.Status}</Label>
+            </div>
+          </div>
+          <div
+            style={{
+              margin: "10px 20px 0px 20px",
+              paddingBottom: "10px",
+              borderBottom: "2px solid",
+            }}
+          >
+            <Label>Project Description</Label>
+            <p>{modalObj.ProjectDescription}</p>
+          </div>
+          <div
+            style={{
+              margin: "10px 20px 0px 20px",
+              paddingBottom: "10px",
+              borderBottom: "2px solid",
+            }}
+          >
+            <Label>Users</Label>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <PermIdentity style={{ width: "6%" }} />
+              <Label style={{ width: "14%" }}>Project Manager</Label>
+              <div style={{ display: "flex" }}>
+                <Persona
+                  styles={{
+                    root: {
+                      display: "unset",
+                    },
+                  }}
+                  size={PersonaSize.size32}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                    modalObj.ProjectManager.Email
+                  }
+                />
+                <Label>{modalObj.ProjectManager.DisplayName}</Label>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <PermIdentity style={{ width: "6%" }} />
+              <Label style={{ width: "14%" }}>Team Lead</Label>
+              <div style={{ display: "flex" }}>
+                <Persona
+                  styles={{
+                    root: {
+                      display: "unset",
+                    },
+                  }}
+                  size={PersonaSize.size32}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                    modalObj.TeamLead.Email
+                  }
+                />
+                <Label>{modalObj.TeamLead.DisplayName}</Label>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <PermIdentity style={{ width: "6%" }} />
+              <Label style={{ width: "14%" }}>Developers</Label>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {modalObj.Developers.length &&
+                  modalObj.Developers.map((user: any) => {
+                    return (
+                      <div style={{ display: "flex" }}>
+                        <Persona
+                          styles={{
+                            root: {
+                              display: "unset",
+                            },
+                          }}
+                          size={PersonaSize.size32}
+                          imageUrl={
+                            "/_layouts/15/userphoto.aspx?size=S&username=" +
+                            user.Email
+                          }
+                        />
+                        <Label>{user.DisplayName}</Label>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <PermIdentity style={{ width: "6%" }} />
+              <Label style={{ width: "14%" }}>Designer</Label>
+              <div style={{ display: "flex" }}>
+                <Persona
+                  styles={{
+                    root: {
+                      display: "unset",
+                    },
+                  }}
+                  size={PersonaSize.size32}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                    modalObj.Designers.Email
+                  }
+                />
+                <Label>{modalObj.Designers.DisplayName}</Label>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <PermIdentity style={{ width: "6%" }} />
+              <Label style={{ width: "14%" }}>QA Tester</Label>
+              <div style={{ display: "flex" }}>
+                <Persona
+                  styles={{
+                    root: {
+                      display: "unset",
+                    },
+                  }}
+                  size={PersonaSize.size32}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                    modalObj.Testers.Email
+                  }
+                />
+                <Label>{modalObj.Testers.DisplayName}</Label>
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              margin: "10px 20px",
+            }}
+          >
+            <div style={{ display: "flex" }}>
+              <Label style={{ width: "15%" }}>Project Cost</Label>
+              <div style={{ width: "35%" }}>
+                <TextField disabled value={modalObj.ProjectCost} />
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Label style={{ width: "15%" }}>Project Estimation</Label>
+              <div style={{ width: "35%" }}>
+                <TextField disabled value={modalObj.ProjectEstimate} />
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Label style={{ width: "15%" }}>Actual Cost</Label>
+              <div style={{ width: "35%" }}>
+                <TextField disabled value={modalObj.ActualCost} />
+              </div>
+            </div>
+          </div>
         </Modal>
       )}
     </div>
