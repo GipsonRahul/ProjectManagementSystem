@@ -8,8 +8,8 @@ import {
   Dropdown,
   Modal,
   IDropdownStyles,
-  mergeStyleSets,
   TextField,
+  Spinner,
 } from "@fluentui/react";
 import {
   Add,
@@ -71,7 +71,7 @@ let _masterData: IMasterData[] = [];
 
 const Dashboard = (props: any) => {
   // list column names
-  let DetailListColumn: any[] = [
+  const DetailListColumn: any[] = [
     {
       key: "column1",
       name: "Project Name",
@@ -194,8 +194,13 @@ const Dashboard = (props: any) => {
             <Delete
               style={{ cursor: "pointer" }}
               onClick={() => {
-                masterFilData.splice(i, 1);
-                setMasterFilData([...masterFilData]);
+                setDeletePopup({
+                  condition: true,
+                  targetId: i,
+                  onSubmit: false,
+                });
+                // masterFilData.splice(i, 1);
+                // setMasterFilData([...masterFilData]);
               }}
             />
           </div>
@@ -372,56 +377,6 @@ const Dashboard = (props: any) => {
       },
     },
   };
-  const statusStyle = mergeStyleSets({
-    NotAuthenticated: [
-      {
-        color: "rgb(255 26 26)",
-        padding: "5px 10px",
-        fontWeight: 600,
-        borderRadius: "15px",
-        textAlign: "center",
-        margin: "0",
-        width: "150px",
-        backgroundColor: "rgb(243 184 179)",
-      },
-    ],
-    // InProgress: [
-    //   {
-    //     color: "#007853",
-    //     padding: "5px 10px",
-    //     fontWeight: 600,
-    //     borderRadius: "15px",
-    //     textAlign: "center",
-    //     margin: "0",
-    //     width: "150px",
-    //     backgroundColor: "#D2F3E9",
-    //   },
-    // ],
-    Authenticated: [
-      {
-        color: "#007853",
-        padding: "5px 10px",
-        fontWeight: 600,
-        borderRadius: "15px",
-        textAlign: "center",
-        margin: "0",
-        width: "150px",
-        backgroundColor: "#D2F3E9",
-      },
-    ],
-    Pending: [
-      {
-        color: "#000",
-        padding: "5px 10px",
-        fontWeight: 600,
-        borderRadius: "15px",
-        textAlign: "center",
-        margin: "0",
-        width: "150px",
-        backgroundColor: "rgb(226 221 167)",
-      },
-    ],
-  });
   // State section start
   const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
   const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
@@ -431,6 +386,12 @@ const Dashboard = (props: any) => {
   const [filStatusBar, setFilStatusBar] = useState<string>("all");
   const [dropValue, setDropValue] = useState<IMastDrop>(_listDropDown);
   const [filterValue, setFilterValue] = useState<IFillValue>(_curFilterData);
+
+  const [deletePopup, setDeletePopup] = useState({
+    condition: false,
+    targetId: null,
+    onSubmit: false,
+  });
   // State section end
 
   // onClick change function
@@ -500,6 +461,21 @@ const Dashboard = (props: any) => {
     setDropValue({ ..._filDropValue });
   };
 
+  const deleteFunction = () => {
+    // let _masterData = [...masterFilData];
+    let _masterRecord: IMasterData[] = [...finalFilData];
+    _masterRecord.splice(deletePopup.targetId, 1);
+    setMasterFilData([..._masterRecord]);
+    setFinalFilData([..._masterRecord]);
+    getFilterValue([..._masterRecord]);
+    props.getMasterDatas("new", _masterRecord);
+    setDeletePopup({
+      condition: false,
+      targetId: null,
+      onSubmit: false,
+    });
+  };
+
   // life cycle function for onload
   useEffect(() => {
     _masterData = props.masterRecords ? props.masterRecords : [];
@@ -509,36 +485,14 @@ const Dashboard = (props: any) => {
   }, []);
 
   return (
-    <div
-      //  style={{ width: "100%" }}
-      className="FormContainer"
-    >
+    <div className="FormContainer">
       {/* Project Heading */}
-      <div
-        // style={{
-        //   display: "flex",
-        //   justifyContent: "space-between",
-        //   margin: "10px 20px",
-        //   alignItems: "center",
-        // }}
-        className="formHeaderFlex"
-      >
+      <div className="formHeaderFlex">
         <div className="arrowRightFlex">
           <Label>Projects</Label>
         </div>
-        <div
-          // style={{
-          //   display: "flex",
-          //   alignItems: "center",
-          // }}
-          className="loginLeftFlex"
-        >
-          <div
-            // style={{
-            //   marginRight: "20px",
-            // }}
-            className="nameandEmail"
-          >
+        <div className="loginLeftFlex">
+          <div className="nameandEmail">
             <div>
               <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
             </div>
@@ -573,15 +527,6 @@ const Dashboard = (props: any) => {
           }}
         >
           <button
-            // style={{
-            //   background: "#A9F37F",
-            //   display: "flex",
-            //   border: "none",
-            //   width: "60%",
-            //   borderRadius: "50px",
-            //   cursor: "pointer",
-            //   height: "40px",
-            // }}
             className="addBtnStyle"
             onClick={() => {
               props.getMasterDatas("new", masterFilData);
@@ -589,36 +534,14 @@ const Dashboard = (props: any) => {
             }}
           >
             <Add />
-            <Label
-            // style={{ cursor: "pointer", color: "#000" }}
-            >
-              New
-            </Label>
+            <Label>New</Label>
           </button>
         </div>
 
         {/* Right navebar section */}
-        <div
-          // style={{
-          //   border: "1px solid #dfdfdf",
-          //   display: "flex",
-          //   justifyContent: "space-between",
-          //   width: "85%",
-          //   alignItems: "center",
-          //   height: "40px",
-          //   padding: "4px",
-          // }}
-          className="rightNavbarContainer"
-        >
+        <div className="rightNavbarContainer">
           {/* Status filter secction */}
-          <div
-            // style={{
-            //   display: "flex",
-            //   justifyContent: "space-between",
-            //   alignItems: "center",
-            // }}
-            className="filterSection"
-          >
+          <div className="filterSection">
             {/* All datas */}
             <Label
               style={{
@@ -704,9 +627,6 @@ const Dashboard = (props: any) => {
           >
             {isListView ? (
               <Apps
-                // style={{
-                //   cursor: "pointer",
-                // }}
                 className="listview"
                 onClick={() => {
                   masterFilData.length &&
@@ -718,9 +638,6 @@ const Dashboard = (props: any) => {
               />
             ) : (
               <List
-                // style={{
-                //   cursor: "pointer",
-                // }}
                 className="listview"
                 onClick={() => {
                   masterFilData.length &&
@@ -736,20 +653,9 @@ const Dashboard = (props: any) => {
       </div>
 
       {/* Details list filter section */}
-      <div
-        // style={{
-        //   margin: "10px 20px",
-        //   display: "flex",
-        //   justifyContent: "end",
-        //   gap: "2%",
-        // }}
-        className="detailListSection"
-      >
+      <div className="detailListSection">
         {/* Status filter section */}
-        <div
-          // style={{ width: "26%" }}
-          className="ddFilterWidth"
-        >
+        <div className="ddFilterWidth">
           <div className="ddFilterFlex">
             <p style={{ width: "29%", fontWeight: 600 }}>Project</p>
             <Dropdown
@@ -767,10 +673,7 @@ const Dashboard = (props: any) => {
         </div>
 
         {/* Project type filter section */}
-        <div
-          // style={{ width: "26%" }}
-          className="ddFilterWidth"
-        >
+        <div className="ddFilterWidth">
           <div className="ddFilterFlex">
             <p>Project Type</p>
             <Dropdown
@@ -797,35 +700,12 @@ const Dashboard = (props: any) => {
         {isListView ? (
           <div className="scrollContainer">
             {masterFilData.length ? (
-              <div
-                // style={{
-                //   display: "flex",
-                //   gap: "4%",
-                //   //   position: "absolute",
-                //   flexWrap: "wrap",
-                //   margin: "10px 0px",
-                //   height: "500px",
-                //   width: "100%",
-                // }}
-                className="projectcardSection"
-              >
+              <div className="projectcardSection">
                 {masterFilData.map((e: any, i: number) => {
                   return (
                     <div style={{ width: "33%", position: "relative" }}>
-                      <div
-                        // style={{
-                        //   border: "1px solid #dfdfdf",
-                        //   borderRadius: "5px",
-                        //   padding: "15px",
-                        //   display: "flex",
-                        //   height: "178px",
-                        // }}
-                        className="cardDesign"
-                      >
-                        <div
-                          // style={{ width: "70%" }}
-                          className="cardSize"
-                        >
+                      <div className="cardDesign">
+                        <div className="cardSize">
                           <Label style={{ color: "#1d1d7c", fontSize: 20 }}>
                             {e.ProjectName}
                           </Label>
@@ -932,27 +812,8 @@ const Dashboard = (props: any) => {
                         </div>
                       </div>
                       {e.isSelect ? (
-                        <div
-                          // style={{
-                          //   width: "30%",
-                          //   height: "106px",
-                          //   position: "absolute",
-                          //   background: "#fff",
-                          //   left: "258px",
-                          //   bottom: "96px",
-                          //   borderRadius: "5px",
-                          //   boxShadow: "#c7c7c7 0px 0px 10px 2px",
-                          //   padding: "10px",
-                          // }}
-                          className="menuIconPlacement"
-                        >
+                        <div className="menuIconPlacement">
                           <div
-                            // style={{
-                            //   display: "flex",
-                            //   justifyContent: "space-between",
-                            //   marginBottom: "10px",
-                            //   cursor: "pointer",
-                            // }}
                             className="menus"
                             onClick={() => {
                               getOnClick(0);
@@ -964,12 +825,6 @@ const Dashboard = (props: any) => {
                             <Visibility />
                           </div>
                           <div
-                            // style={{
-                            //   display: "flex",
-                            //   justifyContent: "space-between",
-                            //   marginBottom: "10px",
-                            //   cursor: "pointer",
-                            // }}
                             className="menus"
                             onClick={() => {
                               props.getMasterDatas("edit", masterFilData);
@@ -980,17 +835,16 @@ const Dashboard = (props: any) => {
                             <Edit />
                           </div>
                           <div
-                            // style={{
-                            //   display: "flex",
-                            //   justifyContent: "space-between",
-                            //   marginBottom: "10px",
-                            //   cursor: "pointer",
-                            // }}
                             className="menus"
                             style={{ marginBottom: 0 }}
                             onClick={() => {
-                              masterFilData.splice(i, 1);
-                              setFinalFilData([...masterFilData]);
+                              setDeletePopup({
+                                condition: true,
+                                targetId: i,
+                                onSubmit: false,
+                              });
+                              // masterFilData.splice(i, 1);
+                              // setFinalFilData([...masterFilData]);
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Delete</Label>
@@ -1242,6 +1096,94 @@ const Dashboard = (props: any) => {
               <div style={{ width: "35%" }}>
                 <TextField disabled value={modalObj.ActualCost} />
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+      {deletePopup.condition && (
+        <Modal
+          isOpen={deletePopup.condition}
+          styles={{
+            root: {
+              width: "100vw",
+            },
+            main: {
+              width: 400,
+              borderRadius: 6,
+            },
+          }}
+        >
+          <div>
+            <div>
+              <Label
+                style={{
+                  color: "#fff",
+                  backgroundColor: "#f00",
+                  textAlign: "center",
+                  padding: 10,
+                  fontSize: 16,
+                }}
+              >
+                Delete Confirmation
+              </Label>
+            </div>
+            <div style={{ margin: "30px 0px" }}>
+              <Label style={{ textAlign: "center" }}>
+                Do you want to delete this project?
+              </Label>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                margin: "10px 15px",
+              }}
+            >
+              <button
+                style={{
+                  padding: "5px 20px",
+                  marginLeft: 10,
+                  color: "#fff",
+                  backgroundColor: "#f00",
+                  border: "1px solid #f00",
+                  fontWeight: 600,
+                  borderRadius: 20,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  if (!deletePopup.onSubmit) {
+                    setDeletePopup((prevState) => ({
+                      ...prevState,
+                      onSubmit: true,
+                    }));
+                    deleteFunction();
+                  }
+                }}
+              >
+                {deletePopup.onSubmit ? <Spinner /> : "Delete"}
+              </button>
+              <button
+                style={{
+                  padding: "5px 20px",
+                  marginLeft: 10,
+                  color: "#f00",
+                  backgroundColor: "#fff",
+                  border: "1px solid #f00",
+                  fontWeight: 600,
+                  borderRadius: 20,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setDeletePopup({
+                    condition: false,
+                    targetId: null,
+                    onSubmit: false,
+                  });
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </Modal>
