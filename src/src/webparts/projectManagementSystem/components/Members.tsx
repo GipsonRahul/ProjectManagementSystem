@@ -35,22 +35,32 @@ const userDetails = {
     {
       name: "Project 1",
       allocation: 10,
+      cost: 100,
+      status: "Pending",
     },
     {
       name: "Project 2",
       allocation: 20,
+      cost: 100,
+      status: "Pending",
     },
     {
       name: "Project 3",
       allocation: 20,
+      cost: 100,
+      status: "Pending",
     },
     {
       name: "Project 4",
       allocation: 10,
+      cost: 100,
+      status: "Pending",
     },
     {
       name: "Project 5",
       allocation: 20,
+      cost: 100,
+      status: "Pending",
     },
   ],
 };
@@ -163,33 +173,43 @@ const Members = (props: any) => {
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div
+      // style={{ width: "100%" }}
+      className="FormContainer"
+    >
       {/* Members Heading */}
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          margin: "10px 20px",
-          alignItems: "center",
-        }}
+        // style={{
+        //   display: "flex",
+        //   justifyContent: "space-between",
+        //   margin: "10px 20px",
+        //   alignItems: "center",
+        // }}
+        className="formHeaderFlex"
       >
-        <Label>Members</Label>
+        <div className="arrowRightFlex">
+          <Label>Members</Label>
+        </div>
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
+          // style={{
+          //   display: "flex",
+          //   alignItems: "center",
+          // }}
+          className="loginLeftFlex"
         >
           <div
-            style={{
-              marginRight: "20px",
-            }}
+            // style={{
+            //   marginRight: "20px",
+            // }}
+            className="nameandEmail"
           >
             <div>
-              <Label>Deva Raj</Label>
+              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
             </div>
             <div>
-              <Label>devaraj.p@technorucs.com</Label>
+              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
+                devaraj.p@technorucs.com
+              </Label>
             </div>
           </div>
           <Persona
@@ -224,7 +244,8 @@ const Members = (props: any) => {
               <Label>{`Project Manager  (${datas.PM.length})`}</Label>
               {datas.PM.length > 5 && (
                 <Label
-                  style={{ cursor: "pointer" }}
+                  // style={{ cursor: "pointer" }}
+                  className="viewAllBtn"
                   onClick={() => handleViewFunction("PM")}
                 >
                   {viewAllStatus.PM ? "Collapse" : "View All"}
@@ -262,7 +283,8 @@ const Members = (props: any) => {
               <Label>{`Team Leader      (${datas.TL.length})`}</Label>
               {datas.TL.length > 5 && (
                 <Label
-                  style={{ cursor: "pointer" }}
+                  // style={{ cursor: "pointer" }}
+                  className="viewAllBtn"
                   onClick={() => handleViewFunction("TL")}
                 >
                   {viewAllStatus.TL ? "Collapse" : "View All"}
@@ -301,7 +323,8 @@ const Members = (props: any) => {
               <Label>{`Developer      (${datas.DEV.length})`}</Label>
               {datas.DEV.length > 5 && (
                 <Label
-                  style={{ cursor: "pointer" }}
+                  // style={{ cursor: "pointer" }}
+                  className="viewAllBtn"
                   onClick={() => handleViewFunction("DEV")}
                 >
                   {viewAllStatus.DEV ? "Collapse" : "View All"}
@@ -339,7 +362,8 @@ const Members = (props: any) => {
               <Label>{`Designer      (${datas.DES.length})`}</Label>
               {datas.DES.length > 5 && (
                 <Label
-                  style={{ cursor: "pointer" }}
+                  // style={{ cursor: "pointer" }}
+                  className="viewAllBtn"
                   onClick={() => handleViewFunction("DES")}
                 >
                   {viewAllStatus.DES ? "Collapse" : "View All"}
@@ -377,7 +401,8 @@ const Members = (props: any) => {
               <Label>{`Tester      (${datas.QA.length})`}</Label>
               {datas.QA.length > 5 && (
                 <Label
-                  style={{ cursor: "pointer" }}
+                  // style={{ cursor: "pointer" }}
+                  className="viewAllBtn"
                   onClick={() => handleViewFunction("QA")}
                 >
                   {viewAllStatus.QA ? "Collapse" : "View All"}
@@ -412,37 +437,91 @@ const Members = (props: any) => {
           }}
         >
           {userInfo ? (
-            <div style={{ padding: 20 }}>
-              <div>
-                <Persona
-                  size={PersonaSize.size120}
-                  imageUrl={
-                    "/_layouts/15/userphoto.aspx?size=S&username=" +
-                    userInfo.Email
-                  }
-                  styles={personaStyle}
-                  text={userInfo.Displayname}
-                  secondaryText={userInfo.Position}
-                />
-              </div>
-              <div style={{ marginTop: 30 }}>
-                <Label className="membersProjectName">Projects</Label>
-                <div style={{ display: "flex" }}>
-                  <Label>Total Projects</Label>
-                  <Label>{userDetails.totalProjects}</Label>
+            <>
+              <div style={{ padding: 20 }}>
+                <div>
+                  <Persona
+                    size={PersonaSize.size120}
+                    imageUrl={
+                      "/_layouts/15/userphoto.aspx?size=S&username=" +
+                      userInfo.Email
+                    }
+                    styles={personaStyle}
+                    text={userInfo.Displayname}
+                    secondaryText={userInfo.Position}
+                  />
                 </div>
-                <div style={{ display: "flex" }}>
-                  <Label>Total Allocation</Label>
-                  <Label>{userDetails.totalAllocation}%</Label>
+                <div style={{ marginTop: 30 }}>
+                  {/* <Label className="membersProjectName">Projects</Label> */}
+                  <div
+                    // style={{ display: "flex" }}
+                    className="projectsFlex"
+                  >
+                    <Label className="totalProjectsLabel">Total Projects</Label>
+                    <Label className="totalsLabel">
+                      {userDetails.totalProjects}
+                    </Label>
+                  </div>
+                  <div
+                    // style={{ display: "flex" }}
+                    className="projectsFlex"
+                  >
+                    <Label className="totalProjectsLabel">
+                      Total Allocation
+                    </Label>
+                    <Label className="totalsLabel">
+                      {userDetails.totalAllocation}%
+                    </Label>
+                  </div>
                 </div>
               </div>
-              <div style={{ marginTop: 30 }}>
-                <Label className="membersProjectName">Projects Details</Label>
+              <Label className="projectDetailsHeader">Projects Details</Label>
+              <div
+                // style={{ marginTop: 30 }}
+                className="projectScroll"
+              >
                 {userDetails.projects.map((detail) => {
                   return (
-                    <div style={{ display: "flex" }}>
-                      <Label>{detail.name}</Label>
-                      <Label>{detail.allocation}%</Label>
+                    <div>
+                      <div className="singleProjectsBox">
+                        <div className="singleProjects">
+                          {" "}
+                          {/* <p>Project Name </p>{" "}
+                          <span style={{ width: 5 }}>:</span>{" "} */}
+                          <p style={{ color: "#4ba665", marginBottom: 5 }}>
+                            {detail.name}
+                          </p>
+                        </div>
+                        <div className="singleProjects">
+                          {" "}
+                          <p>Allocation </p>{" "}
+                          <span style={{ width: 5 }}>: </span>{" "}
+                          <p> {detail.allocation}</p>
+                        </div>
+                        <div className="singleProjects">
+                          {" "}
+                          <p>Cost</p> <span style={{ width: 5 }}>: </span>{" "}
+                          <p> {detail.cost}</p>
+                        </div>
+                        <div className="singleProjects">
+                          {" "}
+                          <p>Status</p> <span style={{ width: 5 }}>: </span>{" "}
+                          <p
+                            style={
+                              detail.status == "Pending"
+                                ? { color: "#F0BB00" }
+                                : detail.status == "Completed"
+                                ? { color: "#A9F37F" }
+                                : null
+                            }
+                          >
+                            {detail.status}
+                          </p>
+                        </div>
+                        {/* <Label> Allocation : {detail.allocation}%</Label> */}
+                        {/* <Label> Cost : {detail.cost}</Label> */}
+                        {/* <Label> Status : {detail.status}</Label> */}
+                      </div>
                     </div>
                   );
                 })}
@@ -452,7 +531,8 @@ const Members = (props: any) => {
                   </div>
                 )}
               </div>
-            </div>
+              {/* </div> */}
+            </>
           ) : null}
         </div>
       </div>

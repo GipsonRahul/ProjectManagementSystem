@@ -163,14 +163,80 @@
 .menus:hover {
   background-color: rgb(226, 255, 209);
 }
+.menus svg {
+  color: #6f6f6f;
+}
 .scrollContainer {
-  height: 528px;
+  height: 80vh;
   overflow: auto;
 }
 .scrollContainer::-webkit-scrollbar {
   width: 12px;
 }
 .scrollContainer::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #e4e4e4;
+}
+
+/* Members Page Styles */
+.viewAllBtn {
+  cursor: pointer;
+  color: #4ba665;
+}
+
+.projectsFlex {
+  display: flex;
+  align-items: center;
+  margin: 8px 0px;
+}
+.totalProjectsLabel {
+  font-size: 20px;
+  color: #4ba665;
+  width: 50%;
+}
+.totalsLabel {
+  width: 50px;
+  border: 1px solid;
+  text-align: center;
+  padding: 6px;
+  border-radius: 6px;
+}
+.singleProjectsBox {
+  /* border: 1px solid #6f6f6f; */
+  border-radius: 10px;
+  border: 1px solid #6f6f6f;
+  padding: 10px;
+  margin: 10px 0px;
+}
+.singleProjects {
+  display: flex;
+  align-items: center;
+}
+.singleProjects p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  width: 40%;
+  color: rgb(97, 97, 97);
+}
+.singleProjects span {
+  width: 10px;
+}
+.projectDetailsHeader {
+  padding: 8px 20px;
+  font-size: 20px;
+  color: #4ba665;
+}
+.projectScroll {
+  height: 45vh;
+  overflow: auto;
+  padding: 0px 20px;
+}
+.projectScroll::-webkit-scrollbar {
+  width: 12px;
+}
+.projectScroll::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #e4e4e4;
