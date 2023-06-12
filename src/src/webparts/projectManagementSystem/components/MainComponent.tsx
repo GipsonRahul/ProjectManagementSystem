@@ -167,6 +167,7 @@ const MainComponent = () => {
         _masterListData.forEach((item: IMasterData) => (item.isSelect = false));
       setMasterRecords(_masterListData);
     } else {
+      _masterListData = [...value];
       value.length &&
         value.forEach((item: IMasterData) => (item.isSelect = false));
       setMasterRecords([...value]);
