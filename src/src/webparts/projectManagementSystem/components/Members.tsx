@@ -1,23 +1,54 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Label, Persona, PersonaSize, Modal } from "@fluentui/react";
-import { Close, Visibility } from "@material-ui/icons";
+import { Label, Persona, PersonaSize } from "@fluentui/react";
 import { sp } from "@pnp/sp/presets/all";
 
 interface IMember {
   Displayname: string;
   Email: string;
   Position: string;
+  Availablity: number;
   ID: number;
-  userDetails: any;
 }
+interface IProps {
+  masterRecords: any[];
+  _masterUsersDetails: {
+    ProjectManagers: IMember[];
+    Developers: IMember[];
+    TeamLeads: IMember[];
+    Testers: IMember[];
+    Designers: IMember[];
+  }[];
+  sp: any;
+  context: any;
+}
+interface IUserDetails {
+  totalProjects: number;
+  totalAllocation: number;
+  projects: IProject[];
+}
+interface IProject {
+  name: string;
+  allocation: number;
+  cost: number;
+  status: string;
+}
+
+interface IUser {
+  Displayname: string;
+  Email: string;
+  Position: string;
+  Availablity: number;
+  ID: number;
+  userDetails: IUserDetails;
+}
+
 interface IMemberCategory {
-  PM: IMember[];
-  QA: IMember[];
-  TL: IMember[];
-  DEV: IMember[];
-  DES: IMember[];
-  setModal: any;
+  PM: IUser[];
+  QA: IUser[];
+  TL: IUser[];
+  DEV: IUser[];
+  DES: IUser[];
 }
 interface IViewAllStatus {
   PM: boolean;
@@ -29,7 +60,7 @@ interface IViewAllStatus {
 
 let currentUser: string = "";
 
-const userDetails = {
+const userDetails: IUserDetails = {
   totalProjects: 5,
   totalAllocation: 80,
   projects: [
@@ -66,23 +97,16 @@ const userDetails = {
   ],
 };
 
-const Members = (props: any) => {
+const Members = (props: IProps) => {
   let _masterMembers: IMemberCategory = {
     PM: [],
     QA: [],
     TL: [],
     DEV: [],
     DES: [],
-    setModal: {},
   };
 
-  const [userInfo, setDetail] = useState<IMember>({
-    Displayname: "Devaraj P",
-    Email: "devaraj@gmail.com",
-    Position: "Developer",
-    ID: 1,
-    userDetails: userDetails,
-  });
+  const [userInfo, setDetail] = useState<IUser>(null);
   const [datas, setDatas] = useState<IMemberCategory>({ ..._masterMembers });
   const [viewAllStatus, setViewAllStatus] = useState<IViewAllStatus>({
     PM: false,
@@ -92,11 +116,11 @@ const Members = (props: any) => {
     QA: false,
   });
   const [visibleSections, setVisibleSections] = useState({
-    PM: 3,
-    TL: 3,
-    DEV: 3,
-    DES: 3,
-    QA: 3,
+    PM: 5,
+    TL: 5,
+    DEV: 5,
+    DES: 5,
+    QA: 5,
   });
 
   const handleViewFunction = (key: string) => {
@@ -104,7 +128,7 @@ const Members = (props: any) => {
     let _visibleSection = { ...visibleSections };
     _viewAllStatus[key] = !_viewAllStatus[key];
     _visibleSection[key] =
-      datas[key].length < 3 || _viewAllStatus[key] ? datas[key].length : 3;
+      datas[key].length < 5 || _viewAllStatus[key] ? datas[key].length : 5;
     setViewAllStatus({ ..._viewAllStatus });
     setVisibleSections({ ..._visibleSection });
   };
@@ -113,34 +137,53 @@ const Members = (props: any) => {
   const getCurrentUser = () => {
     sp.web.currentUser().then((user) => {
       currentUser = user ? user.Email : "";
-      props._masterUsersDetails[0].
       getPosition();
     });
   };
 
   const getPosition = () => {
-    let PM = props._masterUsersDetails[0].ProjectManagers;
-    let DEV = props._masterUsersDetails[0].Developers;
-    let TL = props._masterUsersDetails[0].TeamLeads;
-    let QA = props._masterUsersDetails[0].Testers;
-    let Designer = props._masterUsersDetails[0].Designers;
+    let allUsers: IMember[] = [
+      ...props._masterUsersDetails[0].ProjectManagers,
+      ...props._masterUsersDetails[0].TeamLeads,
+      ...props._masterUsersDetails[0].Testers,
+      ...props._masterUsersDetails[0].Designers,
+      ...props._masterUsersDetails[0].Developers,
+    ];
 
-    datas.PM = PM.length ? PM : [];
-    datas.TL = TL.length ? TL : [];
-    datas.QA = QA.length ? QA : [];
-    datas.DEV = DEV.length ? DEV : [];
-    datas.DES = Designer.length ? Designer : [];
+    let PM: IUser[] = [];
+    let TL: IUser[] = [];
+    let Developer: IUser[] = [];
+    let Designer: IUser[] = [];
+    let Tester: IUser[] = [];
 
-    setDatas({ ...datas });
+    allUsers.forEach((user: IMember, index: number) => {
+      if (user.Position == "PM") {
+        PM.push({ ...user, Availablity: 10, userDetails: userDetails });
+      } else if (user.Position == "TL") {
+        TL.push({ ...user, Availablity: 10, userDetails: userDetails });
+      } else if (user.Position == "Developer") {
+        Developer.push({ ...user, Availablity: 10, userDetails: userDetails });
+      } else if (user.Position == "Designer") {
+        Designer.push({ ...user, Availablity: 10, userDetails: userDetails });
+      } else if (user.Position == "Tester") {
+        Tester.push({ ...user, Availablity: 10, userDetails: userDetails });
+      }
+
+      if (index == allUsers.length - 1) {
+        let _data: IMemberCategory = {
+          PM: PM.length ? [...PM] : [],
+          TL: TL.length ? [...TL] : [],
+          DEV: Developer.length ? [...Developer] : [],
+          DES: Designer.length ? [...Designer] : [],
+          QA: Tester.length ? [...Tester] : [],
+        };
+
+        setDatas({ ..._data });
+        setDetail({ ..._data.PM[0] });
+      }
+    });
   };
 
-  const styles = {
-    root: {
-      display: "flex", // Apply display: flex to the root container
-      alignItems: "center", // Optional: Align items vertically
-      gap: "10px", // Optional: Set gap between child elements
-    },
-  };
   // persona styles
   const personaStyle = {
     root: {
@@ -180,47 +223,9 @@ const Members = (props: any) => {
       className="FormContainer"
     >
       {/* Members Heading */}
-      <div
-        // style={{
-        //   display: "flex",
-        //   justifyContent: "space-between",
-        //   margin: "10px 20px",
-        //   alignItems: "center",
-        // }}
-        className="formHeaderFlex"
-      >
+      <div className="formHeaderFlex">
         <div className="arrowRightFlex">
           <Label>Members</Label>
-        </div>
-        <div
-          // style={{
-          //   display: "flex",
-          //   alignItems: "center",
-          // }}
-          className="loginLeftFlex"
-        >
-          <div
-            // style={{
-            //   marginRight: "20px",
-            // }}
-            className="nameandEmail"
-          >
-            <div>
-              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
-            </div>
-            <div>
-              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
-                devaraj.p@technorucs.com
-              </Label>
-            </div>
-          </div>
-          <Persona
-            size={PersonaSize.size32}
-            imageUrl={
-              "/_layouts/15/userphoto.aspx?size=S&username=" +
-              "devaraj.p@technorucs.com"
-            }
-          />
         </div>
       </div>
       {/* section split */}
@@ -234,7 +239,7 @@ const Members = (props: any) => {
           }}
         >
           {/* managersection */}
-          <div>
+          <div style={{ margin: "10px 0px 20px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -243,10 +248,9 @@ const Members = (props: any) => {
                 marginBottom: "20px",
               }}
             >
-              <Label>{`Project Manager  (${datas.PM.length})`}</Label>
+              <Label className="roleStyle">{`Project Manager  (${datas.PM.length})`}</Label>
               {datas.PM.length > 5 && (
                 <Label
-                  // style={{ cursor: "pointer" }}
                   className="viewAllBtn"
                   onClick={() => handleViewFunction("PM")}
                 >
@@ -272,7 +276,7 @@ const Members = (props: any) => {
           </div>
 
           {/* Team Leader   */}
-          <div>
+          <div style={{ margin: "10px 0px 20px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -281,7 +285,7 @@ const Members = (props: any) => {
                 marginBottom: "20px",
               }}
             >
-              <Label>{`Team Leader      (${datas.TL.length})`}</Label>
+              <Label className="roleStyle">{`Team Leader      (${datas.TL.length})`}</Label>
               {datas.TL.length > 5 && (
                 <Label
                   // style={{ cursor: "pointer" }}
@@ -302,7 +306,6 @@ const Members = (props: any) => {
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
                       }
-                      // styles={styles}
                     />
                   </div>
                 );
@@ -311,7 +314,7 @@ const Members = (props: any) => {
           </div>
 
           {/* DEVection */}
-          <div>
+          <div style={{ margin: "10px 0px 20px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -320,10 +323,9 @@ const Members = (props: any) => {
                 marginBottom: "20px",
               }}
             >
-              <Label>{`Developer      (${datas.DEV.length})`}</Label>
+              <Label className="roleStyle">{`Developer      (${datas.DEV.length})`}</Label>
               {datas.DEV.length > 5 && (
                 <Label
-                  // style={{ cursor: "pointer" }}
                   className="viewAllBtn"
                   onClick={() => handleViewFunction("DEV")}
                 >
@@ -349,7 +351,7 @@ const Members = (props: any) => {
           </div>
 
           {/* Designer section */}
-          <div>
+          <div style={{ margin: "10px 0px 20px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -358,10 +360,9 @@ const Members = (props: any) => {
                 marginBottom: "20px",
               }}
             >
-              <Label>{`Designer      (${datas.DES.length})`}</Label>
+              <Label className="roleStyle">{`Designer      (${datas.DES.length})`}</Label>
               {datas.DES.length > 5 && (
                 <Label
-                  // style={{ cursor: "pointer" }}
                   className="viewAllBtn"
                   onClick={() => handleViewFunction("DES")}
                 >
@@ -387,7 +388,7 @@ const Members = (props: any) => {
           </div>
 
           {/* tester section */}
-          <div>
+          <div style={{ margin: "10px 0px 20px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -396,10 +397,9 @@ const Members = (props: any) => {
                 marginBottom: "20px",
               }}
             >
-              <Label>{`Tester      (${datas.QA.length})`}</Label>
+              <Label className="roleStyle">{`Tester      (${datas.QA.length})`}</Label>
               {datas.QA.length > 5 && (
                 <Label
-                  // style={{ cursor: "pointer" }}
                   className="viewAllBtn"
                   onClick={() => handleViewFunction("QA")}
                 >
@@ -428,10 +428,13 @@ const Members = (props: any) => {
         <div
           style={{
             width: "30%",
-            height: "90vh",
+            height: "99vh",
             border: "1px solid #ddd",
             borderRadius: "8px",
             backgroundColor: "#fff",
+            position: "absolute",
+            right: 0,
+            top: 0,
           }}
         >
           {userInfo ? (
@@ -450,20 +453,13 @@ const Members = (props: any) => {
                   />
                 </div>
                 <div style={{ marginTop: 30 }}>
-                  {/* <Label className="membersProjectName">Projects</Label> */}
-                  <div
-                    // style={{ display: "flex" }}
-                    className="projectsFlex"
-                  >
+                  <div className="projectsFlex">
                     <Label className="totalProjectsLabel">Total Projects</Label>
                     <Label className="totalsLabel">
                       {userDetails.totalProjects}
                     </Label>
                   </div>
-                  <div
-                    // style={{ display: "flex" }}
-                    className="projectsFlex"
-                  >
+                  <div className="projectsFlex">
                     <Label className="totalProjectsLabel">
                       Total Allocation
                     </Label>
@@ -474,18 +470,12 @@ const Members = (props: any) => {
                 </div>
               </div>
               <Label className="projectDetailsHeader">Projects Details</Label>
-              <div
-                // style={{ marginTop: 30 }}
-                className="projectScroll"
-              >
+              <div className="projectScroll">
                 {userDetails.projects.map((detail) => {
                   return (
                     <div>
                       <div className="singleProjectsBox">
                         <div className="singleProjects">
-                          {" "}
-                          {/* <p>Project Name </p>{" "}
-                          <span style={{ width: 5 }}>:</span>{" "} */}
                           <p style={{ color: "#4ba665", marginBottom: 5 }}>
                             {detail.name}
                           </p>
