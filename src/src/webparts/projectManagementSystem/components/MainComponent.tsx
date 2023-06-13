@@ -101,7 +101,7 @@ let sampleData: IMasterData[] = [
   },
 ];
 
-const MainComponent = () => {
+const MainComponent = (props: any) => {
   // variable creation section
   // State creation section start
   const [masterRecords, setMasterRecords] = useState<IMasterData[]>([
@@ -216,7 +216,7 @@ const MainComponent = () => {
             getMasterDatas={getMasterDatas}
           />
         ) : currentPage == "Members" ? (
-          <Members _masterUsersDetails={_masterUsersDetails} />
+          <Members _masterUsersDetails={_masterUsersDetails} sp={props.sp} context={props.context} />
         ) : (
           <ProjectForm
             navigation={getNavigation}

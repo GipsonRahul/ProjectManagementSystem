@@ -2,11 +2,10 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Label, Persona, PersonaSize, Modal } from "@fluentui/react";
 import { Close, Visibility } from "@material-ui/icons";
+import { sp } from "@pnp/sp/presets/all";
 
 interface IMember {
   Displayname: string;
-  Firstname: string;
-  Lastname: string;
   Email: string;
   Position: string;
   ID: number;
@@ -27,6 +26,8 @@ interface IViewAllStatus {
   DES: boolean;
   QA: boolean;
 }
+
+let currentUser: string = "";
 
 const userDetails = {
   totalProjects: 5,
@@ -77,8 +78,6 @@ const Members = (props: any) => {
 
   const [userInfo, setDetail] = useState<IMember>({
     Displayname: "Devaraj P",
-    Firstname: "Devaraj",
-    Lastname: "P",
     Email: "devaraj@gmail.com",
     Position: "Developer",
     ID: 1,
@@ -108,6 +107,15 @@ const Members = (props: any) => {
       datas[key].length < 3 || _viewAllStatus[key] ? datas[key].length : 3;
     setViewAllStatus({ ..._viewAllStatus });
     setVisibleSections({ ..._visibleSection });
+  };
+
+  // current user get function
+  const getCurrentUser = () => {
+    sp.web.currentUser().then((user) => {
+      currentUser = user ? user.Email : "";
+      props._masterUsersDetails[0].
+      getPosition();
+    });
   };
 
   const getPosition = () => {
@@ -163,7 +171,7 @@ const Members = (props: any) => {
   };
 
   useEffect(() => {
-    getPosition();
+    getCurrentUser();
   }, []);
 
   return (
@@ -251,7 +259,7 @@ const Members = (props: any) => {
                 return (
                   <div onClick={() => setDetail(val)}>
                     <Persona
-                      size={PersonaSize.size32}
+                      size={PersonaSize.size48}
                       imageUrl={
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
@@ -289,7 +297,7 @@ const Members = (props: any) => {
                 return (
                   <div onClick={() => setDetail(val)}>
                     <Persona
-                      size={PersonaSize.size32}
+                      size={PersonaSize.size48}
                       imageUrl={
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
@@ -328,7 +336,7 @@ const Members = (props: any) => {
                 return (
                   <div onClick={() => setDetail(val)}>
                     <Persona
-                      size={PersonaSize.size32}
+                      size={PersonaSize.size48}
                       imageUrl={
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
@@ -366,7 +374,7 @@ const Members = (props: any) => {
                 return (
                   <div onClick={() => setDetail(val)}>
                     <Persona
-                      size={PersonaSize.size32}
+                      size={PersonaSize.size48}
                       imageUrl={
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
@@ -404,7 +412,7 @@ const Members = (props: any) => {
                 return (
                   <div onClick={() => setDetail(val)}>
                     <Persona
-                      size={PersonaSize.size32}
+                      size={PersonaSize.size48}
                       imageUrl={
                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                         val.Email
