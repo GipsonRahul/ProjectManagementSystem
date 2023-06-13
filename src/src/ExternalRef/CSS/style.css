@@ -17,17 +17,29 @@
 .FormContainer {
   width: 100%;
 }
+.saveGif {
+  height: 250px;
+  width: 250px;
+}
+.gifAlign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .formHeaderFlex {
   display: flex;
   justify-content: space-between;
-  margin: 10px 20px;
+  /* margin: 10px 20px; */
+  margin: 18px 20px;
   align-items: center;
 }
 .arrowRightFlex {
   display: flex;
+  align-items: center;
 }
 .arrowRightFlex label {
-  font-size: 20px;
+  /* font-size: 20px; */
+  font-size: 28px;
   color: #1d1d7c;
   padding: 0;
 }
@@ -196,7 +208,7 @@
   margin: 8px;
   /* display: flex; */
   /* height: 228px; */
-  height: 258px;
+  height: 296px;
 }
 .cardSize {
   width: 70%;
@@ -321,6 +333,9 @@
   cursor: pointer;
   color: #4ba665;
 }
+.roleStyle {
+  font-size: 20px;
+}
 
 .projectsFlex {
   display: flex;
@@ -366,7 +381,8 @@
   color: #4ba665;
 }
 .projectScroll {
-  height: 45vh;
+  /* height: 45vh; */
+  height: 54vh;
   overflow: auto;
   padding: 0px 20px;
 }
