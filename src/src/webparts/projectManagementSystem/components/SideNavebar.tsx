@@ -1,18 +1,15 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
 import { Label } from "@fluentui/react";
 import { Dashboard, Group } from "@material-ui/icons";
-import { Icon } from "@material-ui/core";
 
-const logo: string = require("../../../ExternalDocs/Technorucs_Logo.png");
+const logo: string = require("../../../ExternalDocs/TechnoRUCS Final.png");
 
 const SideNavebar = (props: any) => {
   return (
     <div className="FormContainer">
       {/* Logo Section Starts */}
       <div className="logoSection">
-        <img src={logo} alt="Logo" />
-        <Label>Technorucs</Label>
+        <img src={logo} alt="Logo" style={{ width: "76%", height: "5vh" }} />
       </div>
       {/* Logo Section Ends */}
 
@@ -20,11 +17,11 @@ const SideNavebar = (props: any) => {
       <div>
         <div
           style={{
-            background: props._selectNave ? "#e2ffd1" : "#fff",
+            background: props._selectNave == "Dashboard" || props._selectNave == "Form" ? "#e2ffd1" : "#fff",
           }}
           className="activeTab"
           onClick={() => {
-            props.navigation("dashboard");
+            props.navigation("Dashboard");
           }}
         >
           <Dashboard />
@@ -32,11 +29,11 @@ const SideNavebar = (props: any) => {
         </div>
         <div
           style={{
-            background: !props._selectNave ? "#e2ffd1" : "#fff",
+            background: props._selectNave == "Members" ? "#e2ffd1" : "#fff",
           }}
           className="activeTab"
           onClick={() => {
-            props.navigation("membersdashboard");
+            props.navigation("Members");
           }}
         >
           <Group />
