@@ -1,10 +1,8 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { ArrowBackIos } from "@material-ui/icons";
+import { ArrowBackIos, Email } from "@material-ui/icons";
 import {
   Label,
-  Persona,
-  PersonaSize,
   Dropdown,
   TextField,
   DatePicker,
@@ -14,9 +12,24 @@ import {
 import { IDropDown } from "../CommonDropDown/DropDown";
 import * as moment from "moment";
 
+interface IProps {
+  navigation: any;
+  item: IMasterData;
+  masterRecords: IMasterData[];
+  getMasterDatas: any;
+  _count: number;
+}
+
 interface IDetails {
   DisplayName: string;
   Email: string;
+}
+
+interface IUserDetails {
+  Name: string;
+  Email: string;
+  Role: string;
+  Alocation: number;
 }
 
 interface IObjectData {
@@ -39,7 +52,32 @@ interface IObjectData {
   isSelect: boolean;
 }
 
-const ProjectForm = (props: any) => {
+interface IMasterData {
+  ID: number;
+  ProjectName: string;
+  ProjectType: string;
+  ProjectDescription: string;
+  Status: string;
+  StartDate: any;
+  EndDate: any;
+  Members: IUserDetails[];
+  ProjectCost: string;
+  ProjectEstimate: string;
+  ActualCost: string;
+  isSelect: boolean;
+}
+
+interface IUsers {
+  Displayname: string;
+  Email: string;
+  Position: string;
+  Availablity: number;
+  ID: number;
+}
+
+const Users: IUsers[] = require("../../../ExternalJSON/Users.json");
+
+const ProjectForm = (props: IProps) => {
   // variable creation section
   let _readyObj: IObjectData = {
     ID: null,
@@ -83,6 +121,18 @@ const ProjectForm = (props: any) => {
         content: "none !important",
         postition: "unset !important",
       },
+    },
+  };
+  const disableTextField: Partial<ITextFieldStyles> = {
+    field: {
+      border: "1px solid #E5E5E5 !important",
+      textAlign: "center",
+      color: "#181818",
+      background: "none !important",
+      borderRadius: 6,
+    },
+    fieldGroup: {
+      background: "none !important",
     },
   };
   const dropDownStyle: Partial<IDropdownStyles> = {
@@ -133,6 +183,16 @@ const ProjectForm = (props: any) => {
   // State section start
   const [viewFormText, setViewFormText] = useState<string>("add");
   const [itemDatas, setItemDatas] = useState<IObjectData>(_readyObj);
+
+  const [dropDownOptions, setDropDownOptions] = useState({
+    PL: [],
+    TL: [],
+    Dev: [],
+    Des: [],
+    Tester: [],
+  });
+
+  const [errorMsg, setErrorMsg] = useState<string>("");
   // State section end
 
   // multiple dropdown onchange function
@@ -176,37 +236,328 @@ const ProjectForm = (props: any) => {
     setItemDatas({ ...itemDatas });
   };
 
+  // validation function
+
+  const getValidation = (): void => {
+    let _isValid: boolean = true;
+
+    let _data: IObjectData = { ...itemDatas };
+
+    if (!_data.ProjectName) {
+      _isValid = false;
+    }
+
+    if (!_data.ProjectType) {
+      _isValid = false;
+    }
+
+    if (!_data.Status) {
+      _isValid = false;
+    }
+
+    if (!_data.StartDate) {
+      _isValid = false;
+    }
+
+    if (!_data.ProjectManager) {
+      _isValid = false;
+    }
+
+    if (!_data.TeamLead) {
+      _isValid = false;
+    }
+
+    if (!_data.Testers) {
+      _isValid = false;
+    }
+
+    if (!_data.Designers) {
+      _isValid = false;
+    }
+
+    if (!_data.DevelopersEmail.length) {
+      _isValid = false;
+    }
+
+    if (!_data.ProjectCost) {
+      _isValid = false;
+    }
+
+    if (!_data.ProjectEstimate) {
+      _isValid = false;
+    }
+
+    if (!_data.ActualCost) {
+      _isValid = false;
+    }
+
+    if (!_isValid) {
+      let _errMsg: string = "All fileds are mandatory";
+
+      setErrorMsg(_errMsg);
+    }
+
+    if (_isValid) {
+      setErrorMsg("");
+
+      onSubmitFunction();
+    }
+  };
+
   // update function section
   const getUpdate = () => {
     itemDatas.isSelect = false;
-    let _masterList: IObjectData[] = [];
+    let _masterList: IMasterData[] = [...props.masterRecords];
     let _masterIndex: any = props.masterRecords.findIndex(checkId);
-    _masterList = [...props.masterRecords];
     _masterList.splice(_masterIndex, 1);
-    _masterList.unshift({ ...itemDatas });
-    props.getMasterDatas("edit", _masterList);
-    props.navigation("Dashboard");
+
+    let resObj: IMasterData = objectFormatter({ ...itemDatas });
+    _masterList.unshift({ ...resObj });
+
+    props.getMasterDatas("edit", [..._masterList]),
+      props.navigation("Dashboard");
   };
 
   // check id function
-  const checkId = (value: IObjectData) => {
+  const checkId = (value: IMasterData) => {
     return value.ID == props.item.ID;
   };
 
   // current items get function
   const getCurrentItem = () => {
     let editFormText: string = props.item ? "edit" : "add";
-    let _currentItem: IObjectData = _readyObj;
+    let _currentItem: IObjectData = { ..._readyObj };
     if (editFormText == "edit") {
-      _currentItem = props.item;
+      let editObj: IMasterData = props.item;
+
+      let filteredPM: IUserDetails[] = editObj.Members.filter(
+        (user) => user.Role.toLowerCase() == "pm"
+      );
+      let filteredTL: IUserDetails[] = editObj.Members.filter(
+        (user) => user.Role.toLowerCase() == "tl"
+      );
+      let filteredDes: IUserDetails[] = editObj.Members.filter(
+        (user) => user.Role.toLowerCase() == "designer"
+      );
+      let filteredTester: IUserDetails[] = editObj.Members.filter(
+        (user) => user.Role.toLowerCase() == "tester"
+      );
+      let filteredDev: IUserDetails[] = editObj.Members.filter(
+        (user) => user.Role.toLowerCase() == "developer"
+      );
+
+      let projectmanager: IDetails =
+        filteredPM.length > 0
+          ? filteredPM.map((user: IUserDetails) => {
+              return {
+                DisplayName: user.Name,
+                Email: user.Email,
+              };
+            })[0]
+          : null;
+      let teamLead: IDetails =
+        filteredTL.length > 0
+          ? filteredTL.map((user: IUserDetails) => {
+              return {
+                DisplayName: user.Name,
+                Email: user.Email,
+              };
+            })[0]
+          : null;
+      let designer: IDetails =
+        filteredDes.length > 0
+          ? filteredDes.map((user: IUserDetails) => {
+              return {
+                DisplayName: user.Name,
+                Email: user.Email,
+              };
+            })[0]
+          : null;
+      let tester: IDetails =
+        filteredTester.length > 0
+          ? filteredTester.map((user: IUserDetails) => {
+              return {
+                DisplayName: user.Name,
+                Email: user.Email,
+              };
+            })[0]
+          : null;
+      let developer: IDetails[] =
+        filteredDev.length > 0
+          ? filteredDev.map((user: IUserDetails) => {
+              return {
+                DisplayName: user.Name,
+                Email: user.Email,
+              };
+            })
+          : [];
+
+      let modifiedObj: IObjectData = {
+        ID: editObj.ID,
+        ProjectName: editObj.ProjectName,
+        ProjectType: editObj.ProjectType,
+        ProjectDescription: editObj.ProjectDescription,
+        Status: editObj.Status,
+        StartDate: editObj.StartDate,
+        ProjectManager: { ...projectmanager },
+        TeamLead: { ...teamLead },
+        Developers: [...developer],
+        DevelopersEmail: [...developer.map((user: IDetails) => user.Email)],
+        Designers: { ...designer },
+        Testers: { ...tester },
+        Members: [
+          { ...teamLead },
+          { ...designer },
+          { ...tester },
+          ...developer,
+        ],
+        ProjectCost: editObj.ProjectCost,
+        ProjectEstimate: editObj.ProjectEstimate,
+        ActualCost: editObj.ActualCost,
+        isSelect: false,
+      };
+      _currentItem = { ...modifiedObj };
     }
-    setItemDatas(_currentItem);
+    setItemDatas({ ..._currentItem });
     setViewFormText(editFormText);
+  };
+  const getUserAvailability = () => {
+    let _masterUsers = [...Users];
+    _masterUsers.forEach((user: IUsers, index: number) => {
+      let _allocation: number = 0;
+      let filteredArr: IMasterData[] = props.masterRecords.filter(
+        (project: IMasterData) =>
+          project.Members.some((member) => member.Email == user.Email)
+      );
+
+      if (filteredArr.length > 0) {
+        filteredArr.forEach((filterProject: IMasterData) => {
+          filterProject.Members.forEach(
+            (fil_members: IUserDetails, i: number) => {
+              if (fil_members.Email == user.Email) {
+                _allocation += fil_members.Alocation;
+              }
+
+              if (i == filterProject.Members.length - 1) {
+                _masterUsers[index].Availablity = _allocation;
+              }
+            }
+          );
+        });
+      }
+
+      if (index == _masterUsers.length - 1) {
+        getDropDownOptions(_masterUsers);
+      }
+    });
+  };
+
+  const getDropDownOptions = (masterUsers: IUsers[]) => {
+    let _dropDownOptions = { ...dropDownOptions };
+    masterUsers.forEach((user: IUsers, index: number) => {
+      if (user.Position.toLowerCase() == "pm") {
+        _dropDownOptions.PL.push({ key: user.Email, text: user.Displayname });
+      } else if (user.Position.toLowerCase() == "tl") {
+        _dropDownOptions.TL.push({ key: user.Email, text: user.Displayname });
+      } else if (user.Position.toLowerCase() == "developer") {
+        _dropDownOptions.Dev.push({ key: user.Email, text: user.Displayname });
+      } else if (user.Position.toLowerCase() == "designer") {
+        _dropDownOptions.Des.push({ key: user.Email, text: user.Displayname });
+      } else if (user.Position.toLowerCase() == "tester") {
+        _dropDownOptions.Tester.push({
+          key: user.Email,
+          text: user.Displayname,
+        });
+      }
+
+      if (index == masterUsers.length - 1) {
+        setDropDownOptions({ ..._dropDownOptions });
+      }
+    });
+  };
+
+  const objectFormatter = (obj: IObjectData) => {
+    let _members: IUserDetails[] = [];
+    if (obj.ProjectManager) {
+      _members.push({
+        Name: obj.ProjectManager.DisplayName,
+        Email: obj.ProjectManager.Email,
+        Role: "PM",
+        Alocation: 10,
+      });
+    }
+    if (obj.TeamLead) {
+      _members.push({
+        Name: obj.TeamLead.DisplayName,
+        Email: obj.TeamLead.Email,
+        Role: "TL",
+        Alocation: 10,
+      });
+    }
+    if (obj.Testers) {
+      _members.push({
+        Name: obj.Testers.DisplayName,
+        Email: obj.Testers.Email,
+        Role: "Tester",
+        Alocation: 10,
+      });
+    }
+    if (obj.Designers) {
+      _members.push({
+        Name: obj.Designers.DisplayName,
+        Email: obj.Designers.Email,
+        Role: "Designer",
+        Alocation: 10,
+      });
+    }
+    if (obj.Developers.length > 0) {
+      _members = [
+        ..._members,
+        ...obj.Developers.map((user: IDetails) => {
+          return {
+            Name: user.DisplayName,
+            Email: user.Email,
+            Role: "Developer",
+            Alocation: 10,
+          };
+        }),
+      ];
+    }
+    let res = {
+      ID: obj.ID,
+      ProjectName: obj.ProjectName,
+      ProjectType: obj.ProjectType,
+      ProjectDescription: obj.ProjectDescription,
+      Status: obj.Status,
+      StartDate: obj.StartDate,
+      EndDate: null,
+      Members: [..._members],
+      ProjectCost: obj.ProjectCost,
+      ProjectEstimate: obj.ProjectEstimate,
+      ActualCost: obj.ActualCost,
+      isSelect: false,
+    };
+
+    return res;
+  };
+
+  const onSubmitFunction = () => {
+    let _item: IObjectData = { ...itemDatas };
+    if (viewFormText == "add") {
+      _item.ID = props._count + 1;
+      _item.isSelect = false;
+      setItemDatas({ ..._item });
+
+      let resObj = objectFormatter(_item);
+      props.getMasterDatas("add", resObj), props.navigation("Dashboard");
+    } else {
+      getUpdate();
+    }
   };
 
   // life cycle for onload
   useEffect(() => {
-    getCurrentItem();
+    getUserAvailability(), getCurrentItem();
   }, []);
 
   return (
@@ -224,25 +575,6 @@ const ProjectForm = (props: any) => {
             {viewFormText == "add" ? "Add Project" : "Edit Project"}
           </Label>
         </div>
-        {/* <div className="loginLeftFlex">
-          <div className="nameandEmail">
-            <div>
-              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
-            </div>
-            <div>
-              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
-                devaraj@chandrudemo.onmicrosoft.com
-              </Label>
-            </div>
-          </div>
-          <Persona
-            size={PersonaSize.size32}
-            imageUrl={
-              "/_layouts/15/userphoto.aspx?size=S&username=" +
-              "devaraj@chandrudemo.onmicrosoft.com"
-            }
-          />
-        </div> */}
       </div>
 
       {/* Form section start */}
@@ -257,6 +589,7 @@ const ProjectForm = (props: any) => {
             </Label>
             <TextField
               styles={textFieldStyle}
+              placeholder="Please select project name"
               value={itemDatas.ProjectName ? itemDatas.ProjectName : ""}
               onChange={(e: any) => {
                 itemDatas.ProjectName = e.target.value;
@@ -343,7 +676,7 @@ const ProjectForm = (props: any) => {
             <Dropdown
               styles={dropDownStyle}
               placeholder="Please select project manager"
-              options={props._masterUsersDropDown[0].manaDropdown}
+              options={dropDownOptions.PL}
               selectedKey={
                 itemDatas.ProjectManager.Email
                   ? itemDatas.ProjectManager.Email
@@ -358,14 +691,14 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Team Lead section */}
-          <div style={{ width: "50%" }}>
+          <div style={{ width: "50%", margin: "15px 0px" }}>
             <Label>
               Team Lead <span className="required">*</span>
             </Label>
             <Dropdown
               styles={dropDownStyle}
               placeholder="Please select team lead"
-              options={props._masterUsersDropDown[0].TLDropdown}
+              options={dropDownOptions.TL}
               selectedKey={
                 itemDatas.TeamLead.Email ? itemDatas.TeamLead.Email : ""
               }
@@ -378,14 +711,14 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Tester section */}
-          <div style={{ width: "50%" }}>
+          <div style={{ width: "50%", margin: "15px 0px" }}>
             <Label>
               Tester <span className="required">*</span>
             </Label>
             <Dropdown
               styles={dropDownStyle}
               placeholder="Please select tester"
-              options={props._masterUsersDropDown[0].TesterDropdown}
+              options={dropDownOptions.Tester}
               selectedKey={
                 itemDatas.Testers.Email ? itemDatas.Testers.Email : ""
               }
@@ -399,14 +732,14 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Designer section */}
-          <div style={{ width: "50%" }}>
+          <div style={{ width: "50%", margin: "15px 0px" }}>
             <Label>
               Designer <span className="required">*</span>
             </Label>
             <Dropdown
               styles={dropDownStyle}
               placeholder="Please select designer"
-              options={props._masterUsersDropDown[0].DesDropdown}
+              options={dropDownOptions.Des}
               selectedKey={
                 itemDatas.Designers.Email ? itemDatas.Designers.Email : ""
               }
@@ -420,7 +753,7 @@ const ProjectForm = (props: any) => {
           </div>
 
           {/* Developers section */}
-          <div style={{ width: "50%" }}>
+          <div style={{ width: "50%", margin: "15px 0px" }}>
             <Label>
               Developers <span className="required">*</span>
             </Label>
@@ -428,7 +761,7 @@ const ProjectForm = (props: any) => {
               styles={dropDownStyle}
               placeholder="Please select developers"
               multiSelect
-              options={props._masterUsersDropDown[0].DevDropdown}
+              options={dropDownOptions.Dev}
               selectedKeys={
                 itemDatas.DevelopersEmail.length
                   ? [...itemDatas.DevelopersEmail]
@@ -452,7 +785,9 @@ const ProjectForm = (props: any) => {
           <h3>Financials Details</h3>
           {/* Project Cost section */}
           <div className="costs">
-            <Label>Project Cost</Label>
+            <Label>
+              Project Cost <span className="required">*</span>
+            </Label>
             <TextField
               styles={textFieldStyle}
               value={itemDatas.ProjectCost ? itemDatas.ProjectCost : ""}
@@ -465,7 +800,9 @@ const ProjectForm = (props: any) => {
 
           {/* Project Estimate section */}
           <div className="costs">
-            <Label>Project Estimate</Label>
+            <Label>
+              Project Estimate <span className="required">*</span>
+            </Label>
             <TextField
               styles={textFieldStyle}
               value={itemDatas.ProjectEstimate ? itemDatas.ProjectEstimate : ""}
@@ -478,7 +815,9 @@ const ProjectForm = (props: any) => {
 
           {/* Actual Cost section */}
           <div className="costs">
-            <Label>Actual Cost</Label>
+            <Label>
+              Actual Cost <span className="required">*</span>
+            </Label>
             <TextField
               styles={textFieldStyle}
               value={itemDatas.ActualCost ? itemDatas.ActualCost : ""}
@@ -498,6 +837,7 @@ const ProjectForm = (props: any) => {
             <Label>Project Manager</Label>
             <TextField
               disabled={true}
+              styles={disableTextField}
               value={itemDatas.ProjectManager.Email ? "1" : "0"}
             />
           </div>
@@ -507,6 +847,7 @@ const ProjectForm = (props: any) => {
             <Label>Team Lead</Label>
             <TextField
               disabled={true}
+              styles={disableTextField}
               value={itemDatas.TeamLead.Email ? "1" : "0"}
             />
           </div>
@@ -516,6 +857,7 @@ const ProjectForm = (props: any) => {
             <Label>Members</Label>
             <TextField
               disabled={true}
+              styles={disableTextField}
               value={itemDatas.Members.length.toString()}
             />
           </div>
@@ -529,8 +871,14 @@ const ProjectForm = (props: any) => {
           display: "flex",
           margin: "10px 20px",
           justifyContent: "end",
+          alignItems: "center",
         }}
       >
+        {errorMsg && (
+          <Label style={{ color: "red", marginRight: "20px" }}>
+            * {errorMsg}
+          </Label>
+        )}
         <div
           style={{
             display: "flex",
@@ -566,15 +914,7 @@ const ProjectForm = (props: any) => {
               fontSize: 15,
             }}
             onClick={() => {
-              viewFormText == "add"
-                ? ((itemDatas.ID = props._count + 1),
-                  (itemDatas.isSelect = false),
-                  setItemDatas({ ...itemDatas }),
-                  props.getMasterDatas(
-                    "add",
-                    itemDatas
-                  )(props.navigation("Dashboard")))
-                : getUpdate();
+              getValidation();
             }}
           >
             {viewFormText == "add" ? "Save" : "Update"}

@@ -19,8 +19,10 @@ interface IDrop {
 }
 
 interface IDetails {
-  DisplayName: string;
+  Name: string;
   Email: string;
+  Role: string;
+  Alocation: number;
 }
 
 interface IMasterData {
@@ -31,12 +33,6 @@ interface IMasterData {
   Status: string;
   StartDate: any;
   EndDate: any;
-  ProjectManager: IDetails;
-  TeamLead: IDetails;
-  Developers: IDetails[];
-  DevelopersEmail: string[];
-  Designers: IDetails;
-  Testers: IDetails;
   Members: IDetails[];
   ProjectCost: string;
   ProjectEstimate: string;
@@ -46,7 +42,7 @@ interface IMasterData {
 
 const Users: IUsers[] = require("../../../ExternalJSON/Users.json");
 
-let _itemObj: any = "";
+let _itemObj: IMasterData = null;
 let _ProjectManagers: IUsers[] = [];
 let _TeamLeads: IUsers[] = [];
 let _Developers: IUsers[] = [];
@@ -57,7 +53,13 @@ let _TLDropdown: IDrop[] = [];
 let _DevDropdown: IDrop[] = [];
 let _DesDropdown: IDrop[] = [];
 let _TesterDropdown: IDrop[] = [];
-let _masterUsersDetails: any[] = [];
+let _masterUsersDetails: {
+  ProjectManagers: IUsers[];
+  Developers: IUsers[];
+  TeamLeads: IUsers[];
+  Testers: IUsers[];
+  Designers: IUsers[];
+}[] = [];
 let _masterUsersDropDown: any[] = [];
 let _masterListData: IMasterData[] = [];
 
@@ -70,29 +72,43 @@ let sampleData: IMasterData[] = [
     Status: "Active",
     StartDate: "01/02/2023",
     EndDate: "10/02/2023",
-    ProjectManager: {
-      DisplayName: "Chandru",
-      Email: "chandru@technorucs.com",
-    },
-    TeamLead: { DisplayName: "Kali A", Email: "kali@technorucs.com" },
-    Developers: [
-      { DisplayName: "Gipson Rahul", Email: "gipsonrahul.j@technorucs.com" },
-      { DisplayName: "Devaraj P", Email: "devaraj.p@technorucs.com" },
-    ],
-    DevelopersEmail: [
-      "gipsonrahul.j@technorucs.com",
-      "devaraj.p@technorucs.com",
-    ],
-    Designers: { DisplayName: "Leo Wilson", Email: "leowilson@technorucs.com" },
-    Testers: {
-      DisplayName: "Srinivasan Ramanan",
-      Email: "srinivasan@technorucs.com",
-    },
     Members: [
-      { DisplayName: "Gipson Rahul", Email: "gipsonrahul.j@technorucs.com" },
-      { DisplayName: "Devaraj P", Email: "devaraj.p@technorucs.com" },
-      { DisplayName: "Leo Wilson", Email: "leowilson@technorucs.com" },
-      { DisplayName: "Srinivasan Ramanan", Email: "srinivasan@technorucs.com" },
+      {
+        Name: "Chandru",
+        Email: "chandru@technorucs.com",
+        Role: "PM",
+        Alocation: 10,
+      },
+      {
+        Name: "Kali A",
+        Email: "kali@technorucs.com",
+        Role: "TL",
+        Alocation: 10,
+      },
+      {
+        Name: "Gipson Rahul",
+        Email: "gipsonrahul.j@technorucs.com",
+        Role: "Developer",
+        Alocation: 10,
+      },
+      {
+        Name: "Devaraj P",
+        Email: "devaraj.p@technorucs.com",
+        Role: "Developer",
+        Alocation: 10,
+      },
+      {
+        Name: "Leo Wilson",
+        Email: "leowilson@technorucs.com",
+        Role: "Designer",
+        Alocation: 10,
+      },
+      {
+        Name: "Srinivasan Ramanan",
+        Email: "srinivasan@technorucs.com",
+        Role: "Tester",
+        Alocation: 10,
+      },
     ],
     ProjectCost: "100",
     ProjectEstimate: "200",
@@ -111,7 +127,7 @@ const MainComponent = (props: any) => {
   // State creation section end
 
   // Navigation section
-  const getNavigation = (nav: string, item: any) => {
+  const getNavigation = (nav: string, item: IMasterData) => {
     _itemObj = item ? item : null;
     setCurrentPage(nav);
   };
@@ -119,10 +135,10 @@ const MainComponent = (props: any) => {
   // users filter section
   const getUsersFilter = () => {
     _ProjectManagers = Users.filter(
-      (mana: IUsers) => mana.Position.toLowerCase() == "project manager"
+      (mana: IUsers) => mana.Position.toLowerCase() == "pm"
     );
     _TeamLeads = Users.filter(
-      (mana: IUsers) => mana.Position.toLowerCase() == "team lead"
+      (mana: IUsers) => mana.Position.toLowerCase() == "tl"
     );
     _Developers = Users.filter(
       (mana: IUsers) => mana.Position.toLowerCase() == "developer"
@@ -192,47 +208,53 @@ const MainComponent = (props: any) => {
   useEffect(() => {
     setMasterRecords([...sampleData]);
     _masterListData = [...sampleData];
-    _itemObj = "";
+    _itemObj = null;
     getUsersFilter();
   }, []);
 
   return (
-    <div style={{ width: "100%", display: "flex" }}>
-      <div
-        style={{
-          background: "#fff",
-          width: "15%",
-          height: "100vh",
-          borderRight: "1px solid #dfdfdf",
-        }}
-      >
-        <SideNavebar navigation={getNavigation} _selectNave={currentPage} />
+    masterRecords.length > 0 && (
+      <div style={{ width: "100%", display: "flex" }}>
+        <div
+          style={{
+            background: "#fff",
+            width: "15%",
+            height: "100vh",
+            borderRight: "1px solid #dfdfdf",
+          }}
+        >
+          <SideNavebar navigation={getNavigation} _selectNave={currentPage} />
+        </div>
+        <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
+          {currentPage == "Dashboard" ? (
+            <Dashboard
+              navigation={getNavigation}
+              masterRecords={masterRecords}
+              getMasterDatas={getMasterDatas}
+            />
+          ) : currentPage == "Members" ? (
+            <Members
+              masterRecords={masterRecords}
+              _masterUsersDetails={_masterUsersDetails}
+              sp={props.sp}
+              context={props.context}
+            />
+          ) : (
+            <ProjectForm
+              navigation={getNavigation}
+              item={_itemObj}
+              masterRecords={masterRecords}
+              getMasterDatas={getMasterDatas}
+              _count={
+                masterRecords.length == 0
+                  ? 0
+                  : masterRecords[masterRecords.length - 1].ID
+              }
+            />
+          )}
+        </div>
       </div>
-      <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
-        {currentPage == "Dashboard" ? (
-          <Dashboard
-            navigation={getNavigation}
-            masterRecords={masterRecords}
-            getMasterDatas={getMasterDatas}
-          />
-        ) : currentPage == "Members" ? (
-          <Members _masterUsersDetails={_masterUsersDetails} sp={props.sp} context={props.context} />
-        ) : (
-          <ProjectForm
-            navigation={getNavigation}
-            item={_itemObj}
-            _masterUsersDropDown={_masterUsersDropDown}
-            masterRecords={masterRecords}
-            getMasterDatas={getMasterDatas}
-            _count={
-              masterRecords.length == 0
-                ? 0
-                : masterRecords[masterRecords.length - 1].ID
-            }
-          />
-        )}
-      </div>
-    </div>
+    )
   );
 };
 
