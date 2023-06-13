@@ -85,7 +85,6 @@ const Members = (props: any) => {
     userDetails: userDetails,
   });
   const [datas, setDatas] = useState<IMemberCategory>({ ..._masterMembers });
-
   const [viewAllStatus, setViewAllStatus] = useState<IViewAllStatus>({
     PM: false,
     TL: false,
@@ -93,7 +92,6 @@ const Members = (props: any) => {
     DES: false,
     QA: false,
   });
-
   const [visibleSections, setVisibleSections] = useState({
     PM: 3,
     TL: 3,
@@ -105,12 +103,9 @@ const Members = (props: any) => {
   const handleViewFunction = (key: string) => {
     let _viewAllStatus = { ...viewAllStatus };
     let _visibleSection = { ...visibleSections };
-
     _viewAllStatus[key] = !_viewAllStatus[key];
-
     _visibleSection[key] =
       datas[key].length < 3 || _viewAllStatus[key] ? datas[key].length : 3;
-
     setViewAllStatus({ ..._viewAllStatus });
     setVisibleSections({ ..._visibleSection });
   };
@@ -119,9 +114,7 @@ const Members = (props: any) => {
     let PM = props._masterUsersDetails[0].ProjectManagers;
     let DEV = props._masterUsersDetails[0].Developers;
     let TL = props._masterUsersDetails[0].TeamLeads;
-
     let QA = props._masterUsersDetails[0].Testers;
-
     let Designer = props._masterUsersDetails[0].Designers;
 
     datas.PM = PM.length ? PM : [];
@@ -129,6 +122,7 @@ const Members = (props: any) => {
     datas.QA = QA.length ? QA : [];
     datas.DEV = DEV.length ? DEV : [];
     datas.DES = Designer.length ? Designer : [];
+
     setDatas({ ...datas });
   };
 
@@ -270,7 +264,6 @@ const Members = (props: any) => {
           </div>
 
           {/* Team Leader   */}
-
           <div>
             <div
               style={{
@@ -310,7 +303,6 @@ const Members = (props: any) => {
           </div>
 
           {/* DEVection */}
-
           <div>
             <div
               style={{
@@ -349,7 +341,6 @@ const Members = (props: any) => {
           </div>
 
           {/* Designer section */}
-
           <div>
             <div
               style={{
@@ -388,7 +379,6 @@ const Members = (props: any) => {
           </div>
 
           {/* tester section */}
-
           <div>
             <div
               style={{
