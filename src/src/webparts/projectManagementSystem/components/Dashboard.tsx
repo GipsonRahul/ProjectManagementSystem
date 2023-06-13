@@ -45,7 +45,7 @@ interface IMasterData {
   ProjectManager: IDetails;
   TeamLead: IDetails;
   Developers: IDetails[];
-  DevelopersEmail?: string[];
+  DevelopersEmail: IDetails[];
   Designers: IDetails;
   Testers: IDetails;
   Members: IDetails[];
@@ -197,16 +197,16 @@ const Dashboard = (props: any) => {
       fieldName: "Members",
       minWidth: 100,
       maxWidth: 200,
-      onRender: (item: any) => {
+      onRender: (item: IMasterData) => {
         return (
           <p style={{ display: "flex", margin: 0 }}>
             {item.Members.length
-              ? item.Members.map((e: any) => {
+              ? item.Members.map((e: IDetails) => {
                   return (
                     <Persona
                       size={PersonaSize.size32}
                       imageUrl={
-                        "/_layouts/15/userphoto.aspx?size=S&username=" + e
+                        "/_layouts/15/userphoto.aspx?size=S&username=" + e.Email
                       }
                     />
                   );
@@ -263,74 +263,7 @@ const Dashboard = (props: any) => {
     status: "all",
     search: "",
   };
-
-  // list Datas
-  let sampleDatas: any[] = [
-    {
-      ProjectName: "Project Test 001",
-      Status: "Active",
-      StartDate: "06/09/2023",
-      ProjectType: "SPFx",
-      ProjectDescription: "Test",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Testers: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Designers: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Developers: [
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-      ],
-      Members: [
-        {
-          DisplayName: "Devaraj P",
-          Email: "devaraj@chandrudemo.onmicrosoft.com",
-        },
-      ],
-      ProjectCost: "30",
-      ProjectEstimate: "30",
-      ActualCost: "30",
-      ID: 1,
-      isSelect: false,
-    },
-  ];
   // style variable
-  const textFieldStyle: Partial<ITextFieldStyles> = {
-    field: {
-      border: "1px solid  !important",
-      textAlign: "center",
-      color: "#666565",
-    },
-  };
   const modalStyle: Partial<IModalStyles> = {
     main: {
       borderRadius: 10,
@@ -450,8 +383,7 @@ const Dashboard = (props: any) => {
 
   // life cycle function for onload
   useEffect(() => {
-    // _masterData = props.masterRecords ? props.masterRecords : [];
-    _masterData = props.masterRecords ? sampleDatas : [];
+    _masterData = props.masterRecords ? props.masterRecords : [];
     setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
   }, []);
@@ -760,7 +692,7 @@ const Dashboard = (props: any) => {
                               }}
                             />
                             </div> */}
-                            <div className="spaceSection">
+        {/*<div className="spaceSection">
                               <Label
                                 style={{
                                   fontSize: 14,
@@ -966,20 +898,19 @@ const Dashboard = (props: any) => {
                             </Label>
                             <div style={{ display: "flex" }}>
                               {e.Members.length
-                                ? e.Members.map((user: string) => {
+                                ? e.Members.map((user: IDetails) => {
                                     return (
                                       <Persona
                                         styles={{
                                           root: {
                                             display: "unset",
-
                                             marginRight: 5,
                                           },
                                         }}
                                         size={PersonaSize.size32}
                                         imageUrl={
                                           "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                          user
+                                          user.Email
                                         }
                                       />
                                     );
