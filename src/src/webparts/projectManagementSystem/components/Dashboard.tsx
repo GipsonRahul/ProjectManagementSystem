@@ -5,9 +5,7 @@ import {
   DetailsList,
   Persona,
   PersonaSize,
-  Dropdown,
   Modal,
-  IDropdownStyles,
   TextField,
   Spinner,
   ITextFieldStyles,
@@ -16,18 +14,20 @@ import {
 import {
   Add,
   Apps,
-  List,
+  ViewHeadline,
   MoreVert,
-  Visibility,
-  Edit,
-  Delete,
+  VisibilityOutlined,
+  EditOutlined,
+  DeleteOutline,
   Close,
   CheckCircleOutline,
   PermIdentity,
+  Search,
 } from "@material-ui/icons";
+import { InputBase } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { SelectionMode } from "office-ui-fabric-react";
 import * as moment from "moment";
-import { colors } from "@material-ui/core";
 
 interface IDetails {
   DisplayName: string;
@@ -55,24 +55,69 @@ interface IMasterData {
   isSelect: boolean;
 }
 
-interface IDrop {
-  key: string;
-  text: string;
-}
-
-interface IMastDrop {
-  Project: IDrop[];
-  ProjType: IDrop[];
-}
-
-interface IFillValue {
-  _filProject: string;
-  _filProjType: string;
+interface IFilterKeys {
+  status: string;
+  search: string;
 }
 
 let _masterData: IMasterData[] = [];
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
+  },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: "#f5f5f5",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+    },
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+      width: "auto",
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "20ch",
+      "&:focus": {
+        width: "25ch",
+      },
+    },
+  },
+}));
+
 const Dashboard = (props: any) => {
+  const classes = useStyles();
   // list column names
   const DetailListColumn: any[] = [
     {
@@ -180,7 +225,7 @@ const Dashboard = (props: any) => {
       onRender: (item: any, i: number) => {
         return (
           <div style={{ display: "flex", gap: "1%" }}>
-            <Visibility
+            <VisibilityOutlined
               style={{
                 cursor: "pointer",
                 marginRight: "5px",
@@ -192,22 +237,20 @@ const Dashboard = (props: any) => {
                 setIsModalOpen(true);
               }}
             />
-            <Edit
+            <EditOutlined
               style={{ cursor: "pointer", marginRight: "5px" }}
               onClick={() => {
-                props.navigation("formdashboard", item);
+                props.navigation("Form", item);
               }}
             />
-            <Delete
-              style={{ cursor: "pointer", color: "#ff3c3c" }}
+            <DeleteOutline
+              style={{ cursor: "pointer", color: "#FF285C" }}
               onClick={() => {
                 setDeletePopup({
                   condition: true,
                   targetId: i,
                   onSubmit: false,
                 });
-                // masterFilData.splice(i, 1);
-                // setMasterFilData([...masterFilData]);
               }}
             />
           </div>
@@ -216,14 +259,9 @@ const Dashboard = (props: any) => {
     },
   ];
 
-  let _listDropDown: IMastDrop = {
-    Project: [{ key: "all", text: "All" }],
-    ProjType: [{ key: "all", text: "All" }],
-  };
-
-  let _curFilterData: IFillValue = {
-    _filProject: "all",
-    _filProjType: "all",
+  let _filterKeys: IFilterKeys = {
+    status: "all",
+    search: "",
   };
 
   // list Datas
@@ -368,25 +406,9 @@ const Dashboard = (props: any) => {
     },
   ];
   // style variable
-  const dropDownStyle: Partial<IDropdownStyles> = {
-    root: {
-      width: "80%",
-    },
-    title: {
-      borderRadius: 5,
-      border: "1px solid rgb(138, 138, 138) !important",
-    },
-    dropdown: {
-      ":focus::after": {
-        border: "1px solid rgb(138, 138, 138) !important",
-        content: "none !important",
-        postition: "unset !important",
-      },
-    },
-  };
   const textFieldStyle: Partial<ITextFieldStyles> = {
     field: {
-      border: "none !important",
+      border: "1px solid  !important",
       textAlign: "center",
       color: "#666565",
     },
@@ -395,72 +417,40 @@ const Dashboard = (props: any) => {
     main: {
       borderRadius: 10,
       padding: 10,
+      width: "70%",
+    },
+  };
+  const diableTextField: Partial<ITextFieldStyles> = {
+    field: {
+      border: "1px solid #E5E5E5 !important",
+      textAlign: "center",
+      color: "#181818",
+      background: "none !important",
+      borderRadius: 6,
+    },
+    fieldGroup: {
+      background: "none !important",
+    },
+  };
+  const deleteModalStyle: Partial<IModalStyles> = {
+    main: {
+      minWidth: "23% ",
+      minHeight: "20%",
+      borderRadius: 16,
+      height: "auto",
+      padding: 20,
+      display: "flex",
+      alignItems: "center",
     },
   };
   // State section start
   const [masterFilData, setMasterFilData] = useState<IMasterData[]>([]);
   const [finalFilData, setFinalFilData] = useState<IMasterData[]>([]);
   const [modalObj, setModalObj] = useState<IMasterData>(null);
-  // ProjectName: "Project Test 001",
-  // Status: "Active",
-  // StartDate: "06/09/2023",
-  // ProjectType: "SPFx",
-  // ProjectDescription: "Test",
-  // ProjectManager: {
-  //   DisplayName: "Devaraj P",
-  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
-  // },
-  // TeamLead: {
-  //   DisplayName: "Devaraj P",
-  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
-  // },
-  // Testers: {
-  //   DisplayName: "Devaraj P",
-  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
-  // },
-  // Designers: {
-  //   DisplayName: "Devaraj P",
-  //   Email: "devaraj@chandrudemo.onmicrosoft.com",
-  // },
-  // Developers: [
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  // ],
-  // Members: [
-  //   {
-  //     DisplayName: "Devaraj P",
-  //     Email: "devaraj@chandrudemo.onmicrosoft.com",
-  //   },
-  // ],
-  // ProjectCost: "30",
-  // ProjectEstimate: "30",
-  // ActualCost: "30",
-  // ID: 1,
-  // isSelect: false,
-  // });
   const [isListView, setIsListView] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [filStatusBar, setFilStatusBar] = useState<string>("all");
-  const [dropValue, setDropValue] = useState<IMastDrop>(_listDropDown);
-  const [filterValue, setFilterValue] = useState<IFillValue>(_curFilterData);
+
+  const [filterKeys, setFilterKeys] = useState<IFilterKeys>({ ..._filterKeys });
 
   const [deletePopup, setDeletePopup] = useState({
     condition: false,
@@ -484,65 +474,54 @@ const Dashboard = (props: any) => {
     setMasterFilData([..._masterPopupArray]);
   };
 
-  // Filter function section
-  const getFilter = (value: string) => {
-    setFilStatusBar(value);
-    let _masterRecord: IMasterData[] = [...finalFilData];
-    let _filterMasterDatas: IMasterData[] = [];
-    if (_masterRecord.length) {
-      for (let i = 0; _masterRecord.length > i; i++) {
-        if (value == "all") {
-          _masterRecord[i].isSelect = false;
-          _filterMasterDatas.push({ ..._masterRecord[i] });
-          if (_masterRecord.length == i + 1) {
-            filterValue._filProject = "all";
-            filterValue._filProjType = "all";
-            setFilterValue({ ...filterValue });
-          }
-        } else if (_masterRecord[i].Status.toLowerCase() == value) {
-          _masterRecord[i].isSelect = false;
-          _filterMasterDatas.push({ ..._masterRecord[i] });
-        } else if (_masterRecord[i].ProjectName == value) {
-          _masterRecord[i].isSelect = false;
-          _filterMasterDatas.push({ ..._masterRecord[i] });
-        } else if (_masterRecord[i].ProjectType == value) {
-          _masterRecord[i].isSelect = false;
-          _filterMasterDatas.push({ ..._masterRecord[i] });
-        }
-        if (_masterRecord.length == i + 1) {
-          setMasterFilData([..._filterMasterDatas]);
-        }
-      }
-    } else {
-      setMasterFilData([]);
-    }
-    getFilterValue(_masterRecord.length ? [..._filterMasterDatas] : []);
+  const filterOnChangeHandler = (key: string, value: string): void => {
+    let tempFitlerKeys: IFilterKeys = { ...filterKeys };
+    tempFitlerKeys[key] = value;
+    setFilterKeys({ ...tempFitlerKeys });
+    filterFunction(tempFitlerKeys);
   };
 
-  // filter dropdown function
-  const getFilterValue = (masterDataArray: IMasterData[]) => {
-    let _filDropValue: IMastDrop = _listDropDown;
-    masterDataArray.length &&
-      masterDataArray.forEach((drop: IMasterData) => {
-        _filDropValue.Project.push({
-          key: drop.ProjectName,
-          text: drop.ProjectName,
-        });
-        _filDropValue.ProjType.push({
-          key: drop.ProjectType,
-          text: drop.ProjectType,
-        });
-      });
-    setDropValue({ ..._filDropValue });
+  const filterFunction = (filterKeys: IFilterKeys) => {
+    let _data: IMasterData[] = [...finalFilData];
+    _data.forEach((item: IMasterData) => (item.isSelect = false));
+
+    if (filterKeys.status.toLowerCase() != "all") {
+      _data = _data.filter(
+        (item) => item.Status.toLowerCase() == filterKeys.status.toLowerCase()
+      );
+    }
+    if (filterKeys.search) {
+      _data = _data.filter(
+        (item) =>
+          item.Status.toLowerCase().includes(filterKeys.search.toLowerCase()) ||
+          item.ProjectName.toLowerCase().includes(
+            filterKeys.search.toLowerCase()
+          ) ||
+          item.ProjectType.toLowerCase().includes(
+            filterKeys.search.toLowerCase()
+          ) ||
+          item.ProjectManager.DisplayName.toLowerCase().includes(
+            filterKeys.search.toLowerCase()
+          ) ||
+          item.TeamLead.DisplayName.toLowerCase().includes(
+            filterKeys.search.toLowerCase()
+          ) ||
+          item.Members.some((_item) =>
+            _item.DisplayName.toLowerCase().includes(
+              filterKeys.search.toLowerCase()
+            )
+          )
+      );
+    }
+
+    setMasterFilData([..._data]);
   };
 
   const deleteFunction = () => {
-    // let _masterData = [...masterFilData];
     let _masterRecord: IMasterData[] = [...finalFilData];
     _masterRecord.splice(deletePopup.targetId, 1);
     setMasterFilData([..._masterRecord]);
     setFinalFilData([..._masterRecord]);
-    getFilterValue([..._masterRecord]);
     props.getMasterDatas("new", _masterRecord);
     setDeletePopup({
       condition: false,
@@ -556,7 +535,6 @@ const Dashboard = (props: any) => {
     _masterData = props.masterRecords ? props.masterRecords : [];
     setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
-    getFilterValue([..._masterData]);
   }, []);
 
   return (
@@ -566,23 +544,21 @@ const Dashboard = (props: any) => {
         <div className="arrowRightFlex">
           <Label>Projects</Label>
         </div>
-        <div className="loginLeftFlex">
-          <div className="nameandEmail">
-            <div>
-              <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
-            </div>
-            <div>
-              <Label style={{ fontSize: 14, fontWeight: "unset" }}>
-                devaraj@chandrudemo.onmicrosoft.com
-              </Label>
-            </div>
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <Search />
           </div>
-          <Persona
-            size={PersonaSize.size32}
-            imageUrl={
-              "/_layouts/15/userphoto.aspx?size=S&username=" +
-              "devaraj@chandrudemo.onmicrosoft.com"
-            }
+          <InputBase
+            placeholder="Search"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput,
+            }}
+            inputProps={{ "aria-label": "search" }}
+            value={filterKeys.search}
+            onChange={(e) => {
+              filterOnChangeHandler("search", e.target.value);
+            }}
           />
         </div>
       </div>
@@ -604,8 +580,8 @@ const Dashboard = (props: any) => {
           <button
             className="addBtnStyle"
             onClick={() => {
-              props.getMasterDatas("new", masterFilData);
-              props.navigation("formdashboard");
+              props.getMasterDatas("new", masterFilData),
+                props.navigation("Form");
             }}
           >
             <Add />
@@ -620,13 +596,14 @@ const Dashboard = (props: any) => {
             {/* All datas */}
             <Label
               style={{
-                margin: "5px 10px",
+                margin: "5px 15px",
                 cursor: "pointer",
-                color: filStatusBar == "all" && "#5cff00",
-                borderBottom: filStatusBar == "all" && "2px solid #5cff00",
+                userSelect: "none",
+                color: filterKeys.status == "all" && "#25364F",
+                borderBottom: filterKeys.status == "all" && "2px solid #25364F",
               }}
               onClick={() => {
-                getFilter("all");
+                filterOnChangeHandler("status", "all");
               }}
             >
               All
@@ -635,13 +612,15 @@ const Dashboard = (props: any) => {
             {/* Active datas */}
             <Label
               style={{
-                margin: "5px 10px",
+                margin: "5px 15px",
                 cursor: "pointer",
-                color: filStatusBar == "active" && "#5cff00",
-                borderBottom: filStatusBar == "active" && "2px solid #5cff00",
+                userSelect: "none",
+                color: filterKeys.status == "active" && "#A9F37F",
+                borderBottom:
+                  filterKeys.status == "active" && "2px solid #A9F37F",
               }}
               onClick={() => {
-                getFilter("active");
+                filterOnChangeHandler("status", "active");
               }}
             >
               Active
@@ -650,13 +629,15 @@ const Dashboard = (props: any) => {
             {/* Inactive datas */}
             <Label
               style={{
-                margin: "5px 10px",
+                margin: "5px 15px",
                 cursor: "pointer",
-                color: filStatusBar == "inactive" && "#5cff00",
-                borderBottom: filStatusBar == "inactive" && "2px solid #5cff00",
+                userSelect: "none",
+                color: filterKeys.status == "inactive" && "#FF285C",
+                borderBottom:
+                  filterKeys.status == "inactive" && "2px solid #FF285C",
               }}
               onClick={() => {
-                getFilter("inactive");
+                filterOnChangeHandler("status", "inactive");
               }}
             >
               Inactive
@@ -665,13 +646,15 @@ const Dashboard = (props: any) => {
             {/* On hold datas */}
             <Label
               style={{
-                margin: "5px 10px",
+                margin: "5px 15px",
                 cursor: "pointer",
-                color: filStatusBar == "on hold" && "#5cff00",
-                borderBottom: filStatusBar == "on hold" && "2px solid #5cff00",
+                userSelect: "none",
+                color: filterKeys.status == "on hold" && "#F0BB00",
+                borderBottom:
+                  filterKeys.status == "on hold" && "2px solid #F0BB00",
               }}
               onClick={() => {
-                getFilter("on hold");
+                filterOnChangeHandler("status", "on hold");
               }}
             >
               On hold
@@ -680,14 +663,15 @@ const Dashboard = (props: any) => {
             {/* Completed datas */}
             <Label
               style={{
-                margin: "5px 10px",
+                margin: "5px 15px",
                 cursor: "pointer",
-                color: filStatusBar == "completed" && "#5cff00",
+                userSelect: "none",
+                color: filterKeys.status == "completed" && "#0f0",
                 borderBottom:
-                  filStatusBar == "completed" && "2px solid #5cff00",
+                  filterKeys.status == "completed" && "2px solid #0f0",
               }}
               onClick={() => {
-                getFilter("completed");
+                filterOnChangeHandler("status", "completed");
               }}
             >
               Completed
@@ -700,79 +684,43 @@ const Dashboard = (props: any) => {
               margin: "10px",
             }}
           >
-            {isListView ? (
-              <Apps
-                className="listview"
-                onClick={() => {
-                  masterFilData.length &&
-                    masterFilData.forEach(
-                      (item: IMasterData) => (item.isSelect = false)
-                    );
-                  setIsListView(false);
-                }}
-              />
+            {isListView == false ? (
+              <div title="Grid view">
+                <Apps
+                  className="listview"
+                  onClick={() => {
+                    masterFilData.length &&
+                      masterFilData.forEach(
+                        (item: IMasterData) => (item.isSelect = false)
+                      );
+                    setIsListView(true);
+                  }}
+                />
+              </div>
             ) : (
-              <List
-                className="listview"
-                onClick={() => {
-                  masterFilData.length &&
-                    masterFilData.forEach(
-                      (item: IMasterData) => (item.isSelect = false)
-                    );
-                  setIsListView(true);
-                }}
-              />
+              <div title="List view">
+                <ViewHeadline
+                  className="listview"
+                  onClick={() => {
+                    masterFilData.length &&
+                      masterFilData.forEach(
+                        (item: IMasterData) => (item.isSelect = false)
+                      );
+                    setIsListView(false);
+                  }}
+                />
+              </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Details list filter section */}
-      <div className="detailListSection">
-        {/* Status filter section */}
-        <div className="ddFilterWidth">
-          <div className="ddFilterFlex">
-            <p style={{ width: "29%", fontWeight: 600 }}>Project</p>
-            <Dropdown
-              styles={dropDownStyle}
-              placeholder="Select an project"
-              options={dropValue.Project}
-              selectedKey={filterValue._filProject}
-              onChange={(e, text) => {
-                filterValue._filProject = text.key as string;
-                getFilter(text.key as string);
-                setFilterValue({ ...filterValue });
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Project type filter section */}
-        <div className="ddFilterWidth">
-          <div className="ddFilterFlex">
-            <p>Project Type</p>
-            <Dropdown
-              styles={dropDownStyle}
-              placeholder="Select an project type"
-              options={dropValue.ProjType}
-              selectedKey={filterValue._filProjType}
-              onChange={(e, text) => {
-                filterValue._filProjType = text.key as string;
-                getFilter(text.key as string);
-                setFilterValue({ ...filterValue });
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Details list section */}
       <div
         style={{
           margin: "10px 20px",
         }}
       >
-        {isListView ? (
+        {/* {isListView ? (
           <div className="scrollContainer">
             {masterFilData.length ? (
               <div className="projectcardSection">
@@ -784,12 +732,13 @@ const Dashboard = (props: any) => {
                           <Label style={{ color: "#1d1d7c", fontSize: 20 }}>
                             {e.ProjectName}
                           </Label>
-                          <Label>{e.Status}</Label>
+                          <Label>{e.Status ? e.Status : " "}</Label>
                           <Label style={{ fontSize: 14, fontWeight: 400 }}>
                             Start Date
                           </Label>
                           <Label>
-                            {moment(e.StartDate).format("MM/DD/YYYY")}
+                            {e.StartDate &&
+                              moment(e.StartDate).format("DD MMM YYYY")}
                           </Label>
                           <Label style={{ fontSize: 14, fontWeight: 400 }}>
                             Project Type
@@ -897,17 +846,17 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>View</Label>
-                            <Visibility style={{ color: "#4444ad" }} />
+                            <VisibilityOutlined style={{ color: "#4444ad" }} />
                           </div>
                           <div
                             className="menus"
                             onClick={() => {
                               props.getMasterDatas("edit", masterFilData);
-                              props.navigation("formdashboard", e);
+                              props.navigation("Form", e);
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Edit</Label>
-                            <Edit />
+                            <EditOutlined />
                           </div>
                           <div
                             className="menus"
@@ -923,7 +872,7 @@ const Dashboard = (props: any) => {
                             }}
                           >
                             <Label style={{ cursor: "pointer" }}>Delete</Label>
-                            <Delete style={{ color: "#ff3c3c" }} />
+                            <DeleteOutline style={{ color: "#ff3c3c" }} />
                           </div>
                         </div>
                       ) : (
@@ -960,25 +909,251 @@ const Dashboard = (props: any) => {
               </Label>
             )}
           </div>
+        )} */}
+        {isListView ? (
+          <div className="scrollContainer">
+            {masterFilData.length ? (
+              <div className="projectcardSection">
+                {masterFilData.map((e: any, i: number) => {
+                  return (
+                    <div style={{ width: "33%", position: "relative" }}>
+                      <div className="cardDesign">
+                        <div className="navHeader">
+                          <Label style={{ color: "#1d1d7c", fontSize: 22 }}>
+                            {e.ProjectName}
+                          </Label>
+
+                          <MoreVert
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              getOnClick(e.ID);
+                            }}
+                          />
+                        </div>
+                        <div style={{ display: "flex" }}>
+                          <div className="cardSize">
+                            <div className="spaceSection">
+                              <Label style={{ color: "#4d9748", fontSize: 15 }}>
+                                • {e.Status}
+                              </Label>
+                            </div>
+
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: 400,
+                                  marginBottom: 3,
+                                }}
+                              >
+                                Start Date
+                              </Label>
+                              <Label>
+                                {moment(e.StartDate).format("MM/DD/YYYY")}
+                              </Label>
+                            </div>
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: 400,
+                                  marginBottom: 3,
+                                }}
+                              >
+                                Project Type
+                              </Label>
+                              <Label>{e.ProjectType}</Label>
+                            </div>
+
+                            <Label
+                              style={{
+                                fontSize: 14,
+                                padding: 0,
+                                marginBottom: 4,
+                              }}
+                            >
+                              Members
+                            </Label>
+                            <div style={{ display: "flex" }}>
+                              {e.Members.length
+                                ? e.Members.map((user: string) => {
+                                    return (
+                                      <Persona
+                                        styles={{
+                                          root: {
+                                            display: "unset",
+
+                                            marginRight: 5,
+                                          },
+                                        }}
+                                        size={PersonaSize.size32}
+                                        imageUrl={
+                                          "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                          user
+                                        }
+                                      />
+                                    );
+                                  })
+                                : ""}
+                            </div>
+                          </div>
+
+                          <div style={{ width: "30%" }}>
+                            <div style={{ textAlign: "right" }}>
+                              {/* <MoreVert
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  getOnClick(e.ID);
+                                }}
+                              /> */}
+                            </div>
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  textAlign: "center",
+                                  marginBottom: 7,
+                                }}
+                              >
+                                Project Manager
+                              </Label>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Persona
+                                  styles={{
+                                    root: {
+                                      display: "unset",
+                                    },
+                                  }}
+                                  size={PersonaSize.size32}
+                                  imageUrl={
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    e.ProjectManager.Email
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div style={{ margin: "25px 0px" }}>
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  textAlign: "center",
+                                  marginBottom: 5,
+                                  padding: 0,
+                                }}
+                              >
+                                Team Lead
+                              </Label>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Persona
+                                  styles={{
+                                    root: {
+                                      display: "unset",
+                                    },
+                                  }}
+                                  size={PersonaSize.size32}
+                                  imageUrl={
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    e.TeamLead.Email
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {e.isSelect ? (
+                        <div className="menuIconPlacement">
+                          <div
+                            className="menus"
+                            onClick={() => {
+                              getOnClick(0);
+
+                              setModalObj({ ...e });
+                              setIsModalOpen(true);
+                            }}
+                          >
+                            <Label style={{ cursor: "pointer" }}>View</Label>
+                            <VisibilityOutlined style={{ color: "#4444ad" }} />
+                          </div>
+
+                          <div
+                            className="menus"
+                            onClick={() => {
+                              props.getMasterDatas("edit", masterFilData);
+                              props.navigation("Form", e);
+                            }}
+                          >
+                            <Label style={{ cursor: "pointer" }}>Edit</Label>
+                            <EditOutlined />
+                          </div>
+
+                          <div
+                            className="menus"
+                            style={{ marginBottom: 0 }}
+                            onClick={() => {
+                              setDeletePopup({
+                                condition: true,
+                                targetId: i,
+                                onSubmit: false,
+                              });
+                            }}
+                          >
+                            <Label style={{ cursor: "pointer" }}>Delete</Label>
+                            <DeleteOutline style={{ color: "#ff3c3c" }} />
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <Label
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                No Data Found!!!
+              </Label>
+            )}
+          </div>
+        ) : (
+          <div>
+            <DetailsList
+              items={[...masterFilData]}
+              columns={DetailListColumn}
+              selectionMode={SelectionMode.none}
+            />
+
+            {masterFilData.length == 0 && (
+              <Label
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                No Data Found!!!
+              </Label>
+            )}
+          </div>
         )}
       </div>
 
       {/* Modal box section */}
       {modalObj && (
-        <Modal
-          styles={modalStyle}
-          isOpen={isModalOpen}
-          // isOpen={true}
-        >
-          <div
-            // style={{
-            //   display: "flex",
-            //   justifyContent: "space-between",
-            //   width: "64vw",
-            //   margin: "10px 20px",
-            // }}
-            className="modalContainer"
-          >
+        <Modal styles={modalStyle} isOpen={isModalOpen}>
+          <div className="modalContainer">
             <Label>{modalObj.ProjectType}</Label>
             <Close
               style={{ cursor: "pointer" }}
@@ -987,31 +1162,12 @@ const Dashboard = (props: any) => {
               }}
             />
           </div>
-          <div
-            // style={{
-            //   display: "flex",
-            //   justifyContent: "space-between",
-            //   margin: "10px 20px",
-            // }}
-            className="modalHeaderFlex"
-          >
+          <div className="modalHeaderFlex">
             <Label style={{ fontSize: 20, fontWeight: 600 }}>
               {modalObj.ProjectName}
             </Label>
-            <div
-              // style={{
-              //   display: "flex",
-              //   justifyContent: "space-between",
-              // }}
-              className="textFlex"
-            >
-              <div
-                // style={{
-                //   display: "flex",
-                //   justifyContent: "space-between",
-                // }}
-                className="textFlex"
-              >
+            <div className="textFlex">
+              <div className="textFlex">
                 <CheckCircleOutline style={{ marginRight: 10 }} />
                 <Label className="modalHeadRightFlex">Status</Label>
               </div>
@@ -1020,25 +1176,11 @@ const Dashboard = (props: any) => {
               </Label>
             </div>
           </div>
-          <div
-            // style={{
-            //   margin: "10px 20px 0px 20px",
-            //   paddingBottom: "10px",
-            //   borderBottom: "2px solid",
-            // }}
-            className="modalProjectDescrip"
-          >
+          <div className="modalProjectDescrip">
             <Label className="ProjectDescripLabel">Project Description</Label>
             <p>{modalObj.ProjectDescription}</p>
           </div>
-          <div
-            // style={{
-            //   margin: "10px 20px 0px 20px",
-            //   paddingBottom: "10px",
-            //   borderBottom: "2px solid",
-            // }}
-            className="modalProjectDescrip"
-          >
+          <div className="modalProjectDescrip">
             <Label>Users</Label>
             <div
               style={{
@@ -1046,16 +1188,8 @@ const Dashboard = (props: any) => {
                 margin: "10px 0px",
               }}
             >
-              <PermIdentity
-                // style={{ width: "6%" }}
-                className="userIcon"
-              />
-              <Label
-                //  style={{ width: "14%" }}
-                className="userRole"
-              >
-                Project Manager
-              </Label>
+              <PermIdentity className="userIcon" />
+              <Label className="userRole">Project Manager</Label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
@@ -1078,16 +1212,8 @@ const Dashboard = (props: any) => {
                 margin: "10px 0px",
               }}
             >
-              <PermIdentity
-                // style={{ width: "6%" }}
-                className="userIcon"
-              />
-              <Label
-                // style={{ width: "14%" }}
-                className="userRole"
-              >
-                Team Lead
-              </Label>
+              <PermIdentity className="userIcon" />
+              <Label className="userRole">Team Lead</Label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
@@ -1110,25 +1236,9 @@ const Dashboard = (props: any) => {
                 margin: "10px 0px",
               }}
             >
-              <PermIdentity
-                // style={{ width: "6%" }}
-                className="userIcon"
-              />
-              <Label
-                // style={{ width: "14%" }}
-                className="userRole"
-              >
-                Developers
-              </Label>
-              <div
-                // style={{
-                //   display: "flex",
-                //   flexWrap: "wrap",
-                //   gap: 10,
-                //   width: "80%",
-                // }}
-                className="personWidth"
-              >
+              <PermIdentity className="userIcon" />
+              <Label className="userRole">Developers</Label>
+              <div className="personWidth">
                 {modalObj.Developers.length &&
                   modalObj.Developers.map((user: any) => {
                     return (
@@ -1159,16 +1269,8 @@ const Dashboard = (props: any) => {
                 display: "flex",
               }}
             >
-              <PermIdentity
-                // style={{ width: "6%" }}
-                className="userIcon"
-              />
-              <Label
-                // style={{ width: "14%" }}
-                className="userRole"
-              >
-                Designer
-              </Label>
+              <PermIdentity className="userIcon" />
+              <Label className="userRole">Designer</Label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
@@ -1191,16 +1293,8 @@ const Dashboard = (props: any) => {
                 margin: "10px 0px",
               }}
             >
-              <PermIdentity
-                // style={{ width: "6%" }}
-                className="userIcon"
-              />
-              <Label
-                //  style={{ width: "14%" }}
-                className="userRole"
-              >
-                QA Tester
-              </Label>
+              <PermIdentity className="userIcon" />
+              <Label className="userRole">QA Tester</Label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <Persona
                   styles={{
@@ -1220,21 +1314,12 @@ const Dashboard = (props: any) => {
           </div>
           <div
             style={{
-              // margin: "10px 20px",
               margin: " 10px 20px 20px 20px",
             }}
           >
             <div style={{ display: "flex", margin: "5px 0px" }}>
-              <Label
-                // style={{ width: "15%" }}
-                className="projectCost"
-              >
-                Project Cost
-              </Label>
-              <div
-                // style={{ width: "35%" }}
-                className="projectCostValue"
-              >
+              <Label className="projectCost">Project Cost</Label>
+              <div className="projectCostValue">
                 <TextField
                   styles={textFieldStyle}
                   disabled
@@ -1243,16 +1328,8 @@ const Dashboard = (props: any) => {
               </div>
             </div>
             <div style={{ display: "flex", margin: "5px 0px" }}>
-              <Label
-                // style={{ width: "15%" }}
-                className="projectCost"
-              >
-                Project Estimation
-              </Label>
-              <div
-                // style={{ width: "35%" }}
-                className="projectCostValue"
-              >
+              <Label className="projectCost">Project Estimation</Label>
+              <div className="projectCostValue">
                 <TextField
                   styles={textFieldStyle}
                   disabled
@@ -1261,16 +1338,8 @@ const Dashboard = (props: any) => {
               </div>
             </div>
             <div style={{ display: "flex", margin: "5px 0px" }}>
-              <Label
-                // style={{ width: "15%" }}
-                className="projectCost"
-              >
-                Actual Cost
-              </Label>
-              <div
-                //  style={{ width: "35%" }}
-                className="projectCostValue"
-              >
+              <Label className="projectCost">Actual Cost</Label>
+              <div className="projectCostValue">
                 <TextField
                   styles={textFieldStyle}
                   disabled

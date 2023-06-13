@@ -22,7 +22,8 @@
     "office-ui-fabric-react": "7.174.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "spfx-fast-serve": "^3.0.6"
+    "spfx-fast-serve": "^3.0.6",
+    "@pnp/sp": "^2.11.0"
   },
   "devDependencies": {
     "@types/react": "16.9.51",
@@ -37,6 +38,7 @@
     "spfx-fast-serve-helpers": "~1.14.0",
     "exceljs": "^4.1.1",
     "file-saver": "^2.0.2",
-    "alertifyjs": "^1.13.1"
+    "alertifyjs": "^1.13.1",
+    "@pnp/sp": "^2.11.0"
   }
 }

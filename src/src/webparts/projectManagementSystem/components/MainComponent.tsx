@@ -7,18 +7,10 @@ import ProjectForm from "./ProjectForm";
 
 interface IUsers {
   Displayname: string;
-  Firstname: string;
-  Lastname: string;
   Email: string;
   Position: string;
   Availablity: number;
   ID: number;
-}
-
-interface INave {
-  mainDashboard: string;
-  formDashboard: string;
-  membersDashboard: string;
 }
 
 interface IDrop {
@@ -68,35 +60,46 @@ let _TesterDropdown: IDrop[] = [];
 let _masterUsersDetails: any[] = [];
 let _masterUsersDropDown: any[] = [];
 let _masterListData: IMasterData[] = [];
-let _count: number = 0;
+
+let sampleData: IMasterData[] = [
+  {
+    ID: 1,
+    ProjectName: "Project 001",
+    ProjectType: "SPFx",
+    ProjectDescription: "Project 001 Description",
+    Status: "Active",
+    StartDate: "01/02/2023",
+    EndDate: "10/02/2023",
+    ProjectManager: {
+      DisplayName: "TestUser",
+      Email: "TestUser@testMail.com",
+    },
+    TeamLead: { DisplayName: "TestUser", Email: "TestUser@testMail.com" },
+    Developers: [{ DisplayName: "TestUser", Email: "TestUser@testMail.com" }],
+    DevelopersEmail: ["TestUser@testMail.com"],
+    Designers: { DisplayName: "TestUser", Email: "TestUser@testMail.com" },
+    Testers: { DisplayName: "TestUser", Email: "TestUser@testMail.com" },
+    Members: [{ DisplayName: "TestUser", Email: "TestUser@testMail.com" }],
+    ProjectCost: "100",
+    ProjectEstimate: "200",
+    ActualCost: "300",
+    isSelect: false,
+  },
+];
 
 const MainComponent = () => {
   // variable creation section
-  let _defalutNave: INave = {
-    mainDashboard: "dashboard",
-    formDashboard: "detaillistdashboard",
-    membersDashboard: "membersdashboard",
-  };
-
   // State creation section start
-  const [naveComponent, setNaveComponent] = useState<INave>(_defalutNave);
-  const [masterRecords, setMasterRecords] = useState<IMasterData[]>([]);
+  const [masterRecords, setMasterRecords] = useState<IMasterData[]>([
+    ...sampleData,
+  ]);
+  const [currentPage, setCurrentPage] = useState<string>("Dashboard");
   // State creation section end
 
   // Navigation section
-  const getNavigation = (nave: any, item: number) => {
-    _itemObj = item ? item : "";
-    if (nave == "dashboard" || nave == "formdashboard") {
-      _defalutNave.mainDashboard = "dashboard";
-      _defalutNave.formDashboard = nave;
-      _defalutNave.membersDashboard = "";
-      setNaveComponent({ ..._defalutNave });
-    } else {
-      _defalutNave.mainDashboard = "";
-      _defalutNave.formDashboard = "";
-      _defalutNave.membersDashboard = "membersdashboard";
-      setNaveComponent({ ..._defalutNave });
-    }
+  const getNavigation = (nav: string, item: any) => {
+    _itemObj = item ? item : null;
+    setCurrentPage(nav);
   };
 
   // users filter section
@@ -130,33 +133,30 @@ const MainComponent = () => {
 
   // filter user dropdown values function
   const getUserDropFilter = () => {
-    if (_masterListData.length) {
-    } else {
-      _ProjectManagers.forEach((e: IUsers) => {
-        _manaDropdown.push({ key: e.Email, text: e.Displayname });
-      });
-      _TeamLeads.forEach((e: IUsers) => {
-        _TLDropdown.push({ key: e.Email, text: e.Displayname });
-      });
-      _Developers.forEach((e: IUsers) => {
-        _DevDropdown.push({ key: e.Email, text: e.Displayname });
-      });
-      _Designers.forEach((e: IUsers) => {
-        _DesDropdown.push({ key: e.Email, text: e.Displayname });
-      });
-      _Testers.forEach((e: IUsers) => {
-        _TesterDropdown.push({ key: e.Email, text: e.Displayname });
-      });
-      _masterUsersDropDown = [
-        {
-          manaDropdown: _manaDropdown,
-          TLDropdown: _TLDropdown,
-          DevDropdown: _DevDropdown,
-          DesDropdown: _DesDropdown,
-          TesterDropdown: _TesterDropdown,
-        },
-      ];
-    }
+    _ProjectManagers.forEach((e: IUsers) => {
+      _manaDropdown.push({ key: e.Email, text: e.Displayname });
+    });
+    _TeamLeads.forEach((e: IUsers) => {
+      _TLDropdown.push({ key: e.Email, text: e.Displayname });
+    });
+    _Developers.forEach((e: IUsers) => {
+      _DevDropdown.push({ key: e.Email, text: e.Displayname });
+    });
+    _Designers.forEach((e: IUsers) => {
+      _DesDropdown.push({ key: e.Email, text: e.Displayname });
+    });
+    _Testers.forEach((e: IUsers) => {
+      _TesterDropdown.push({ key: e.Email, text: e.Displayname });
+    });
+    _masterUsersDropDown = [
+      {
+        manaDropdown: _manaDropdown,
+        TLDropdown: _TLDropdown,
+        DevDropdown: _DevDropdown,
+        DesDropdown: _DesDropdown,
+        TesterDropdown: _TesterDropdown,
+      },
+    ];
   };
 
   // master details array function
@@ -176,6 +176,8 @@ const MainComponent = () => {
 
   // life cycle function for onload
   useEffect(() => {
+    setMasterRecords([...sampleData]);
+    _masterListData = [...sampleData];
     _itemObj = "";
     getUsersFilter();
   }, []);
@@ -190,39 +192,30 @@ const MainComponent = () => {
           borderRight: "1px solid #dfdfdf",
         }}
       >
-        <SideNavebar
-          navigation={getNavigation}
-          _selectNave={naveComponent.mainDashboard}
-        />
+        <SideNavebar navigation={getNavigation} _selectNave={currentPage} />
       </div>
       <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
-        {naveComponent.mainDashboard == "dashboard" ? (
-          naveComponent.formDashboard == "formdashboard" ? (
-            _masterUsersDropDown.length && (
-              <ProjectForm
-                navigation={getNavigation}
-                item={_itemObj}
-                _masterUsersDropDown={_masterUsersDropDown}
-                masterRecords={masterRecords}
-                getMasterDatas={getMasterDatas}
-                _count={
-                  masterRecords.length == 0
-                    ? 0
-                    : masterRecords[masterRecords.length - 1].ID
-                }
-              />
-            )
-          ) : (
-            <Dashboard
-              navigation={getNavigation}
-              masterRecords={masterRecords}
-              getMasterDatas={getMasterDatas}
-            />
-          )
+        {currentPage == "Dashboard" ? (
+          <Dashboard
+            navigation={getNavigation}
+            masterRecords={masterRecords}
+            getMasterDatas={getMasterDatas}
+          />
+        ) : currentPage == "Members" ? (
+          <Members _masterUsersDetails={_masterUsersDetails} />
         ) : (
-          _masterUsersDetails.length && (
-            <Members _masterUsersDetails={_masterUsersDetails} />
-          )
+          <ProjectForm
+            navigation={getNavigation}
+            item={_itemObj}
+            _masterUsersDropDown={_masterUsersDropDown}
+            masterRecords={masterRecords}
+            getMasterDatas={getMasterDatas}
+            _count={
+              masterRecords.length == 0
+                ? 0
+                : masterRecords[masterRecords.length - 1].ID
+            }
+          />
         )}
       </div>
     </div>
