@@ -1,5 +1,11 @@
-* {
+/* * {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+} */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Poppins:wght@200&family=Roboto:wght@300&display=swap");
+
+* {
+  font-family: "Roboto", sans-serif !important;
+  user-select: none;
 }
 /* .membersProjectName {
   color: green;
@@ -37,10 +43,11 @@
 }
 .formSection {
   display: flex;
-  margin: 10px 20px;
+  margin: 0px 30px;
 }
 .formSection .rightSection {
   width: 50%;
+  margin: 15px 0px;
 }
 .formSection .rightSection label {
   /* color: #a9f37f; */
@@ -48,6 +55,7 @@
 }
 .leftSection label {
   color: #4d9748;
+  font-size: 16px;
 }
 .leftSection {
   width: 50%;
@@ -56,13 +64,70 @@
   width: 50%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin: 20px 0px;
 }
 .required {
   color: red;
 }
 
 /* Dashboard Design */
+.deleteBtn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  color: #fff;
+  background-color: #fa3c3c;
+  border: 1px solid #fa3c3c;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.deleteBtn:hover {
+  background-color: #ed1c1c;
+}
+.cancelBtn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #fa3c3c;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.cancelBtn:focus {
+  border: 1px solid #fa3c3c;
+}
+.cancelBtn:hover {
+  background-color: #cbcbcb;
+}
+.designPersonLabel {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 70%;
+}
+.modalDescription {
+  max-height: 50px;
+  overflow: auto;
+  color: #262626;
+}
+.singlePersona {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  width: 9%;
+}
+.modalDescription::-webkit-scrollbar {
+  width: 12px;
+}
+.modalDescription::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #e4e4e4;
+}
 .addBtnStyle {
   background: rgb(169, 243, 127);
   display: flex;
@@ -80,7 +145,7 @@
   color: rgb(0, 0, 0);
 }
 .rightNavbarContainer {
-  border: 1px solid rgb(223, 223, 223);
+  border: 1px solid rgba(223, 223, 223, 0.4);
   display: flex;
   justify-content: space-between;
   width: 85%;
@@ -95,7 +160,7 @@
 }
 .listview {
   cursor: pointer;
-  color: #1d1d7c;
+  color: #000;
 }
 .detailListSection {
   margin: 10px 20px;
@@ -127,29 +192,40 @@
 .projectcardSection .cardDesign {
   border: 1px solid rgb(223, 223, 223);
   border-radius: 5px;
-  padding: 15px;
+  padding: 10px 17px;
   margin: 8px;
-  display: flex;
+  /* display: flex; */
   /* height: 228px; */
-  height: 236px;
+  height: 258px;
 }
 .cardSize {
   width: 70%;
 }
+.spaceSection {
+  margin: 15px 0px;
+}
+.spaceSection label {
+  padding: 0;
+}
+.cardDesign .navHeader {
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+}
+.cardDesign .navHeader label {
+  padding: 0;
+}
 .menuIconPlacement {
-  width: 30%;
-  /* height: 106px; */
-  height: auto;
+  width: 26%;
+  height: 102px;
   position: absolute;
   background: rgb(255, 255, 255);
-  /* left: 251px; */
-  right: 21px;
+  right: 32px;
   top: 56px;
-  /* bottom: 96px; */
   border-radius: 5px;
   box-shadow: rgb(199, 199, 199) 0px 0px 10px 2px;
-  /* padding: 10px; */
-  padding: 5px;
+  padding: 10px 6px;
 }
 .menus {
   display: flex;
@@ -181,7 +257,7 @@
 .modalContainer {
   display: flex;
   justify-content: space-between;
-  width: 64vw;
+  /* width: 64vw; */
   margin: 10px 20px;
 }
 .modalHeaderFlex {
@@ -196,6 +272,7 @@
   /* margin-right: 20px; */
   background: #4ba665;
   color: #fff;
+  font-weight: 500;
   border-radius: 18px;
   padding: 6px 40px;
 }
@@ -207,12 +284,13 @@
 }
 .modalProjectDescrip {
   margin: 10px 20px 0px;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   border-bottom: 2px solid #dee1e6;
 }
 .ProjectDescripLabel {
-  font-size: 15px;
+  font-size: 16px;
   color: #4d9748;
+  font-weight: 600;
 }
 .userIcon {
   width: 6%;
@@ -231,6 +309,7 @@
   width: 15%;
   font-size: 16px;
   color: #4ba665;
+  font-weight: 600;
 }
 .projectCostValue {
   /* width: 35%; */
@@ -305,10 +384,13 @@
   display: flex;
   margin: 30px;
 }
-.logoSection label {
+/* .logoSection label {
   font-size: 20px;
+  color: #000;
   margin-left: 10px;
-}
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif !important;
+} */
 .activeTab {
   display: flex;
   padding: 10px 30px;
@@ -321,4 +403,16 @@
 }
 .activeTab svg {
   color: #6f6f6f;
+}
+
+.activeTab:hover {
+  color: #000;
+}
+
+.activeTab:hover label {
+  color: #000;
+}
+
+.activeTab:hover svg {
+  color: #000;
 }
