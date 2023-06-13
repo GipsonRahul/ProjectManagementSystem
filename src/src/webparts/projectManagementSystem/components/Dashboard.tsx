@@ -271,6 +271,7 @@ const Dashboard = (props: any) => {
       Status: "Active",
       StartDate: "06/09/2023",
       ProjectType: "SPFx",
+      ProjectDescription: "Test",
       ProjectManager: {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
@@ -279,129 +280,46 @@ const Dashboard = (props: any) => {
         DisplayName: "Devaraj P",
         Email: "devaraj@chandrudemo.onmicrosoft.com",
       },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
+      Testers: {
+        DisplayName: "Devaraj P",
+        Email: "devaraj@chandrudemo.onmicrosoft.com",
+      },
+      Designers: {
+        DisplayName: "Devaraj P",
+        Email: "devaraj@chandrudemo.onmicrosoft.com",
+      },
+      Developers: [
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
       ],
+      Members: [
+        {
+          DisplayName: "Devaraj P",
+          Email: "devaraj@chandrudemo.onmicrosoft.com",
+        },
+      ],
+      ProjectCost: "30",
+      ProjectEstimate: "30",
+      ActualCost: "30",
       ID: 1,
-      isSelect: false,
-    },
-    {
-      ProjectName: "Project Test 002",
-      Status: "Inactive",
-      StartDate: "06/10/2023",
-      ProjectType: "PowerApps",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-      ],
-      ID: 2,
-      isSelect: false,
-    },
-    {
-      ProjectName: "Project Test 003",
-      Status: "On hold",
-      StartDate: "06/11/2023",
-      ProjectType: "PowerAutoMate",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-      ],
-      ID: 3,
-      isSelect: false,
-    },
-    {
-      ProjectName: "Project Test 004",
-      Status: "Active",
-      StartDate: "06/12/2023",
-      ProjectType: "Full Stack",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-      ],
-      ID: 4,
-      isSelect: false,
-    },
-    {
-      ProjectName: "Project Test 005",
-      Status: "Completed",
-      StartDate: "06/13/2023",
-      ProjectType: "Sales Force",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-      ],
-      ID: 5,
-      isSelect: false,
-    },
-    {
-      ProjectName: "Project Test 006",
-      Status: "Active",
-      StartDate: "06/14/2023",
-      ProjectType: "SPFx",
-      ProjectManager: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      TeamLead: {
-        DisplayName: "Devaraj P",
-        Email: "devaraj@chandrudemo.onmicrosoft.com",
-      },
-      Members: [
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-        "devaraj@chandrudemo.onmicrosoft.com",
-      ],
-      ID: 6,
       isSelect: false,
     },
   ];
@@ -532,7 +450,8 @@ const Dashboard = (props: any) => {
 
   // life cycle function for onload
   useEffect(() => {
-    _masterData = props.masterRecords ? props.masterRecords : [];
+    // _masterData = props.masterRecords ? props.masterRecords : [];
+    _masterData = props.masterRecords ? sampleDatas : [];
     setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
   }, []);
@@ -728,8 +647,8 @@ const Dashboard = (props: any) => {
                   return (
                     <div style={{ width: "33%", position: "relative" }}>
                       <div className="cardDesign">
-                        <div className="cardSize">
-                          <Label style={{ color: "#1d1d7c", fontSize: 20 }}>
+                        <div className="navHeader">
+                          <Label style={{ color: "#1d1d7c", fontSize: 22 }}>
                             {e.ProjectName}
                           </Label>
                           <Label>{e.Status ? e.Status : " "}</Label>
@@ -768,70 +687,141 @@ const Dashboard = (props: any) => {
                               : ""}
                           </div>
                         </div>
-                        <div style={{ width: "30%" }}>
-                          <div style={{ textAlign: "right" }}>
-                            <MoreVert
+                        <div style={{ display: "flex" }}>
+                          <div className="cardSize">
+                            <div className="spaceSection">
+                              <Label style={{ color: "#4d9748", fontSize: 15 }}>
+                                • {e.Status}
+                              </Label>
+                            </div>
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: 400,
+                                  marginBottom: 3,
+                                }}
+                              >
+                                Start Date
+                              </Label>
+                              <Label>
+                                {moment(e.StartDate).format("MM/DD/YYYY")}
+                              </Label>
+                            </div>
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: 400,
+                                  marginBottom: 3,
+                                }}
+                              >
+                                Project Type
+                              </Label>
+                              <Label>{e.ProjectType}</Label>
+                            </div>
+                            <Label
+                              style={{
+                                fontSize: 14,
+                                padding: 0,
+                                marginBottom: 4,
+                              }}
+                            >
+                              Members
+                            </Label>
+                            <div style={{ display: "flex" }}>
+                              {e.Members.length
+                                ? e.Members.map((user: string) => {
+                                    return (
+                                      <Persona
+                                        styles={{
+                                          root: {
+                                            display: "unset",
+                                            marginRight: 5,
+                                          },
+                                        }}
+                                        size={PersonaSize.size32}
+                                        imageUrl={
+                                          "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                          user
+                                        }
+                                      />
+                                    );
+                                  })
+                                : ""}
+                            </div>
+                          </div>
+                          <div style={{ width: "30%" }}>
+                            {/* <div style={{ textAlign: "right" }}>
+                              <MoreVert
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 getOnClick(e.ID);
                               }}
                             />
-                          </div>
-                          <Label
-                            style={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              textAlign: "center",
-                            }}
-                          >
-                            Project Manager
-                          </Label>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Persona
-                              styles={{
-                                root: {
-                                  display: "unset",
-                                },
-                              }}
-                              size={PersonaSize.size32}
-                              imageUrl={
-                                "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                e.ProjectManager.Email
-                              }
-                            />
-                          </div>
-                          <Label
-                            style={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              textAlign: "center",
-                            }}
-                          >
-                            Team Lead
-                          </Label>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Persona
-                              styles={{
-                                root: {
-                                  display: "unset",
-                                },
-                              }}
-                              size={PersonaSize.size32}
-                              imageUrl={
-                                "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                e.TeamLead.Email
-                              }
-                            />
+                            </div> */}
+                            <div className="spaceSection">
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  // fontWeight: 400,
+                                  textAlign: "center",
+                                  marginBottom: 7,
+                                }}
+                              >
+                                Project Manager
+                              </Label>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Persona
+                                  styles={{
+                                    root: {
+                                      display: "unset",
+                                    },
+                                  }}
+                                  size={PersonaSize.size32}
+                                  imageUrl={
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    e.ProjectManager.Email
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div style={{ margin: "25px 0px" }}>
+                              <Label
+                                style={{
+                                  fontSize: 14,
+                                  textAlign: "center",
+                                  marginBottom: 5,
+                                  padding: 0,
+                                }}
+                              >
+                                Team Lead
+                              </Label>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Persona
+                                  styles={{
+                                    root: {
+                                      display: "unset",
+                                    },
+                                  }}
+                                  size={PersonaSize.size32}
+                                  imageUrl={
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    e.TeamLead.Email
+                                  }
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1178,7 +1168,7 @@ const Dashboard = (props: any) => {
           </div>
           <div className="modalProjectDescrip">
             <Label className="ProjectDescripLabel">Project Description</Label>
-            <p>{modalObj.ProjectDescription}</p>
+            <p className="modalDescription">{modalObj.ProjectDescription}</p>
           </div>
           <div className="modalProjectDescrip">
             <Label>Users</Label>
@@ -1186,6 +1176,7 @@ const Dashboard = (props: any) => {
               style={{
                 display: "flex",
                 margin: "10px 0px",
+                alignItems: "center",
               }}
             >
               <PermIdentity className="userIcon" />
@@ -1210,6 +1201,7 @@ const Dashboard = (props: any) => {
               style={{
                 display: "flex",
                 margin: "10px 0px",
+                alignItems: "center",
               }}
             >
               <PermIdentity className="userIcon" />
@@ -1232,8 +1224,9 @@ const Dashboard = (props: any) => {
             </div>
             <div
               style={{
+                alignItems: "center",
                 display: "flex",
-                margin: "10px 0px",
+                // margin: "10px 0px",
               }}
             >
               <PermIdentity className="userIcon" />
@@ -1243,7 +1236,13 @@ const Dashboard = (props: any) => {
                   modalObj.Developers.map((user: any) => {
                     return (
                       <div
-                        style={{ display: "flex", width: "12%", gap: "10%" }}
+                        style={{
+                          display: "flex",
+                          width: "20%",
+                          gap: "10%",
+                          marginBottom: 10,
+                          alignItems: "center",
+                        }}
                       >
                         <Persona
                           styles={{
@@ -1257,7 +1256,9 @@ const Dashboard = (props: any) => {
                             user.Email
                           }
                         />
-                        <Label>{user.DisplayName}</Label>
+                        <Label className="designPersonLabel">
+                          {user.DisplayName}
+                        </Label>
                       </div>
                     );
                   })}
@@ -1266,6 +1267,7 @@ const Dashboard = (props: any) => {
             <div
               style={{
                 margin: "10px 0px",
+                alignItems: "center",
                 display: "flex",
               }}
             >
@@ -1290,6 +1292,7 @@ const Dashboard = (props: any) => {
             <div
               style={{
                 display: "flex",
+                alignItems: "center",
                 margin: "10px 0px",
               }}
             >
@@ -1315,13 +1318,14 @@ const Dashboard = (props: any) => {
           <div
             style={{
               margin: " 10px 20px 20px 20px",
+              // borderBottom: "2px solid #dee1e6",
             }}
           >
             <div style={{ display: "flex", margin: "5px 0px" }}>
               <Label className="projectCost">Project Cost</Label>
               <div className="projectCostValue">
                 <TextField
-                  styles={textFieldStyle}
+                  styles={diableTextField}
                   disabled
                   value={modalObj.ProjectCost}
                 />
@@ -1331,7 +1335,7 @@ const Dashboard = (props: any) => {
               <Label className="projectCost">Project Estimation</Label>
               <div className="projectCostValue">
                 <TextField
-                  styles={textFieldStyle}
+                  styles={diableTextField}
                   disabled
                   value={modalObj.ProjectEstimate}
                 />
@@ -1341,7 +1345,7 @@ const Dashboard = (props: any) => {
               <Label className="projectCost">Actual Cost</Label>
               <div className="projectCostValue">
                 <TextField
-                  styles={textFieldStyle}
+                  styles={diableTextField}
                   disabled
                   value={modalObj.ActualCost}
                 />
@@ -1351,20 +1355,9 @@ const Dashboard = (props: any) => {
         </Modal>
       )}
       {deletePopup.condition && (
-        <Modal
-          isOpen={deletePopup.condition}
-          styles={{
-            root: {
-              width: "100vw",
-            },
-            main: {
-              width: 400,
-              borderRadius: 6,
-            },
-          }}
-        >
+        <Modal isOpen={deletePopup.condition} styles={deleteModalStyle}>
           <div>
-            <div>
+            {/* <div>
               <Label
                 style={{
                   color: "#fff",
@@ -1376,10 +1369,14 @@ const Dashboard = (props: any) => {
               >
                 Delete Confirmation
               </Label>
-            </div>
-            <div style={{ margin: "30px 0px" }}>
-              <Label style={{ textAlign: "center" }}>
-                Do you want to delete this project?
+            </div> */}
+            <div
+            // style={{ margin: "30px 0px" }}
+            >
+              <Label
+                style={{ textAlign: "center", fontSize: 19, marginBottom: 30 }}
+              >
+                Are you sure you want to delete this project ?
               </Label>
             </div>
             <div
@@ -1387,20 +1384,24 @@ const Dashboard = (props: any) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
-                margin: "10px 15px",
+                // justifyContent: "space-between",
+                // margin: "10px 0px",
               }}
             >
               <button
-                style={{
-                  padding: "5px 20px",
-                  marginLeft: 10,
-                  color: "#fff",
-                  backgroundColor: "#f00",
-                  border: "1px solid #f00",
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  cursor: "pointer",
+                className="cancelBtn"
+                onClick={() => {
+                  setDeletePopup({
+                    condition: false,
+                    targetId: null,
+                    onSubmit: false,
+                  });
                 }}
+              >
+                Cancel
+              </button>
+              <button
+                className="deleteBtn"
                 onClick={() => {
                   if (!deletePopup.onSubmit) {
                     setDeletePopup((prevState) => ({
@@ -1412,27 +1413,6 @@ const Dashboard = (props: any) => {
                 }}
               >
                 {deletePopup.onSubmit ? <Spinner /> : "Delete"}
-              </button>
-              <button
-                style={{
-                  padding: "5px 20px",
-                  marginLeft: 10,
-                  color: "#f00",
-                  backgroundColor: "#fff",
-                  border: "1px solid #f00",
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setDeletePopup({
-                    condition: false,
-                    targetId: null,
-                    onSubmit: false,
-                  });
-                }}
-              >
-                Cancel
               </button>
             </div>
           </div>

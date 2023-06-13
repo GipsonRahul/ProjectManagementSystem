@@ -185,7 +185,7 @@ const ProjectForm = (props: any) => {
     _masterList.splice(_masterIndex, 1);
     _masterList.unshift({ ...itemDatas });
     props.getMasterDatas("edit", _masterList);
-    props.navigation("dashboard");
+    props.navigation("Dashboard");
   };
 
   // check id function
@@ -217,14 +217,14 @@ const ProjectForm = (props: any) => {
           <ArrowBackIos
             style={{ cursor: "pointer", color: "#A9F37F" }}
             onClick={() => {
-              props.navigation("dashboard");
+              props.navigation("Dashboard");
             }}
           />
           <Label>
             {viewFormText == "add" ? "Add Project" : "Edit Project"}
           </Label>
         </div>
-        <div className="loginLeftFlex">
+        {/* <div className="loginLeftFlex">
           <div className="nameandEmail">
             <div>
               <Label style={{ color: "#1d1d7c", fontSize: 16 }}>Deva Raj</Label>
@@ -242,7 +242,7 @@ const ProjectForm = (props: any) => {
               "devaraj@chandrudemo.onmicrosoft.com"
             }
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Form section start */}
@@ -541,14 +541,15 @@ const ProjectForm = (props: any) => {
               marginRight: "20px",
               cursor: "pointer",
               width: "80px",
-              height: "28px",
+              height: "40px",
               fontWeight: 600,
               border: "1px solid #A9F37F",
               borderRadius: "8px",
               background: "#fff",
+              fontSize: 15,
             }}
             onClick={() => {
-              props.navigation("dashboard");
+              props.navigation("Dashboard");
             }}
           >
             Cancel
@@ -557,11 +558,12 @@ const ProjectForm = (props: any) => {
             style={{
               cursor: "pointer",
               width: "80px",
-              height: "28px",
+              height: "40px",
               fontWeight: 600,
               border: "1px solid #A9F37F",
               borderRadius: "8px",
               background: "#A9F37F",
+              fontSize: 15,
             }}
             onClick={() => {
               viewFormText == "add"
@@ -571,7 +573,7 @@ const ProjectForm = (props: any) => {
                   props.getMasterDatas(
                     "add",
                     itemDatas
-                  )(props.navigation("dashboard")))
+                  )(props.navigation("Dashboard")))
                 : getUpdate();
             }}
           >
