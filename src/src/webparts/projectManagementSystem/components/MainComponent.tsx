@@ -22,7 +22,7 @@ interface IDetails {
   Name: string;
   Email: string;
   Role: string;
-  Alocation: number;
+  Allocation: number;
 }
 
 interface IMasterData {
@@ -34,6 +34,7 @@ interface IMasterData {
   StartDate: any;
   EndDate: any;
   Members: IDetails[];
+  Progress: number;
   ProjectCost: string;
   ProjectEstimate: string;
   ActualCost: string;
@@ -68,51 +69,106 @@ let sampleData: IMasterData[] = [
     ID: 1,
     ProjectName: "Project 001",
     ProjectType: "SPFx",
-    ProjectDescription: "Project 001 Description",
+    ProjectDescription:
+      "Project 001 management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.Project management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.",
     Status: "Active",
     StartDate: "01/02/2023",
     EndDate: "10/02/2023",
+    Progress: 30,
     Members: [
       {
         Name: "Chandru",
         Email: "chandru@technorucs.com",
         Role: "PM",
-        Alocation: 10,
+        Allocation: 10,
       },
       {
         Name: "Kali A",
         Email: "kali@technorucs.com",
         Role: "TL",
-        Alocation: 10,
+        Allocation: 10,
       },
       {
         Name: "Gipson Rahul",
         Email: "gipsonrahul.j@technorucs.com",
         Role: "Developer",
-        Alocation: 10,
+        Allocation: 10,
       },
       {
         Name: "Devaraj P",
         Email: "devaraj.p@technorucs.com",
         Role: "Developer",
-        Alocation: 10,
+        Allocation: 10,
       },
       {
         Name: "Leo Wilson",
         Email: "leowilson@technorucs.com",
         Role: "Designer",
-        Alocation: 10,
+        Allocation: 10,
       },
       {
         Name: "Srinivasan Ramanan",
         Email: "srinivasan@technorucs.com",
         Role: "Tester",
-        Alocation: 10,
+        Allocation: 10,
       },
     ],
     ProjectCost: "100",
     ProjectEstimate: "200",
     ActualCost: "300",
+    isSelect: false,
+  },
+  {
+    ID: 2,
+    ProjectName: "Project 002",
+    ProjectType: "PowerApps",
+    ProjectDescription:
+      "Project 002 management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.Project management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.",
+    Status: "Active",
+    StartDate: "01/03/2023",
+    EndDate: "10/04/2023",
+    Progress: 50,
+    Members: [
+      {
+        Name: "Chandru",
+        Email: "chandru@technorucs.com",
+        Role: "PM",
+        Allocation: 20,
+      },
+      {
+        Name: "Kali A",
+        Email: "kali@technorucs.com",
+        Role: "TL",
+        Allocation: 30,
+      },
+      {
+        Name: "Gipson Rahul",
+        Email: "gipsonrahul.j@technorucs.com",
+        Role: "Developer",
+        Allocation: 50,
+      },
+      {
+        Name: "Devaraj P",
+        Email: "devaraj.p@technorucs.com",
+        Role: "Developer",
+        Allocation: 50,
+      },
+      {
+        Name: "Leo Wilson",
+        Email: "leowilson@technorucs.com",
+        Role: "Designer",
+        Allocation: 20,
+      },
+      {
+        Name: "Srinivasan Ramanan",
+        Email: "srinivasan@technorucs.com",
+        Role: "Tester",
+        Allocation: 20,
+      },
+    ],
+    ProjectCost: "150",
+    ProjectEstimate: "250",
+    ActualCost: "350",
     isSelect: false,
   },
 ];
