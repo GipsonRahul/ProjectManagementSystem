@@ -157,7 +157,7 @@ const Members = (props: IProps) => {
     {
       key: "column3",
       name: "Status",
-      fieldName: "Status",
+      fieldName: "status",
       minWidth: 100,
       maxWidth: 120,
     },
@@ -659,19 +659,7 @@ const Members = (props: IProps) => {
           </div>
         </div>
         {/* rightsection */}
-        <div
-          // style={{
-          //   width: "30%",
-          //   height: "99vh",
-          //   border: "1px solid #ddd",
-          //   borderRadius: "8px",
-          //   backgroundColor: "#fff",
-          //   position: "absolute",
-          //   right: 0,
-          //   top: 0,
-          // }}
-          className="membersRightSection"
-        >
+        <div className="membersRightSection">
           {userInfo != null && (
             <>
               <div style={{ padding: "20px 1px" }} className="profileDetails">
@@ -683,8 +671,6 @@ const Members = (props: IProps) => {
                       userInfo.Email
                     }
                     styles={personaStyle}
-                    // text={userInfo.Displayname}
-                    // secondaryText={userInfo.Position}
                   />
                 </div>
                 <div className="profileRight">
@@ -709,7 +695,7 @@ const Members = (props: IProps) => {
                         <TextField
                           styles={diableTextField}
                           disabled
-                          value="5"
+                          value={userInfo.userDetails.projects.length.toString()}
                         />
                       </div>
                     </div>
@@ -721,89 +707,22 @@ const Members = (props: IProps) => {
                         <TextField
                           styles={diableTextField}
                           disabled
-                          value="100%"
+                          value={userInfo.userDetails.totalAllocation.toString()}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* <div style={{ marginTop: 30 }}>
-                  <div className="projectsFlex">
-                    <Label className="totalProjectsLabel">Total Projects</Label>
-                    <Label className="totalsLabel">
-                      {userInfo.userDetails.totalProjects}
-                    </Label>
-                  </div>
-                  <div className="projectsFlex">
-                    <Label className="totalProjectsLabel">
-                      Total Allocation
-                    </Label>
-                    <Label className="totalsLabel">
-                      {userInfo.userDetails.totalAllocation}%
-                    </Label>
-                  </div>
-                </div> */}
               </div>
               <Label className="projectDetailsHeader">Projects Details</Label>
               <div style={{ width: "100%" }}>
                 <DetailsList
-                  items={items}
+                  items={userInfo.userDetails.projects}
                   columns={col}
                   selectionMode={SelectionMode.none}
                   styles={detailListStyle}
                 />
               </div>
-
-              {/*<div className="projectScroll">
-                {userInfo.userDetails.projects.map((detail) => {
-                  return (
-                    <div>
-                      <div className="singleProjectsBox">
-                        <div className="singleProjects">
-                          <p style={{ color: "#4ba665", marginBottom: 5 }}>
-                            {detail.name}
-                          </p>
-                        </div>
-                        <div className="singleProjects">
-                          {" "}
-                          <p>Allocation </p>{" "}
-                          <span style={{ width: 5 }}>: </span>{" "}
-                          <p> {detail.allocation}</p>
-                        </div>
-                        <div className="singleProjects">
-                          {" "}
-                          <p>Cost</p> <span style={{ width: 5 }}>: </span>{" "}
-                          <p> {detail.cost}</p>
-                        </div>
-                        <div className="singleProjects">
-                          {" "}
-                          <p>Status</p> <span style={{ width: 5 }}>: </span>{" "}
-                          <p
-                            style={
-                              detail.status == "Pending"
-                                ? { color: "#F0BB00" }
-                                : detail.status == "Completed"
-                                ? { color: "#A9F37F" }
-                                : null
-                            }
-                          >
-                            {detail.status}
-                          </p>
-                        </div>
-                         <Label> Allocation : {detail.allocation}%</Label> 
-                         <Label> Cost : {detail.cost}</Label> 
-                         <Label> Status : {detail.status}</Label> 
-                      </div>
-                    </div>
-                  );
-                })}
-                {/* {userInfo.userDetails.projects.length > 4 && (
-                  <div style={{ display: "flex" }}>
-                    <Label onClick={() => {}}>See more ...</Label>
-                  </div>
-                )} 
-              </div>*/}
             </>
           )}
         </div>

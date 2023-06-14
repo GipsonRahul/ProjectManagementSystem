@@ -729,7 +729,7 @@ const ProjectForm = (props: IProps) => {
             <DatePicker
               styles={datePickerStyle}
               placeholder="DD MMM YYYY"
-              value={itemDatas.StartDate}
+              value={itemDatas.StartDate ? new Date(itemDatas.StartDate) : null}
               formatDate={(date) => moment(date).format("DD MMM YYYY")}
               onSelectDate={(data) => {
                 onchangeHandler("StartDate", data);

@@ -245,7 +245,7 @@ const Dashboard = (props: any) => {
               style={{
                 cursor: "pointer",
                 marginRight: "5px",
-                color: "#4444ad",
+                color: "#2264e6",
               }}
               onClick={() => {
                 getOnClick(0);
@@ -254,13 +254,17 @@ const Dashboard = (props: any) => {
               }}
             />
             <EditOutlined
-              style={{ cursor: "pointer", marginRight: "5px" }}
+              style={{
+                cursor: "pointer",
+                marginRight: "5px",
+                color: "#2264e6",
+              }}
               onClick={() => {
                 props.navigation("Form", item);
               }}
             />
             <DeleteOutline
-              style={{ cursor: "pointer", color: "#FF285C" }}
+              style={{ cursor: "pointer", color: "#d12953" }}
               onClick={() => {
                 setDeletePopup({
                   condition: true,
