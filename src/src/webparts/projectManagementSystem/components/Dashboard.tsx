@@ -31,11 +31,6 @@ import * as moment from "moment";
 import { ProgressIndicator } from "@fluentui/react/lib/ProgressIndicator";
 const successGif = require("../assets/animation_640_lhhiixk5 (1).gif");
 
-// interface IDetails {
-//   DisplayName: string;
-//   Email: string;
-// }
-
 interface IDetails {
   Name: string;
   Email: string;
@@ -51,14 +46,8 @@ interface IMasterData {
   Status: string;
   StartDate: any;
   EndDate?: any;
+  Progress: number;
   Members: IDetails[];
-  // ProjectManager: IDetails;
-  // TeamLead: IDetails;
-  // Developers: IDetails[];
-  // DevelopersEmail: IDetails[];
-  // Designers: IDetails;
-  // Testers: IDetails;
-  // Members: IDetails[];
   ProjectCost: string;
   ProjectEstimate: string;
   ActualCost: string;
@@ -220,7 +209,7 @@ const Dashboard = (props: any) => {
       maxWidth: 200,
       onRender: (item: IMasterData) => {
         let filteredMembers: IDetails[] = item.Members.filter(
-          (user: IDetails) => user.Role == "PM" || user.Role == "TL"
+          (user: IDetails) => user.Role != "PM" && user.Role != "TL"
         );
         return (
           <p style={{ display: "flex", margin: 0 }}>
@@ -596,19 +585,92 @@ const Dashboard = (props: any) => {
               <div className="projectcardSection">
                 {masterFilData.map((e: IMasterData, i: number) => {
                   return (
-                    <div style={{ width: "33%", position: "relative" }}>
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexWrap: "wrap",
+                      }}
+                    >
                       <div className="cardDesign">
                         <div className="navHeader">
-                          <Label style={{ color: "#1d1d7c", fontSize: 20 }}>
+                          <Label style={{ color: "#1d1d7c", fontSize: 18 }}>
                             {e.ProjectName}
                           </Label>
 
                           <MoreVert
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: "pointer", color: "#8b8b8b" }}
                             onClick={() => {
                               getOnClick(e.ID);
                             }}
                           />
+                          {e.isSelect ? (
+                            <div className="menuIconPlacement">
+                              <div
+                                className="menus"
+                                onClick={() => {
+                                  getOnClick(0);
+
+                                  setModalObj({ ...e });
+                                  setIsModalOpen(true);
+                                }}
+                              >
+                                <Label
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#2264e6",
+                                  }}
+                                >
+                                  View
+                                </Label>
+                                <VisibilityOutlined
+                                  style={{ color: "#2264e6" }}
+                                />
+                              </div>
+
+                              <div
+                                className="menus"
+                                onClick={() => {
+                                  props.getMasterDatas("edit", masterFilData);
+                                  props.navigation("Form", e);
+                                }}
+                              >
+                                <Label
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#2264e6",
+                                  }}
+                                >
+                                  Edit
+                                </Label>
+                                <EditOutlined style={{ color: "#2264e6" }} />
+                              </div>
+
+                              <div
+                                className="menus"
+                                style={{ marginBottom: 0 }}
+                                onClick={() => {
+                                  setDeletePopup({
+                                    condition: true,
+                                    targetId: i,
+                                    onSubmit: false,
+                                  });
+                                }}
+                              >
+                                <Label
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#d12953",
+                                  }}
+                                >
+                                  Delete
+                                </Label>
+                                <DeleteOutline style={{ color: "#d12953" }} />
+                              </div>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
                         <div style={{ display: "flex" }}>
                           <div className="cardSize">
@@ -649,14 +711,18 @@ const Dashboard = (props: any) => {
                             >
                               <Label
                                 style={{
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: 400,
                                   marginBottom: 6,
                                 }}
                               >
                                 Start Date
                               </Label>
-                              <Label>
+                              <Label
+                                style={{
+                                  fontSize: 13,
+                                }}
+                              >
                                 {moment(e.StartDate).format("MM/DD/YYYY")}
                               </Label>
                             </div>
@@ -675,7 +741,7 @@ const Dashboard = (props: any) => {
 
                             <Label
                               style={{
-                                fontSize: 14,
+                                fontSize: 13,
                                 padding: 0,
                                 marginBottom: 10,
                               }}
@@ -787,7 +853,7 @@ const Dashboard = (props: any) => {
                             </div> */}
                           </div>
                         </div>
-                        <div style={{ marginTop: 20 }}>
+                        <div style={{ marginTop: 20, position: "relative" }}>
                           <ProgressIndicator
                             label="Progress"
                             styles={{
@@ -803,56 +869,17 @@ const Dashboard = (props: any) => {
                                   height: 10,
                                   borderRadius: 10,
                                 },
+                                ".ms-ProgressIndicator-itemName": {
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                },
                               },
                             }}
-                            // percentComplete={10}
+                            percentComplete={10}
                           />
+                          <p className="percentageShower">40%</p>
                         </div>
                       </div>
-                      {e.isSelect ? (
-                        <div className="menuIconPlacement">
-                          <div
-                            className="menus"
-                            onClick={() => {
-                              getOnClick(0);
-
-                              setModalObj({ ...e });
-                              setIsModalOpen(true);
-                            }}
-                          >
-                            <Label style={{ cursor: "pointer" }}>View</Label>
-                            <VisibilityOutlined style={{ color: "#4444ad" }} />
-                          </div>
-
-                          <div
-                            className="menus"
-                            onClick={() => {
-                              props.getMasterDatas("edit", masterFilData);
-                              props.navigation("Form", e);
-                            }}
-                          >
-                            <Label style={{ cursor: "pointer" }}>Edit</Label>
-                            <EditOutlined />
-                          </div>
-
-                          <div
-                            className="menus"
-                            style={{ marginBottom: 0 }}
-                            onClick={() => {
-                              setDeletePopup({
-                                condition: true,
-                                targetId: i,
-                                onSubmit: false,
-                              });
-                            }}
-                          >
-                            <Label style={{ cursor: "pointer" }}>Delete</Label>
-                            <DeleteOutline style={{ color: "#ff3c3c" }} />
-                          </div>
-                        </div>
-                      ) : (
-                        ""
-                      )}
                     </div>
                   );
                 })}
@@ -873,6 +900,14 @@ const Dashboard = (props: any) => {
               items={[...masterFilData]}
               columns={DetailListColumn}
               selectionMode={SelectionMode.none}
+              styles={{
+                root: {
+                  ".ms-DetailsRow-fields": {
+                    alignItems: "center",
+                    color: "#000",
+                  },
+                },
+              }}
             />
 
             {masterFilData.length == 0 && (
@@ -919,7 +954,7 @@ const Dashboard = (props: any) => {
             <p className="modalDescription">{modalObj.ProjectDescription}</p>
           </div>
           <div className="modalProjectDescrip">
-            <Label>Users</Label>
+            <Label className="ProjectDescripLabel">Users</Label>
             <div
               style={{
                 display: "flex",
