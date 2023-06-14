@@ -269,7 +269,7 @@ const MainComponent = (props: any) => {
   }, []);
 
   return (
-    masterRecords.length > 0 && (
+   (
       <div style={{ width: "100%", display: "flex" }}>
         <div
           style={{
