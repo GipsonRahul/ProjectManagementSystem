@@ -7,6 +7,20 @@
   font-family: "Roboto", sans-serif !important;
   user-select: none;
 }
+
+.MuiCheckbox-colorSecondary.Mui-checked {
+  color: #4ba665 !important;
+}
+.ms-DetailsList-contentWrapper::-webkit-scrollbar {
+  /* width: 4px; */
+  width: 12px;
+  /* background-color: #03838730; */
+}
+.ms-DetailsList-contentWrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #e4e4e4;
+}
 /* .membersProjectName {
   color: green;
   font-size: 22px;
@@ -39,7 +53,7 @@
 }
 .arrowRightFlex label {
   /* font-size: 20px; */
-  font-size: 28px;
+  font-size: 24px;
   color: #1d1d7c;
   padding: 0;
 }
@@ -58,8 +72,10 @@
   margin: 0px 30px;
 }
 .formSection .rightSection {
-  width: 50%;
-  margin: 15px 0px;
+  /* width: 50%;
+  margin: 15px 0px; */
+
+  margin-top: 15px;
 }
 .formSection .rightSection label {
   /* color: #a9f37f; */
@@ -83,6 +99,13 @@
 }
 
 /* Dashboard Design */
+.percentageShower {
+  position: absolute;
+  margin: 0;
+  top: 7px;
+  right: 0;
+  font-size: 12px;
+}
 .deleteBtn {
   padding: 10px 20px;
   margin-left: 10px;
@@ -209,6 +232,8 @@
   /* display: flex; */
   /* height: 228px; */
   height: 296px;
+  width: 29%;
+  position: relative;
 }
 .cardSize {
   width: 70%;
@@ -237,7 +262,9 @@
   top: 56px;
   border-radius: 5px;
   box-shadow: rgb(199, 199, 199) 0px 0px 10px 2px;
-  padding: 10px 6px;
+  /* padding: 10px 6px; */
+  padding: 9px 6px 16px 6px;
+  z-index: 10;
 }
 .menus {
   display: flex;
@@ -245,11 +272,12 @@
   align-items: center;
   margin-bottom: 10px;
   cursor: pointer;
-  padding: 0px 11px;
+  padding: 3px 11px;
   border-radius: 5px;
 }
 .menus:hover {
-  background-color: rgb(226, 255, 209);
+  /* background-color: rgb(226, 255, 209); */
+  background-color: #d1e8ff;
 }
 .menus svg {
   color: #6f6f6f;
@@ -327,8 +355,71 @@
   /* width: 35%; */
   width: 10%;
 }
+.projectCostValue2 {
+  width: 20%;
+}
 
 /* Members Page Styles */
+.membersRightSection {
+  width: 50%;
+  height: 99vh;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 8px;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  padding: 0px 10px;
+}
+.membersFlex {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 90%;
+  max-height: 15vh;
+  overflow: auto;
+}
+.membersFlex::-webkit-scrollbar {
+  width: 12px;
+}
+.membersFlex::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #e4e4e4;
+}
+.profileDetails {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  color: #3c3b3b;
+  border-bottom: 2px solid #dee1e6;
+}
+.profileLeft {
+  width: 15%;
+}
+.profileRight {
+  width: 85%;
+  margin: 0px 25px;
+  display: flex;
+  align-items: center;
+}
+.rightDiv {
+  width: 40%;
+}
+.allocationBox {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.profileLabel {
+  font-size: 17px;
+  width: 60%;
+  /* margin: 5px 0px 10px 0px; */
+  /* margin-top: 10px; */
+}
+.colan {
+  margin-right: 10px;
+}
 .viewAllBtn {
   cursor: pointer;
   color: #4ba665;
@@ -376,9 +467,10 @@
   width: 10px;
 }
 .projectDetailsHeader {
-  padding: 8px 20px;
+  padding: 8px 6px;
   font-size: 20px;
   color: #4ba665;
+  margin: 15px 0px;
 }
 .projectScroll {
   /* height: 45vh; */
