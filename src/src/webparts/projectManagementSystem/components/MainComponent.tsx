@@ -71,7 +71,7 @@ let sampleData: IMasterData[] = [
     ProjectType: "SPFx",
     ProjectDescription:
       "Project 001 management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.Project management is the application of processes, methods, skills, knowledge and experience to achieve specific project objectives according to the project acceptance criteria within agreed parameters. Project management has final deliverables that are constrained to a finite timescale and budget.",
-    Status: "Active",
+    Status: "Completed",
     StartDate: "01/02/2023",
     EndDate: "10/02/2023",
     Progress: 30,
