@@ -5,11 +5,13 @@ import {
   DetailsList,
   Persona,
   PersonaSize,
+  PersonaPresence,
   Modal,
   TextField,
   Spinner,
   ITextFieldStyles,
   IModalStyles,
+  TooltipHost,
 } from "@fluentui/react";
 import {
   Add,
@@ -30,6 +32,7 @@ import { SelectionMode } from "office-ui-fabric-react";
 import * as moment from "moment";
 import { ProgressIndicator } from "@fluentui/react/lib/ProgressIndicator";
 const successGif = require("../assets/animation_640_lhhiixk5 (1).gif");
+const noDataFoundDB = require("../assets/NoDataFoundDB.gif");
 
 interface IDetails {
   Name: string;
@@ -133,6 +136,27 @@ const Dashboard = (props: any) => {
       fieldName: "Status",
       minWidth: 80,
       maxWidth: 100,
+      onRender: (item: any) => {
+        return (
+          <div
+            style={{
+              textAlign: "center",
+              background:
+                item.Status.toLowerCase() == "active"
+                  ? "#A9F37F"
+                  : item.Status.toLowerCase() == "inactive"
+                  ? "#FF285C"
+                  : item.Status.toLowerCase() == "on hold"
+                  ? "#F0BB00"
+                  : "#0f0",
+              borderRadius: "30px",
+              padding: "6px",
+            }}
+          >
+            {item.Status}
+          </div>
+        );
+      },
     },
     {
       key: "column3",
@@ -214,20 +238,100 @@ const Dashboard = (props: any) => {
         return (
           <p style={{ display: "flex", margin: 0 }}>
             {filteredMembers.length
-              ? filteredMembers.map((e: IDetails) => {
-                  return (
-                    <div title={e.Name}>
-                      <Persona
-                        size={PersonaSize.size32}
-                        imageUrl={
-                          "/_layouts/15/userphoto.aspx?size=S&username=" +
-                          e.Email
-                        }
-                      />
-                    </div>
-                  );
+              ? filteredMembers.map((e: IDetails, i: number) => {
+                  if (i < 3) {
+                    return (
+                      <div title={e.Name}>
+                        <Persona
+                          styles={{
+                            root: {
+                              // display: "inline-block",
+                              background: "#e2ffd1",
+                              height: " 32px",
+                              width: "32px",
+                              borderRadius: "50%",
+                              color: "#000",
+                              fontWeight: "900",
+                            },
+                          }}
+                          size={PersonaSize.size32}
+                          imageUrl={
+                            "/_layouts/15/userphoto.aspx?size=S&username=" +
+                            e.Email
+                          }
+                        />
+                      </div>
+                    );
+                  }
                 })
               : ""}
+            {filteredMembers.length > 3 && (
+              <div>
+                <TooltipHost
+                  content={
+                    <ul style={{ margin: 10, padding: 0 }}>
+                      {filteredMembers.map((user: IDetails, i: number) => {
+                        if (i > 2) {
+                          return (
+                            <li
+                              style={{
+                                listStyleType: "none",
+                              }}
+                            >
+                              <div style={{ display: "flex" }}>
+                                <Persona
+                                  showOverflowTooltip
+                                  size={PersonaSize.size24}
+                                  presence={PersonaPresence.none}
+                                  showInitialsUntilImageLoads={true}
+                                  imageUrl={
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    `${user.Email}`
+                                  }
+                                />
+                                <Label style={{ marginLeft: 10 }}>
+                                  {user.Name}
+                                </Label>
+                              </div>
+                            </li>
+                          );
+                        }
+                      })}
+                    </ul>
+                  }
+                  // delay={TooltipDelay.zero}
+                  // directionalHint={
+                  //   DirectionalHint.bottomCenter
+                  // }
+                  styles={{
+                    root: {
+                      // display: "inline-block",
+                      background: "#e2ffd1",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: " 32px",
+                      width: "32px",
+                      borderRadius: "50%",
+                      color: "#000",
+                      fontWeight: "900",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 12,
+                      }}
+                    >
+                      +
+                    </span>
+                    {filteredMembers.length - 3}
+                  </div>
+                </TooltipHost>
+              </div>
+            )}
           </p>
         );
       },
@@ -587,15 +691,15 @@ const Dashboard = (props: any) => {
           <div className="scrollContainer">
             {masterFilData.length ? (
               <div className="projectcardSection">
-                {masterFilData.map((e: IMasterData, i: number) => {
-                  return (
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexWrap: "wrap",
-                      }}
-                    >
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {masterFilData.map((e: IMasterData, i: number) => {
+                    return (
                       <div className="cardDesign">
                         <div className="navHeader">
                           <Label style={{ color: "#1d1d7c", fontSize: 18 }}>
@@ -688,7 +792,14 @@ const Dashboard = (props: any) => {
                               >
                                 <span
                                   style={{
-                                    color: "#4d9748",
+                                    color:
+                                      e.Status.toLowerCase() == "active"
+                                        ? "#A9F37F"
+                                        : e.Status.toLowerCase() == "inactive"
+                                        ? "#FF285C"
+                                        : e.Status.toLowerCase() == "on hold"
+                                        ? "#F0BB00"
+                                        : "#0f0",
                                     fontSize: 29,
                                     marginRight: 6,
                                   }}
@@ -696,18 +807,23 @@ const Dashboard = (props: any) => {
                                   •
                                 </span>
                                 <Label
-                                  style={{ color: "#4d9748", fontSize: 14 }}
+                                  style={{
+                                    color:
+                                      e.Status.toLowerCase() == "active"
+                                        ? "#A9F37F"
+                                        : e.Status.toLowerCase() == "inactive"
+                                        ? "#FF285C"
+                                        : e.Status.toLowerCase() == "on hold"
+                                        ? "#F0BB00"
+                                        : "#0f0",
+                                    fontSize: 14,
+                                  }}
                                 >
                                   {" "}
                                   {e.Status}
                                 </Label>
                               </p>
                             </div>
-                            {/* <div className="spaceSection">
-                              <Label style={{ color: "#4d9748", fontSize: 15 }}>
-                                • {e.Status}
-                              </Label>
-                            </div> */}
 
                             <div
                               className="spaceSection"
@@ -757,24 +873,117 @@ const Dashboard = (props: any) => {
                                 .length
                                 ? e.Members.filter(
                                     (user) => user.Role != "PM"
-                                  ).map((user: IDetails) => {
-                                    return (
-                                      <Persona
-                                        styles={{
-                                          root: {
-                                            display: "unset",
-                                            marginRight: 5,
-                                          },
-                                        }}
-                                        size={PersonaSize.size32}
-                                        imageUrl={
-                                          "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                          user.Email
-                                        }
-                                      />
-                                    );
+                                  ).map((user: IDetails, i: number) => {
+                                    if (i < 3) {
+                                      return (
+                                        <Persona
+                                          // styles={{
+                                          //   root: {
+                                          //     display: "unset",
+                                          //     marginRight: 5,
+                                          //   },
+                                          // }}
+                                          styles={{
+                                            root: {
+                                              // display: "inline-block",
+                                              background: "#e2ffd1",
+                                              height: " 32px",
+                                              width: "32px",
+                                              borderRadius: "50%",
+                                              color: "#000",
+                                              fontWeight: "900",
+                                            },
+                                          }}
+                                          size={PersonaSize.size32}
+                                          imageUrl={
+                                            "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                            user.Email
+                                          }
+                                        />
+                                      );
+                                    }
                                   })
                                 : ""}
+                              {e.Members.filter((user) => user.Role != "PM")
+                                .length > 3 && (
+                                <div>
+                                  <TooltipHost
+                                    content={
+                                      <ul style={{ margin: 10, padding: 0 }}>
+                                        {e.Members.filter(
+                                          (user) => user.Role != "PM"
+                                        ).map((user: IDetails, i: number) => {
+                                          if (i > 2) {
+                                            return (
+                                              <li
+                                                style={{
+                                                  listStyleType: "none",
+                                                }}
+                                              >
+                                                <div
+                                                  style={{ display: "flex" }}
+                                                >
+                                                  <Persona
+                                                    showOverflowTooltip
+                                                    size={PersonaSize.size24}
+                                                    presence={
+                                                      PersonaPresence.none
+                                                    }
+                                                    showInitialsUntilImageLoads={
+                                                      true
+                                                    }
+                                                    imageUrl={
+                                                      "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                                      `${user.Email}`
+                                                    }
+                                                  />
+                                                  <Label
+                                                    style={{ marginLeft: 10 }}
+                                                  >
+                                                    {user.Name}
+                                                  </Label>
+                                                </div>
+                                              </li>
+                                            );
+                                          }
+                                        })}
+                                      </ul>
+                                    }
+                                    // delay={TooltipDelay.zero}
+                                    // directionalHint={
+                                    //   DirectionalHint.bottomCenter
+                                    // }
+                                    styles={{
+                                      root: {
+                                        // display: "inline-block",
+                                        background: "#e2ffd1",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        height: " 32px",
+                                        width: "32px",
+                                        borderRadius: "50%",
+                                        color: "#000",
+                                        fontWeight: "900",
+                                        cursor: "pointer",
+                                      },
+                                    }}
+                                  >
+                                    <div>
+                                      <span
+                                        style={{
+                                          fontSize: 12,
+                                        }}
+                                      >
+                                        +
+                                      </span>
+                                      {e.Members.filter(
+                                        (user) => user.Role != "PM"
+                                      ).length - 3}
+                                    </div>
+                                  </TooltipHost>
+                                </div>
+                              )}
                             </div>
                           </div>
 
@@ -867,7 +1076,8 @@ const Dashboard = (props: any) => {
                                   borderRadius: 10,
                                   background:
                                     "linear-gradient(270deg, #4BA665 3.98%, #4BA665 25.24%, #A9F37F 43.85%, #A9F37F 69.22%, #A9F37F 94.43%)",
-                                  width: "40% !important",
+                                  // width: "40% !important",
+                                  width: `${e.Progress}% !important`,
                                 },
                                 ".ms-ProgressIndicator-progressTrack": {
                                   height: 10,
@@ -881,21 +1091,31 @@ const Dashboard = (props: any) => {
                             }}
                             percentComplete={10}
                           />
-                          <p className="percentageShower">40%</p>
+                          <p className="percentageShower">{e.Progress}%</p>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             ) : (
-              <Label
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                No Data Found!!!
-              </Label>
+              <div className="gifAlign">
+                <img
+                  src={`${noDataFoundDB}`}
+                  alt=""
+                  style={{
+                    width: "40%",
+                    height: "70vh",
+                  }}
+                />
+              </div>
+              // <Label
+              //   style={{
+              //     textAlign: "center",
+              //   }}
+              // >
+              //   No Data Found!!!
+              // </Label>
             )}
           </div>
         ) : (
@@ -915,13 +1135,23 @@ const Dashboard = (props: any) => {
             />
 
             {masterFilData.length == 0 && (
-              <Label
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                No Data Found!!!
-              </Label>
+              <div className="gifAlign">
+                <img
+                  src={`${noDataFoundDB}`}
+                  alt=""
+                  style={{
+                    width: "40%",
+                    height: "70vh",
+                  }}
+                />
+              </div>
+              // <Label
+              //   style={{
+              //     textAlign: "center",
+              //   }}
+              // >
+              //   No Data Found!!!
+              // </Label>
             )}
           </div>
         )}
@@ -948,7 +1178,19 @@ const Dashboard = (props: any) => {
                 <CheckCircleOutline style={{ marginRight: 10 }} />
                 <Label className="modalHeadRightFlex">Status</Label>
               </div>
-              <Label className="modalHeadStatusIndicator">
+              <Label
+                className="modalHeadStatusIndicator"
+                style={{
+                  background:
+                    modalObj.Status.toLowerCase() == "active"
+                      ? "#A9F37F"
+                      : modalObj.Status.toLowerCase() == "inactive"
+                      ? "#FF285C"
+                      : modalObj.Status.toLowerCase() == "on hold"
+                      ? "#F0BB00"
+                      : "#0f0",
+                }}
+              >
                 {modalObj.Status}
               </Label>
             </div>
@@ -1051,9 +1293,7 @@ const Dashboard = (props: any) => {
                             user.Email
                           }
                         />
-                        <Label className="designPersonLabel">
-                          {user.DisplayName}
-                        </Label>
+                        <Label className="designPersonLabel">{user.Name}</Label>
                       </div>
                     );
                   })}
