@@ -10,7 +10,7 @@ import {
   Persona,
   PersonaSize,
 } from "@fluentui/react";
-import { Add, ArrowBackIos, Email, EditOutlined } from "@material-ui/icons";
+import { ArrowBackIos, EditOutlined } from "@material-ui/icons";
 import { Checkbox } from "@material-ui/core";
 import { IDropDown } from "../CommonDropDown/DropDown";
 import * as moment from "moment";
@@ -23,32 +23,12 @@ interface IProps {
   _count: number;
 }
 
-interface IDetails {
-  DisplayName: string;
-  Email: string;
-}
-
 interface IUserDetails {
   Name: string;
   Email: string;
   Role: string;
   Allocation: number;
 }
-
-// interface IObjectData {
-//   ID: number;
-//   ProjectName: string;
-//   ProjectType: string;
-//   ProjectDescription: string;
-//   Status: string;
-//   StartDate: any;
-//   Progress: number;
-//   Members: IUserDetails[];
-//   ProjectCost: string;
-//   ProjectEstimate: string;
-//   ActualCost: string;
-//   isSelect: boolean;
-// }
 
 interface IObjectData {
   ID: number;
@@ -57,14 +37,16 @@ interface IObjectData {
   ProjectDescription: string;
   Status: string;
   StartDate: any;
-  ProjectManager: IDetails;
+  EndDate: any;
   Progress: number;
-  TeamLead: IDetails;
-  Developers: IDetails[];
-  DevelopersEmail: string[];
-  Designers: IDetails;
-  Testers: IDetails;
-  Members: IDetails[];
+  Members: IUserDetails[];
+  Allocation: {
+    PM: number;
+    TL: number;
+    Designer: number;
+    Tester: number;
+    Developer: number;
+  };
   ProjectCost: string;
   ProjectEstimate: string;
   ActualCost: string;
@@ -95,10 +77,27 @@ interface IUsers {
   ID: number;
 }
 
+interface ISelectedUsers {
+  Displayname: string;
+  Email: string;
+  Position: string;
+  Availablity: number;
+  ID: number;
+  isSelected: boolean;
+}
+
 const Users: IUsers[] = require("../../../ExternalJSON/Users.json");
 
 const ProjectForm = (props: IProps) => {
   // variable creation section
+
+  const roleAcronyms = {
+    PM: "Project Manager",
+    TL: "Team Lead",
+    Designer: "Designer",
+    Tester: "Tester",
+    Developer: "Developer",
+  };
   let _readyObj: IObjectData = {
     ID: null,
     ProjectName: "",
@@ -106,26 +105,16 @@ const ProjectForm = (props: IProps) => {
     ProjectDescription: "",
     Status: "",
     StartDate: null,
-    ProjectManager: {
-      DisplayName: "",
-      Email: "",
-    },
-    TeamLead: {
-      DisplayName: "",
-      Email: "",
-    },
-    Developers: [],
-    DevelopersEmail: [],
-    Designers: {
-      DisplayName: "",
-      Email: "",
-    },
-    Testers: {
-      DisplayName: "",
-      Email: "",
-    },
+    EndDate: null,
     Progress: null,
     Members: [],
+    Allocation: {
+      PM: null,
+      TL: null,
+      Designer: null,
+      Tester: null,
+      Developer: null,
+    },
     ProjectCost: "",
     ProjectEstimate: "",
     ActualCost: "",
@@ -147,7 +136,6 @@ const ProjectForm = (props: IProps) => {
   const disableTextField: Partial<ITextFieldStyles> = {
     field: {
       border: "1px solid rgb(138, 138, 138) !important",
-      // textAlign: "center",
       color: "#181818",
       background: "none !important",
       borderRadius: 6,
@@ -206,9 +194,10 @@ const ProjectForm = (props: IProps) => {
   };
 
   // State section start
+  const [masterUsers, setMasterUsers] = useState<IUsers[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<ISelectedUsers[]>([]);
   const [viewFormText, setViewFormText] = useState<string>("add");
   const [itemDatas, setItemDatas] = useState<IObjectData>(_readyObj);
-
   const [dropDownOptions, setDropDownOptions] = useState({
     PL: [],
     TL: [],
@@ -216,52 +205,12 @@ const ProjectForm = (props: IProps) => {
     Des: [],
     Tester: [],
   });
-
   const [errorMsg, setErrorMsg] = useState<string>("");
-  // State section end
 
-  // multiple dropdown onchange function
-  const onchangeFunction = (text: any) => {
-    // if (
-    //   !itemDatas.DevelopersEmail.some((e: string) => e == (text.key as string))
-    // ) {
-    //   itemDatas.Developers.push({
-    //     Email: text.key as string,
-    //     DisplayName: text.text as string,
-    //   });
-    //   itemDatas.DevelopersEmail.push(text.key as string);
-    // } else {
-    //   let _removeIndex: number = itemDatas.DevelopersEmail.indexOf(
-    //     text.key as string
-    //   );
-    //   itemDatas.DevelopersEmail.splice(_removeIndex, 1);
-    //   itemDatas.Developers.splice(_removeIndex, 1);
-    // }
-    // getMasterArray();
-  };
-
-  // master members array filter
-  const getMasterArray = () => {
-    // itemDatas.Members = [];
-    // if (itemDatas.Developers.length) {
-    //   for (let i = 0; itemDatas.Developers.length > i; i++) {
-    //     if (i == 0) {
-    //       itemDatas.Testers.Email && itemDatas.Members.push(itemDatas.Testers);
-    //       itemDatas.Designers.Email &&
-    //         itemDatas.Members.push(itemDatas.Designers);
-    //       itemDatas.Members.push(itemDatas.Developers[i]);
-    //     } else {
-    //       itemDatas.Members.push(itemDatas.Developers[i]);
-    //     }
-    //   }
-    // } else {
-    //   itemDatas.Testers.Email && itemDatas.Members.push(itemDatas.Testers);
-    //   itemDatas.Designers.Email && itemDatas.Members.push(itemDatas.Designers);
-    // }
-    // setItemDatas({ ...itemDatas });
-  };
-
-  // validation function
+  const [userListDetails, setUserListDetails] = useState({
+    category: "",
+    allocation: null,
+  });
 
   const getValidation = (): void => {
     let _isValid: boolean = true;
@@ -271,60 +220,67 @@ const ProjectForm = (props: IProps) => {
     if (!_data.ProjectName) {
       _isValid = false;
     }
-
     if (!_data.ProjectType) {
       _isValid = false;
     }
-
     if (!_data.Status) {
       _isValid = false;
     }
-
     if (!_data.StartDate) {
       _isValid = false;
     }
-
-    // if (!_data.ProjectManager) {
-    //   _isValid = false;
-    // }
-
-    // if (!_data.TeamLead) {
-    //   _isValid = false;
-    // }
-
-    // if (!_data.Testers) {
-    //   _isValid = false;
-    // }
-
-    // if (!_data.Designers) {
-    //   _isValid = false;
-    // }
-
-    // if (!_data.DevelopersEmail.length) {
-    //   _isValid = false;
-    // }
-
+    if (_data.Members.length == 0) {
+      _isValid = false;
+    } else {
+      if (
+        _data.Members.filter((user: IUserDetails) => user.Role == "PM")
+          .length == 0
+      ) {
+        _isValid = false;
+      }
+      if (
+        _data.Members.filter((user: IUserDetails) => user.Role == "TL")
+          .length == 0
+      ) {
+        _isValid = false;
+      }
+      if (
+        _data.Members.filter((user: IUserDetails) => user.Role == "Tester")
+          .length == 0
+      ) {
+        _isValid = false;
+      }
+      if (
+        _data.Members.filter((user: IUserDetails) => user.Role == "Designer")
+          .length == 0
+      ) {
+        _isValid = false;
+      }
+      if (
+        _data.Members.filter((user: IUserDetails) => user.Role == "Developer")
+          .length == 0
+      ) {
+        _isValid = false;
+      }
+    }
+    if (_data.Progress == null) {
+      _isValid = false;
+    }
     if (!_data.ProjectCost) {
       _isValid = false;
     }
-
     if (!_data.ProjectEstimate) {
       _isValid = false;
     }
-
     if (!_data.ActualCost) {
       _isValid = false;
     }
-
     if (!_isValid) {
       let _errMsg: string = "All fileds are mandatory";
-
       setErrorMsg(_errMsg);
     }
-
     if (_isValid) {
       setErrorMsg("");
-
       onSubmitFunction();
     }
   };
@@ -336,22 +292,27 @@ const ProjectForm = (props: IProps) => {
     let _masterIndex: any = props.masterRecords.findIndex(checkId);
     _masterList.splice(_masterIndex, 1);
 
-    // let resObj: IMasterData = objectFormatter({ ...itemDatas });
-    // _masterList.unshift({ ...resObj });
+    let resObj: IMasterData = objectFormatter({ ...itemDatas });
+    _masterList.unshift({ ...resObj });
 
     props.getMasterDatas("edit", [..._masterList]),
       props.navigation("Dashboard");
   };
 
   // check id function
-  const checkId = (value: IMasterData) => {
-    return value.ID == props.item.ID;
-  };
+  const checkId = (value: IMasterData) => value.ID == props.item.ID;
 
   // current items get function
   const getCurrentItem = () => {
     let editFormText: string = props.item ? "edit" : "add";
+    setViewFormText(editFormText);
+
     let _currentItem: IObjectData = { ..._readyObj };
+
+    let _userListDetails = {
+      category: "PM",
+      allocation: null,
+    };
     if (editFormText == "edit") {
       let editObj: IMasterData = props.item;
 
@@ -371,52 +332,6 @@ const ProjectForm = (props: IProps) => {
         (user) => user.Role.toLowerCase() == "developer"
       );
 
-      let projectmanager: IDetails =
-        filteredPM.length > 0
-          ? filteredPM.map((user: IUserDetails) => {
-              return {
-                DisplayName: user.Name,
-                Email: user.Email,
-              };
-            })[0]
-          : null;
-      let teamLead: IDetails =
-        filteredTL.length > 0
-          ? filteredTL.map((user: IUserDetails) => {
-              return {
-                DisplayName: user.Name,
-                Email: user.Email,
-              };
-            })[0]
-          : null;
-      let designer: IDetails =
-        filteredDes.length > 0
-          ? filteredDes.map((user: IUserDetails) => {
-              return {
-                DisplayName: user.Name,
-                Email: user.Email,
-              };
-            })[0]
-          : null;
-      let tester: IDetails =
-        filteredTester.length > 0
-          ? filteredTester.map((user: IUserDetails) => {
-              return {
-                DisplayName: user.Name,
-                Email: user.Email,
-              };
-            })[0]
-          : null;
-      let developer: IDetails[] =
-        filteredDev.length > 0
-          ? filteredDev.map((user: IUserDetails) => {
-              return {
-                DisplayName: user.Name,
-                Email: user.Email,
-              };
-            })
-          : [];
-
       let modifiedObj: IObjectData = {
         ID: editObj.ID,
         ProjectName: editObj.ProjectName,
@@ -424,32 +339,42 @@ const ProjectForm = (props: IProps) => {
         ProjectDescription: editObj.ProjectDescription,
         Status: editObj.Status,
         StartDate: editObj.StartDate,
+        EndDate: null,
         Progress: editObj.Progress,
-        // Members: [...editObj.Members],
-        ProjectManager: { ...projectmanager },
-        TeamLead: { ...teamLead },
-        Developers: [...developer],
-        DevelopersEmail: [...developer.map((user: IDetails) => user.Email)],
-        Designers: { ...designer },
-        Testers: { ...tester },
-        Members: [
-          { ...teamLead },
-          { ...designer },
-          { ...tester },
-          ...developer,
-        ],
+        Members: [...editObj.Members],
+        Allocation: {
+          PM: filteredPM.length > 0 ? filteredPM[0].Allocation : null,
+          TL: filteredTL.length > 0 ? filteredTL[0].Allocation : null,
+          Designer: filteredDes.length > 0 ? filteredDes[0].Allocation : null,
+          Tester:
+            filteredTester.length > 0 ? filteredTester[0].Allocation : null,
+          Developer: filteredDev.length > 0 ? filteredDev[0].Allocation : null,
+        },
         ProjectCost: editObj.ProjectCost,
         ProjectEstimate: editObj.ProjectEstimate,
         ActualCost: editObj.ActualCost,
         isSelect: false,
       };
       _currentItem = { ...modifiedObj };
+
+      _userListDetails = {
+        category: "PM",
+        allocation: _currentItem.Allocation.PM,
+      };
+
+      getUserList(
+        _userListDetails.category,
+        _userListDetails.allocation,
+        _currentItem,
+        _currentItem.Members
+      );
+    } else {
+      setUserListDetails({ ..._userListDetails });
+      setItemDatas({ ..._currentItem });
     }
-    setItemDatas({ ..._currentItem });
-    setViewFormText(editFormText);
   };
   const getUserAvailability = () => {
-    let _masterUsers = [...Users];
+    let _masterUsers: IUsers[] = [...Users];
     _masterUsers.forEach((user: IUsers, index: number) => {
       let _allocation: number = 0;
       let filteredArr: IMasterData[] = props.masterRecords.filter(
@@ -462,23 +387,28 @@ const ProjectForm = (props: IProps) => {
           filterProject.Members.forEach(
             (fil_members: IUserDetails, i: number) => {
               if (fil_members.Email == user.Email) {
-                _allocation += fil_members.Allocation;
+                if (filterProject.Status != "Completed") {
+                  _allocation += fil_members.Allocation;
+                }
               }
 
               if (i == filterProject.Members.length - 1) {
-                _masterUsers[index].Availablity = _allocation;
+                _masterUsers[index].Availablity = 100 - _allocation;
               }
             }
           );
         });
+      } else {
+        _masterUsers[index].Availablity = 100 - _allocation;
       }
 
       if (index == _masterUsers.length - 1) {
-        getDropDownOptions(_masterUsers);
+        console.log(_masterUsers);
+        setMasterUsers([..._masterUsers]);
+        // getDropDownOptions(_masterUsers);
       }
     });
   };
-
   const getDropDownOptions = (masterUsers: IUsers[]) => {
     let _dropDownOptions = { ...dropDownOptions };
     masterUsers.forEach((user: IUsers, index: number) => {
@@ -502,55 +432,8 @@ const ProjectForm = (props: IProps) => {
       }
     });
   };
-
-  const objectFormatter = (obj: IObjectData) => {
-    let _members: IUserDetails[] = [];
-    if (obj.ProjectManager) {
-      _members.push({
-        Name: obj.ProjectManager.DisplayName,
-        Email: obj.ProjectManager.Email,
-        Role: "PM",
-        Allocation: 10,
-      });
-    }
-    if (obj.TeamLead) {
-      _members.push({
-        Name: obj.TeamLead.DisplayName,
-        Email: obj.TeamLead.Email,
-        Role: "TL",
-        Allocation: 10,
-      });
-    }
-    if (obj.Testers) {
-      _members.push({
-        Name: obj.Testers.DisplayName,
-        Email: obj.Testers.Email,
-        Role: "Tester",
-        Allocation: 10,
-      });
-    }
-    if (obj.Designers) {
-      _members.push({
-        Name: obj.Designers.DisplayName,
-        Email: obj.Designers.Email,
-        Role: "Designer",
-        Allocation: 10,
-      });
-    }
-    if (obj.Developers.length > 0) {
-      _members = [
-        ..._members,
-        ...obj.Developers.map((user: IDetails) => {
-          return {
-            Name: user.DisplayName,
-            Email: user.Email,
-            Role: "Developer",
-            Allocation: 10,
-          };
-        }),
-      ];
-    }
-    let res = {
+  const objectFormatter = (obj: IObjectData): IMasterData => {
+    let res: IMasterData = {
       ID: obj.ID,
       ProjectName: obj.ProjectName,
       ProjectType: obj.ProjectType,
@@ -558,7 +441,8 @@ const ProjectForm = (props: IProps) => {
       Status: obj.Status,
       StartDate: obj.StartDate,
       EndDate: null,
-      Members: [..._members],
+      Progress: obj.Progress,
+      Members: [...obj.Members],
       ProjectCost: obj.ProjectCost,
       ProjectEstimate: obj.ProjectEstimate,
       ActualCost: obj.ActualCost,
@@ -567,7 +451,6 @@ const ProjectForm = (props: IProps) => {
 
     return res;
   };
-
   const onSubmitFunction = () => {
     let _item: IObjectData = { ...itemDatas };
     if (viewFormText == "add") {
@@ -575,18 +458,89 @@ const ProjectForm = (props: IProps) => {
       _item.isSelect = false;
       setItemDatas({ ..._item });
 
-      let resObj = objectFormatter(_item);
+      let resObj: IMasterData = objectFormatter(_item);
       props.getMasterDatas("add", resObj), props.navigation("Dashboard");
     } else {
       getUpdate();
     }
   };
-
   const onchangeHandler = (key: string, value: any): void => {
     let _data = { ...itemDatas };
     _data[key] = value;
     setItemDatas({ ..._data });
     setErrorMsg("");
+  };
+
+  const getUserList = (
+    category: string,
+    allocation: number,
+    obj: IObjectData,
+    selectedUsers: IUserDetails[]
+  ): void => {
+    let _data: IObjectData = { ...obj };
+    let _masterUsers: IUsers[] = [...masterUsers];
+
+    let filteredUsers: IUsers[] = _masterUsers.filter(
+      (user: IUsers) =>
+        user.Position == category && user.Availablity >= allocation
+    );
+
+    let resUsers: ISelectedUsers[] = [];
+
+    filteredUsers.forEach((user: IUsers) => {
+      if (selectedUsers.length > 0) {
+        let filterUser: IUserDetails[] = selectedUsers.filter(
+          (_user: IUserDetails) => _user.Email.trim() == user.Email.trim()
+        );
+
+        if (filterUser.length > 0) {
+          resUsers.push({ ...user, isSelected: true });
+        } else {
+          resUsers.push({ ...user, isSelected: false });
+        }
+      } else {
+        resUsers.push({ ...user, isSelected: false });
+        _data.Members = _data.Members.filter(
+          (user: IUserDetails) => user.Role != category
+        );
+        _data.Allocation[category] = allocation;
+      }
+    });
+
+    setErrorMsg("");
+    setUserListDetails({
+      category: category,
+      allocation: allocation,
+    });
+
+    setItemDatas({ ..._data });
+    setFilteredUsers([...resUsers]);
+  };
+
+  const membersOnChangeHandler = (
+    category: string,
+    allocation: number,
+    users: ISelectedUsers
+  ) => {
+    let _data: IObjectData = { ...itemDatas };
+
+    if (users.isSelected) {
+      if (category != "Developer") {
+        _data.Members = _data.Members.filter((user) => user.Role != category);
+      }
+      _data.Members.push({
+        Name: users.Displayname,
+        Email: users.Email,
+        Role: category,
+        Allocation: allocation,
+      });
+    } else {
+      _data.Members = _data.Members.filter((user) => user.Email != users.Email);
+    }
+
+    getUserList(category, allocation, _data, _data.Members);
+
+    setItemDatas({ ..._data });
   };
 
   // life cycle for onload
@@ -843,6 +797,19 @@ const ProjectForm = (props: IProps) => {
                   styles={dropDownStyle}
                   placeholder="Select Allocation"
                   options={IDropDown.Allocation}
+                  selectedKey={
+                    itemDatas.Allocation.PM
+                      ? itemDatas.Allocation.PM.toString()
+                      : ""
+                  }
+                  onChange={(e, value) => {
+                    getUserList(
+                      "PM",
+                      parseInt(value.key as string),
+                      itemDatas,
+                      []
+                    );
+                  }}
                 />
               </div>
 
@@ -852,13 +819,44 @@ const ProjectForm = (props: IProps) => {
                   margin: "0px 34px",
                 }}
               >
-                <TextField styles={disableTextField} disabled />
+                <TextField
+                  styles={disableTextField}
+                  disabled
+                  value={itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "PM"
+                  )
+                    .map((_user: IUserDetails) => _user.Name)
+                    .join(", ")}
+                />
               </div>
 
               <EditOutlined
-                style={{
-                  color: "#1d1d7c",
-                  cursor: "pointer",
+                style={
+                  itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "PM"
+                  ).length > 0
+                    ? {
+                        color: "#1d1d7c",
+                        cursor: "pointer",
+                      }
+                    : {
+                        color: "#ababab",
+                        cursor: "not-allowed",
+                      }
+                }
+                onClick={(e) => {
+                  if (
+                    itemDatas.Members.filter(
+                      (user: IUserDetails) => user.Role == "PM"
+                    ).length > 0
+                  ) {
+                    getUserList(
+                      "PM",
+                      itemDatas.Allocation.PM,
+                      itemDatas,
+                      itemDatas.Members
+                    );
+                  }
                 }}
               />
             </div>
@@ -884,6 +882,19 @@ const ProjectForm = (props: IProps) => {
                   styles={dropDownStyle}
                   placeholder="Select Allocation"
                   options={IDropDown.Allocation}
+                  selectedKey={
+                    itemDatas.Allocation.TL
+                      ? itemDatas.Allocation.TL.toString()
+                      : ""
+                  }
+                  onChange={(e, value) => {
+                    getUserList(
+                      "TL",
+                      parseInt(value.key as string),
+                      itemDatas,
+                      []
+                    );
+                  }}
                 />
               </div>
 
@@ -893,13 +904,44 @@ const ProjectForm = (props: IProps) => {
                   margin: "0px 34px",
                 }}
               >
-                <TextField styles={disableTextField} disabled />
+                <TextField
+                  styles={disableTextField}
+                  disabled
+                  value={itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "TL"
+                  )
+                    .map((_user: IUserDetails) => _user.Name)
+                    .join(", ")}
+                />
               </div>
 
               <EditOutlined
-                style={{
-                  color: "#1d1d7c",
-                  cursor: "pointer",
+                style={
+                  itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "TL"
+                  ).length > 0
+                    ? {
+                        color: "#1d1d7c",
+                        cursor: "pointer",
+                      }
+                    : {
+                        color: "#ababab",
+                        cursor: "not-allowed",
+                      }
+                }
+                onClick={(e) => {
+                  if (
+                    itemDatas.Members.filter(
+                      (user: IUserDetails) => user.Role == "TL"
+                    ).length > 0
+                  ) {
+                    getUserList(
+                      "TL",
+                      itemDatas.Allocation.TL,
+                      itemDatas,
+                      itemDatas.Members
+                    );
+                  }
                 }}
               />
             </div>
@@ -925,6 +967,19 @@ const ProjectForm = (props: IProps) => {
                   styles={dropDownStyle}
                   placeholder="Select Allocation"
                   options={IDropDown.Allocation}
+                  selectedKey={
+                    itemDatas.Allocation.Designer
+                      ? itemDatas.Allocation.Designer.toString()
+                      : ""
+                  }
+                  onChange={(e, value) => {
+                    getUserList(
+                      "Designer",
+                      parseInt(value.key as string),
+                      itemDatas,
+                      []
+                    );
+                  }}
                 />
               </div>
 
@@ -934,13 +989,44 @@ const ProjectForm = (props: IProps) => {
                   margin: "0px 34px",
                 }}
               >
-                <TextField styles={disableTextField} disabled />
+                <TextField
+                  styles={disableTextField}
+                  disabled
+                  value={itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Designer"
+                  )
+                    .map((_user: IUserDetails) => _user.Name)
+                    .join(", ")}
+                />
               </div>
 
               <EditOutlined
-                style={{
-                  color: "#1d1d7c",
-                  cursor: "pointer",
+                style={
+                  itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Designer"
+                  ).length > 0
+                    ? {
+                        color: "#1d1d7c",
+                        cursor: "pointer",
+                      }
+                    : {
+                        color: "#ababab",
+                        cursor: "not-allowed",
+                      }
+                }
+                onClick={(e) => {
+                  if (
+                    itemDatas.Members.filter(
+                      (user: IUserDetails) => user.Role == "Designer"
+                    ).length > 0
+                  ) {
+                    getUserList(
+                      "Designer",
+                      itemDatas.Allocation.Designer,
+                      itemDatas,
+                      itemDatas.Members
+                    );
+                  }
                 }}
               />
             </div>
@@ -966,6 +1052,19 @@ const ProjectForm = (props: IProps) => {
                   styles={dropDownStyle}
                   placeholder="Select Allocation"
                   options={IDropDown.Allocation}
+                  selectedKey={
+                    itemDatas.Allocation.Tester
+                      ? itemDatas.Allocation.Tester.toString()
+                      : ""
+                  }
+                  onChange={(e, value) => {
+                    getUserList(
+                      "Tester",
+                      parseInt(value.key as string),
+                      itemDatas,
+                      []
+                    );
+                  }}
                 />
               </div>
 
@@ -975,13 +1074,44 @@ const ProjectForm = (props: IProps) => {
                   margin: "0px 34px",
                 }}
               >
-                <TextField styles={disableTextField} disabled />
+                <TextField
+                  styles={disableTextField}
+                  disabled
+                  value={itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Tester"
+                  )
+                    .map((_user: IUserDetails) => _user.Name)
+                    .join(", ")}
+                />
               </div>
 
               <EditOutlined
-                style={{
-                  color: "#1d1d7c",
-                  cursor: "pointer",
+                style={
+                  itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Tester"
+                  ).length > 0
+                    ? {
+                        color: "#1d1d7c",
+                        cursor: "pointer",
+                      }
+                    : {
+                        color: "#ababab",
+                        cursor: "not-allowed",
+                      }
+                }
+                onClick={(e) => {
+                  if (
+                    itemDatas.Members.filter(
+                      (user: IUserDetails) => user.Role == "Tester"
+                    ).length > 0
+                  ) {
+                    getUserList(
+                      "Tester",
+                      itemDatas.Allocation.Tester,
+                      itemDatas,
+                      itemDatas.Members
+                    );
+                  }
                 }}
               />
             </div>
@@ -1006,6 +1136,19 @@ const ProjectForm = (props: IProps) => {
                   styles={dropDownStyle}
                   placeholder="Select Allocation"
                   options={IDropDown.Allocation}
+                  selectedKey={
+                    itemDatas.Allocation.Developer
+                      ? itemDatas.Allocation.Developer.toString()
+                      : ""
+                  }
+                  onChange={(e, value) => {
+                    getUserList(
+                      "Developer",
+                      parseInt(value.key as string),
+                      itemDatas,
+                      []
+                    );
+                  }}
                 />
               </div>
 
@@ -1015,13 +1158,45 @@ const ProjectForm = (props: IProps) => {
                   margin: "0px 34px",
                 }}
               >
-                <TextField styles={disableTextField} multiline disabled />
+                <TextField
+                  styles={disableTextField}
+                  multiline
+                  disabled
+                  value={itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Developer"
+                  )
+                    .map((_user: IUserDetails) => _user.Name)
+                    .join(", ")}
+                />
               </div>
 
               <EditOutlined
-                style={{
-                  color: "#1d1d7c",
-                  cursor: "pointer",
+                style={
+                  itemDatas.Members.filter(
+                    (user: IUserDetails) => user.Role == "Developer"
+                  ).length > 0
+                    ? {
+                        color: "#1d1d7c",
+                        cursor: "pointer",
+                      }
+                    : {
+                        color: "#ababab",
+                        cursor: "not-allowed",
+                      }
+                }
+                onClick={(e) => {
+                  if (
+                    itemDatas.Members.filter(
+                      (user: IUserDetails) => user.Role == "Developer"
+                    ).length > 0
+                  ) {
+                    getUserList(
+                      "Developer",
+                      itemDatas.Allocation.Developer,
+                      itemDatas,
+                      itemDatas.Members
+                    );
+                  }
                 }}
               />
             </div>
@@ -1059,115 +1234,80 @@ const ProjectForm = (props: IProps) => {
                   margin: 0,
                 }}
               >
-                Project Managers
+                {userListDetails.category &&
+                  roleAcronyms[userListDetails.category]}
               </h3>
-              <div
-                style={{
-                  paddingTop: "10px",
-                  height: "70vh",
-                  overflow: "auto",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "5px 0px",
-                    borderBottom: "1px solid #ababab",
-                  }}
-                >
-                  <Checkbox
-                    style={{
-                      width: "5%",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: "80%",
-                    }}
-                  >
-                    <p
-                      style={{
-                        display: "flex",
-                        margin: "0px 0px 0px 10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Persona
-                        size={PersonaSize.size32}
-                        imageUrl={
-                          "/_layouts/15/userphoto.aspx?size=S&username=" +
-                          "gipsonrahul.j@technorucs.com"
-                        }
-                      />
+              <div className="rightboxScroll">
+                {filteredUsers.length > 0 &&
+                  filteredUsers.map((user: ISelectedUsers) => {
+                    return (
                       <div
                         style={{
-                          width: "100%",
                           display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "flex-end",
+                          alignItems: "center",
+                          padding: "5px 0px",
+                          borderBottom: "1px solid #ababab",
                         }}
                       >
-                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
-                          {"Gipson Rahul J M"}
-                        </div>
-                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
-                          {"100%"}
+                        <Checkbox
+                          style={{
+                            width: "5%",
+                          }}
+                          checked={user.isSelected}
+                          onClick={() => {
+                            membersOnChangeHandler(
+                              userListDetails.category,
+                              userListDetails.allocation,
+                              {
+                                ...user,
+                                isSelected: !user.isSelected,
+                              }
+                            );
+                          }}
+                        />
+                        <div
+                          style={{
+                            width: "80%",
+                          }}
+                        >
+                          <p
+                            style={{
+                              display: "flex",
+                              margin: "0px 0px 0px 10px",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Persona
+                              size={PersonaSize.size32}
+                              imageUrl={
+                                "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                user.Email
+                              }
+                            />
+                            <div
+                              style={{
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              <div
+                                style={{ fontWeight: "600", fontSize: "14px" }}
+                              >
+                                {user.Displayname}
+                              </div>
+                              <div
+                                style={{ fontWeight: "600", fontSize: "14px" }}
+                              >
+                                {user.Availablity}%
+                              </div>
+                            </div>
+                          </p>
                         </div>
                       </div>
-                    </p>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "5px 0px",
-                    borderBottom: "1px solid #ababab",
-                  }}
-                >
-                  <Checkbox
-                    style={{
-                      width: "5%",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: "80%",
-                    }}
-                  >
-                    <p
-                      style={{
-                        display: "flex",
-                        margin: "0px 0px 0px 10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Persona
-                        size={PersonaSize.size32}
-                        imageUrl={
-                          "/_layouts/15/userphoto.aspx?size=S&username=" +
-                          "gipsonrahul.j@technorucs.com"
-                        }
-                      />
-                      <div
-                        style={{
-                          width: "100%",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
-                          {"Gipson Rahul J M"}
-                        </div>
-                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
-                          {"100%"}
-                        </div>
-                      </div>
-                    </p>
-                  </div>
-                </div>
+                    );
+                  })}
               </div>
             </div>
           </div>
