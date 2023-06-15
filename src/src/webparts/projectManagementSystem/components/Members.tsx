@@ -301,6 +301,8 @@ const Members = (props: IProps) => {
       ...props._masterUsersDetails[0].Developers,
     ];
 
+    let _userDetails: IUser = null;
+
     let PM: IUser[] = [];
     let TL: IUser[] = [];
     let Developer: IUser[] = [];
@@ -308,16 +310,19 @@ const Members = (props: IProps) => {
     let Tester: IUser[] = [];
 
     allUsers.forEach((user: IUser, index: number) => {
+      if (user.Email == currentUser) {
+        _userDetails = { ...user, Availablity: 0 };
+      }
       if (user.Position == "PM") {
-        PM.push({ ...user, Availablity: 10 });
+        PM.push({ ...user, Availablity: 0 });
       } else if (user.Position == "TL") {
-        TL.push({ ...user, Availablity: 10 });
+        TL.push({ ...user, Availablity: 0 });
       } else if (user.Position == "Developer") {
-        Developer.push({ ...user, Availablity: 10 });
+        Developer.push({ ...user, Availablity: 0 });
       } else if (user.Position == "Designer") {
-        Designer.push({ ...user, Availablity: 10 });
+        Designer.push({ ...user, Availablity: 0 });
       } else if (user.Position == "Tester") {
-        Tester.push({ ...user, Availablity: 10 });
+        Tester.push({ ...user, Availablity: 0 });
       }
 
       if (index == allUsers.length - 1) {
@@ -330,7 +335,7 @@ const Members = (props: IProps) => {
         };
 
         setDatas({ ..._data });
-        getuserDetails(_data.PM[0]);
+        getuserDetails(_userDetails);
       }
     });
   };
@@ -791,11 +796,7 @@ const Members = (props: IProps) => {
                       <Label className="profileLabel">Assigned Projects </Label>{" "}
                       <span className="colan">:</span>
                       <div className="projectCostValue2">
-                        <TextField
-                          styles={diableTextField}
-                          disabled
-                          value={userInfo.userDetails.projects.length.toString()}
-                        />
+                        {userInfo.userDetails.projects.length.toString()}
                       </div>
                     </div>
 
@@ -803,11 +804,7 @@ const Members = (props: IProps) => {
                       <Label className="profileLabel"> Allocation </Label>{" "}
                       <span className="colan">:</span>
                       <div className="projectCostValue2">
-                        <TextField
-                          styles={diableTextField}
-                          disabled
-                          value={userInfo.userDetails.totalAllocation.toString()}
-                        />
+                        {userInfo.userDetails.totalAllocation.toString()}
                       </div>
                     </div>
                   </div>

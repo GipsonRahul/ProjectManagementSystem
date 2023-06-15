@@ -500,6 +500,9 @@ const Dashboard = (props: any) => {
   // life cycle function for onload
   useEffect(() => {
     _masterData = props.masterRecords.length ? props.masterRecords : [];
+    _masterData.forEach((_data: IMasterData) => {
+      _data.isSelect = false;
+    });
     setFinalFilData([..._masterData]);
     setMasterFilData([..._masterData]);
   }, []);

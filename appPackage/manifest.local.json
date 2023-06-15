@@ -5,18 +5,18 @@
     "id": "${{TEAMS_APP_ID}}",
     "version": "1.0.0",
     "developer": {
-        "name": "SPFx + Teams Dev",
+        "name": "TechnoRUCS",
         "websiteUrl": "https://products.office.com/en-us/sharepoint/collaboration",
         "privacyUrl": "https://privacy.microsoft.com/en-us/privacystatement",
         "termsOfUseUrl": "https://www.microsoft.com/en-us/servicesagreement"
     },
     "name": {
-        "short": "Project Management",
-        "full": "Full name for ProjectManagement"
+        "short": "ProjectEase",
+        "full": "ProjectEase"
     },
     "description": {
-        "short": "Short description of ProjectManagement",
-        "full": "Full description of ProjectManagement"
+        "short": "Simplify project management for Better productivity from TechnoRUCS",
+        "full": "Simplify project management for Better productivity from TechnoRUCS"
     },
     "icons": {
         "color": "Logo.png",
@@ -26,7 +26,7 @@
     "staticTabs": [
         {
             "entityId": "56af0e20-453f-46c7-a794-6de43c793509",
-            "name": "Project Management",
+            "name": "ProjectEase",
             "contentUrl": "https://{teamSiteDomain}/_layouts/15/TeamsLogon.aspx?SPFX=true&dest={teamSitePath}/_layouts/15/TeamsWorkBench.aspx%3FcomponentId=56af0e20-453f-46c7-a794-6de43c793509%26teams%26personal%26forceLocale={locale}%26loadSPFX%3Dtrue%26debugManifestsFile%3Dhttps%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fmanifests.js",
             "websiteUrl": "https://products.office.com/en-us/sharepoint/collaboration",
             "scopes": [

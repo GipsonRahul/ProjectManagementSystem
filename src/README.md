@@ -1,17 +1,32 @@
-# SPFx (SharePoint Framework) Teams App
+# ProjectEase
 
 ## Summary
 
-The SharePoint Framework (SPFx) is a page and web part model that provides full support for client-side SharePoint development, easy integration with SharePoint data, and extending Microsoft Teams. This project applies SPFx to Teams personal tab and group tab support.
+This is a project management application that helps us in managing project details, team members, and allocation of resources. It consists of three main components: Dashboard, Add/Edit Form, and Members Details.
 
-## Demo
+## Dashboard
 
-<video width="500" height="500" autoplay>
-    <source src="../../../Users/GipsonRahul/Desktop/PMS%23001.mp4" type="video/mp4">
-</video>
-<!-- <div style="display:flex;justify-content:center;">
-    <img src="../../../Users/GipsonRahul/Desktop/PMS_001_AdobeExpress.gif" alt= “” width="100%" height="auto">
-</div> -->
+The Dashboard component provides a visually appealing interface to view project details and team member information. It displays essential information about the projects, such as project status, progress, and project cost details. Additionally, it shows the list of team members associated with each project.
+
+![Dashboard Screenshot](https://technorucs365-my.sharepoint.com/:i:/g/personal/gipsonrahul_j_technorucs_com/ETibtciNzm5Djq1aaX34tUYBJ1dJFTok8OkrsCbidtSDAQ?e=DB7VgS)
+
+## Add / Edit Form
+
+The Add/Edit Form module allows users to add and edit project details. It provides a user-friendly interface to input project-specific information, such as project name, start date, project description, resource allocation and project cost details. This module ensures that all necessary project details are captured accurately.
+
+![Add/Edit Form Screenshot](placeholder_image_url)
+
+## Members Details
+
+The Members Management module facilitates the allocation of managers, team lead, developers, designers, and testers to projects based on their availability. It helps in efficiently assigning team members to projects by considering their free allocation time within the company. This module simplifies the process of adding and managing members within a project.
+
+![Members Management Screenshot](placeholder_image_url)
+
+## Data Storage
+
+Instead of using a real-time backend server, this project utilizes a JSON file for data storage. The JSON file serves as a database for storing project details and team member information. When you add or edit project details or allocate members, the JSON file is updated accordingly. This approach provides a simple and lightweight solution for data storage.
+
+Please note that we use JSON as backend because it is for demonstration .But we can use `Sharepoint` or `Azure SQL` as backend for real-time usage
 
 ## Applies to
 
@@ -20,22 +35,17 @@ The SharePoint Framework (SPFx) is a page and web part model that provides full 
 
 ## Prerequisites
 
+> - [Node.js](https://nodejs.org/), supported versions: 14 ,16
 > - [Set up SharePoint Framework development environment](https://aka.ms/teamsfx-spfx-dev-environment-setup)
 > - An Microsoft 365 account. Get your own free Microsoft 365 tenant from [Microsoft 365 developer program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
 > - [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) version 5.0.0 and higher or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
 
-## Version history
+## Debug
 
-Version|Date|Comments
--------|----|--------
-1.1|March 10, 2021|Update comment
-1.0|January 29, 2021|Initial release
+Start debugging the project by hitting the `F5` key in Visual Studio Code. Alternatively use the `Run and Debug Activity Panel` in Visual Studio Code and click the `Start Debugging` green arrow button.
 
-## Disclaimer
-
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
----
+- `Teams workbench` is the default debug configuration. Using this configuration, you can install the SPFx app within Teams context as a Teams app.
+- `Hosted workbench`. You need to navigate to [launch.json](../.vscode/launch.json), replace `enter-your-SharePoint-site` with your SharePoint site, eg. `https://{your-tenant-name}.sharepoint.com/sites/{your-team-name}/_layouts/workbench.aspx`. You can also use root site if you haven't created one, eg. `https://{your-tenant-name}.sharepoint.com/_layouts/workbench.aspx`.
 
 ## Minimal Path to Awesome
 
@@ -63,13 +73,6 @@ Version|Date|Comments
 4. You may need to wait for a few minutes after publishing your teams app. And then login to Teams, and you will find your app in the `Apps - Built for {your-tenant-name}` category.
 
 5. Click "Add" to use the app as a personal tab. Click "Add to a team" to use the app as a group tab.
-
-## Debug
-
-Start debugging the project by hitting the `F5` key in Visual Studio Code. Alternatively use the `Run and Debug Activity Panel` in Visual Studio Code and click the `Start Debugging` green arrow button.
-
-- `Teams workbench` is the default debug configuration. Using this configuration, you can install the SPFx app within Teams context as a Teams app.
-- `Hosted workbench`. You need to navigate to [launch.json](../.vscode/launch.json), replace `enter-your-SharePoint-site` with your SharePoint site, eg. `https://{your-tenant-name}.sharepoint.com/sites/{your-team-name}/_layouts/workbench.aspx`. You can also use root site if you haven't created one, eg. `https://{your-tenant-name}.sharepoint.com/_layouts/workbench.aspx`.
 
 ## References
 
