@@ -4,7 +4,7 @@
     "name": "project-management-client-side-solution",
     "id": "03b902d6-bd03-445b-85b7-0f3b3ca28128",
     "version": "1.0.0.0",
-    "includeClientSideAssets": true,
+    "includeClientSideAssets": false,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {

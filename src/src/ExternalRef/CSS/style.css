@@ -31,6 +31,12 @@
 .FormContainer {
   width: 100%;
 }
+.saveMsg {
+  color: #4ba665;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
 .rightboxScroll {
   padding-top: 10px;
   height: 70vh;
@@ -45,8 +51,8 @@
   background-color: #e4e4e4;
 }
 .saveGif {
-  height: 250px;
-  width: 250px;
+  height: 200px;
+  width: 200px;
 }
 .gifAlign {
   display: flex;
