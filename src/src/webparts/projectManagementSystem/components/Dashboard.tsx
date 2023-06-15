@@ -31,7 +31,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { SelectionMode } from "office-ui-fabric-react";
 import * as moment from "moment";
 import { ProgressIndicator } from "@fluentui/react/lib/ProgressIndicator";
-const successGif = require("../assets/animation_640_lhhiixk5 (1).gif");
+
 const noDataFoundDB = require("../assets/NoDataFoundDB.gif");
 
 interface IDetails {
@@ -1467,19 +1467,6 @@ const Dashboard = (props: any) => {
           </div>
         </Modal>
       )}
-      {/* <Modal
-        isOpen={true}
-        styles={{
-          main: {
-            padding: 20,
-            borderRadius: 8,
-          },
-        }}
-      >
-        <div className="gifAlign">
-          <img src={`${successGif}`} alt="" className="saveGif" />
-        </div>
-      </Modal> */}
     </div>
   );
 };

@@ -1,8 +1,17 @@
-# SPFx (SharePoint Framework) App
+# SPFx (SharePoint Framework) Teams App
 
 ## Summary
 
 The SharePoint Framework (SPFx) is a page and web part model that provides full support for client-side SharePoint development, easy integration with SharePoint data, and extending Microsoft Teams. This project applies SPFx to Teams personal tab and group tab support.
+
+## Demo
+
+<video width="500" height="500" autoplay>
+    <source src="../../../Users/GipsonRahul/Desktop/PMS%23001.mp4" type="video/mp4">
+</video>
+<!-- <div style="display:flex;justify-content:center;">
+    <img src="../../../Users/GipsonRahul/Desktop/PMS_001_AdobeExpress.gif" alt= “” width="100%" height="auto">
+</div> -->
 
 ## Applies to
 
@@ -14,13 +23,6 @@ The SharePoint Framework (SPFx) is a page and web part model that provides full 
 > - [Set up SharePoint Framework development environment](https://aka.ms/teamsfx-spfx-dev-environment-setup)
 > - An Microsoft 365 account. Get your own free Microsoft 365 tenant from [Microsoft 365 developer program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
 > - [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) version 5.0.0 and higher or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
-
-
-## Solution
-
-Solution|Author(s)
---------|---------
-folder name | Author details (name, company, twitter alias with link)
 
 ## Version history
 

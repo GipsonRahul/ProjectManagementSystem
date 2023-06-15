@@ -9,11 +9,14 @@ import {
   IDropdownStyles,
   Persona,
   PersonaSize,
+  Modal,
 } from "@fluentui/react";
 import { ArrowBackIos, EditOutlined } from "@material-ui/icons";
 import { Checkbox } from "@material-ui/core";
 import { IDropDown } from "../CommonDropDown/DropDown";
 import * as moment from "moment";
+
+const successGif = require("../assets/animation_640_lhhiixk5 (1).gif");
 
 interface IProps {
   navigation: any;
@@ -211,6 +214,7 @@ const ProjectForm = (props: IProps) => {
     category: "",
     allocation: null,
   });
+  const [onSuccess, setOnSuccess] = useState({ condition: false, type: "" });
 
   const getValidation = (): void => {
     let _isValid: boolean = true;
@@ -295,15 +299,23 @@ const ProjectForm = (props: IProps) => {
     let resObj: IMasterData = objectFormatter({ ...itemDatas });
     _masterList.unshift({ ...resObj });
 
-    props.getMasterDatas("edit", [..._masterList]),
-      props.navigation("Dashboard");
+    setOnSuccess({ condition: true, type: "Update" });
+
+    setTimeout(() => {
+      props.getMasterDatas("edit", [..._masterList]),
+        props.navigation("Dashboard"),
+        setOnSuccess({ condition: false, type: "" });
+    }, 2000);
+
+    // props.getMasterDatas("edit", [..._masterList]),
+    //   props.navigation("Dashboard");
   };
 
   // check id function
   const checkId = (value: IMasterData) => value.ID == props.item.ID;
 
   // current items get function
-  const getCurrentItem = () => {
+  const getCurrentItem = (_users: IUsers[]) => {
     let editFormText: string = props.item ? "edit" : "add";
     setViewFormText(editFormText);
 
@@ -366,7 +378,8 @@ const ProjectForm = (props: IProps) => {
         _userListDetails.category,
         _userListDetails.allocation,
         _currentItem,
-        _currentItem.Members
+        _currentItem.Members,
+        _users
       );
     } else {
       setUserListDetails({ ..._userListDetails });
@@ -403,9 +416,8 @@ const ProjectForm = (props: IProps) => {
       }
 
       if (index == _masterUsers.length - 1) {
-        console.log(_masterUsers);
         setMasterUsers([..._masterUsers]);
-        // getDropDownOptions(_masterUsers);
+        getCurrentItem(_masterUsers);
       }
     });
   };
@@ -459,7 +471,15 @@ const ProjectForm = (props: IProps) => {
       setItemDatas({ ..._item });
 
       let resObj: IMasterData = objectFormatter(_item);
-      props.getMasterDatas("add", resObj), props.navigation("Dashboard");
+
+      setOnSuccess({ condition: true, type: "Add" });
+
+      setTimeout(() => {
+        props.getMasterDatas("add", resObj),
+          props.navigation("Dashboard"),
+          setOnSuccess({ condition: false, type: "" });
+      }, 2000);
+      // props.getMasterDatas("add", resObj), props.navigation("Dashboard");
     } else {
       getUpdate();
     }
@@ -475,10 +495,11 @@ const ProjectForm = (props: IProps) => {
     category: string,
     allocation: number,
     obj: IObjectData,
-    selectedUsers: IUserDetails[]
+    selectedUsers: IUserDetails[],
+    _users?: IUsers[]
   ): void => {
     let _data: IObjectData = { ...obj };
-    let _masterUsers: IUsers[] = [...masterUsers];
+    let _masterUsers: IUsers[] = _users ? [..._users] : [...masterUsers];
 
     let filteredUsers: IUsers[] = _masterUsers.filter(
       (user: IUsers) =>
@@ -545,7 +566,7 @@ const ProjectForm = (props: IProps) => {
 
   // life cycle for onload
   useEffect(() => {
-    getUserAvailability(), getCurrentItem();
+    getUserAvailability();
   }, []);
 
   return (
@@ -1374,6 +1395,24 @@ const ProjectForm = (props: IProps) => {
         </div>
       </div>
       {/* Form section end */}
+      {onSuccess.condition && (
+        <Modal
+          isOpen={onSuccess.condition}
+          styles={{
+            main: {
+              padding: 20,
+              borderRadius: 8,
+            },
+          }}
+        >
+          <div className="gifAlign">
+            <img src={`${successGif}`} alt="" className="saveGif" />
+          </div>
+          <p className="saveMsg">
+            {onSuccess.type == "Add" ? "Added" : "Updated"} Successfully
+          </p>
+        </Modal>
+      )}
     </div>
   );
 };
