@@ -502,8 +502,7 @@ const ProjectForm = (props: IProps) => {
     let _masterUsers: IUsers[] = _users ? [..._users] : [...masterUsers];
 
     let filteredUsers: IUsers[] = _masterUsers.filter(
-      (user: IUsers) =>
-        user.Position == category && user.Availablity >= allocation
+      (user: IUsers) => user.Position == category
     );
 
     let resUsers: ISelectedUsers[] = [];
@@ -562,6 +561,96 @@ const ProjectForm = (props: IProps) => {
     getUserList(category, allocation, _data, _data.Members);
 
     setItemDatas({ ..._data });
+  };
+
+  const htmlBuilder = (category: string, title?: string): JSX.Element => {
+    return (
+      <div className="rightSection">
+        <Label>
+          {title ? title : category} <span className="required">*</span>
+        </Label>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "20%",
+            }}
+          >
+            <Dropdown
+              styles={dropDownStyle}
+              placeholder="Allocation"
+              options={IDropDown.Allocation}
+              selectedKey={
+                itemDatas.Allocation[category]
+                  ? itemDatas.Allocation[category].toString()
+                  : ""
+              }
+              onChange={(e, value) => {
+                getUserList(
+                  category,
+                  parseInt(value.key as string),
+                  itemDatas,
+                  []
+                );
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              width: "62%",
+              margin: "0px 34px",
+            }}
+          >
+            <TextField
+              styles={disableTextField}
+              disabled
+              value={itemDatas.Members.filter(
+                (user: IUserDetails) => user.Role == category
+              )
+                .map((_user: IUserDetails) => _user.Name)
+                .join(", ")}
+            />
+          </div>
+
+          <EditOutlined
+            style={
+              itemDatas.Members.filter(
+                (user: IUserDetails) => user.Role == category
+              ).length > 0
+                ? {
+                    color: "#1d1d7c",
+                    cursor: "pointer",
+                    visibility: "visible",
+                  }
+                : {
+                    color: "#ababab",
+                    cursor: "not-allowed",
+                    visibility: "hidden",
+                  }
+            }
+            onClick={(e) => {
+              if (
+                itemDatas.Members.filter(
+                  (user: IUserDetails) => user.Role == category
+                ).length > 0
+              ) {
+                getUserList(
+                  category,
+                  itemDatas.Allocation[category],
+                  itemDatas,
+                  itemDatas.Members
+                );
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
   };
 
   // life cycle for onload
@@ -646,7 +735,7 @@ const ProjectForm = (props: IProps) => {
               width: "80%",
             }}
           >
-            <div className="rightSection" style={{ width: "50%" }}>
+            <div className="rightSection" style={{ width: "60%" }}>
               <Label>
                 Status <span className="required">*</span>
               </Label>
@@ -663,7 +752,7 @@ const ProjectForm = (props: IProps) => {
 
             <div
               className="rightSection"
-              style={{ width: "40%", display: "flex", justifyContent: "end" }}
+              style={{ width: "30%", display: "flex", justifyContent: "end" }}
             >
               <div>
                 <Label>
@@ -671,7 +760,7 @@ const ProjectForm = (props: IProps) => {
                 </Label>
                 <TextField
                   styles={textFieldStyle}
-                  placeholder="Enter progress"
+                  placeholder="Progress"
                   value={
                     itemDatas.Progress ? itemDatas.Progress.toString() : ""
                   }
@@ -721,6 +810,7 @@ const ProjectForm = (props: IProps) => {
           >
             <Label>Project Description</Label>
             <TextField
+              placeholder="Enter Project Description"
               multiline
               styles={multilineTextFieldStyle}
               value={
@@ -742,6 +832,7 @@ const ProjectForm = (props: IProps) => {
               Project Cost <span className="required">*</span>
             </Label>
             <TextField
+              placeholder="Project Cost in USD"
               styles={textFieldStyle}
               value={itemDatas.ProjectCost ? itemDatas.ProjectCost : ""}
               onChange={(e: any, value) => {
@@ -750,6 +841,7 @@ const ProjectForm = (props: IProps) => {
                 }
               }}
             />
+            <span style={{ marginLeft: 10 }}>in USD ($)</span>
           </div>
 
           {/* Project Estimate section */}
@@ -761,6 +853,7 @@ const ProjectForm = (props: IProps) => {
               Project Estimate <span className="required">*</span>
             </Label>
             <TextField
+              placeholder="Project Estimate in USD"
               styles={textFieldStyle}
               value={itemDatas.ProjectEstimate ? itemDatas.ProjectEstimate : ""}
               onChange={(e: any, value) => {
@@ -769,6 +862,7 @@ const ProjectForm = (props: IProps) => {
                 }
               }}
             />
+            <span style={{ marginLeft: 10 }}>in USD ($)</span>
           </div>
 
           {/* Actual Cost section */}
@@ -780,6 +874,7 @@ const ProjectForm = (props: IProps) => {
               Actual Cost <span className="required">*</span>
             </Label>
             <TextField
+              placeholder="Actual Cost in USD"
               styles={textFieldStyle}
               value={itemDatas.ActualCost ? itemDatas.ActualCost : ""}
               onChange={(e: any, value) => {
@@ -788,6 +883,7 @@ const ProjectForm = (props: IProps) => {
                 }
               }}
             />
+            <span style={{ marginLeft: 10 }}>in USD ($)</span>
           </div>
         </div>
 
@@ -798,429 +894,21 @@ const ProjectForm = (props: IProps) => {
             width: "40%",
           }}
         >
-          {/* Project Manager section */}
           <div style={{ marginTop: 60 }}>
-            <Label>
-              Project Manager <span className="required">*</span>
-            </Label>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "24%",
-                }}
-              >
-                <Dropdown
-                  styles={dropDownStyle}
-                  placeholder="Select Allocation"
-                  options={IDropDown.Allocation}
-                  selectedKey={
-                    itemDatas.Allocation.PM
-                      ? itemDatas.Allocation.PM.toString()
-                      : ""
-                  }
-                  onChange={(e, value) => {
-                    getUserList(
-                      "PM",
-                      parseInt(value.key as string),
-                      itemDatas,
-                      []
-                    );
-                  }}
-                />
-              </div>
+            {/* Project Manager section */}
+            {htmlBuilder("PM", "Project Manager")}
 
-              <div
-                style={{
-                  width: "58%",
-                  margin: "0px 34px",
-                }}
-              >
-                <TextField
-                  styles={disableTextField}
-                  disabled
-                  value={itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "PM"
-                  )
-                    .map((_user: IUserDetails) => _user.Name)
-                    .join(", ")}
-                />
-              </div>
+            {/* Team Lead section */}
+            {htmlBuilder("TL", "Team Lead")}
 
-              <EditOutlined
-                style={
-                  itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "PM"
-                  ).length > 0
-                    ? {
-                        color: "#1d1d7c",
-                        cursor: "pointer",
-                      }
-                    : {
-                        color: "#ababab",
-                        cursor: "not-allowed",
-                      }
-                }
-                onClick={(e) => {
-                  if (
-                    itemDatas.Members.filter(
-                      (user: IUserDetails) => user.Role == "PM"
-                    ).length > 0
-                  ) {
-                    getUserList(
-                      "PM",
-                      itemDatas.Allocation.PM,
-                      itemDatas,
-                      itemDatas.Members
-                    );
-                  }
-                }}
-              />
-            </div>
-          </div>
+            {/* Designer section */}
+            {htmlBuilder("Designer")}
 
-          {/* Team Lead section */}
-          <div className="rightSection">
-            <Label>
-              Team Lead <span className="required">*</span>
-            </Label>
-            <div
-              style={{
-                alignItems: "center",
-                display: "flex",
-              }}
-            >
-              <div
-                style={{
-                  width: "24%",
-                }}
-              >
-                <Dropdown
-                  styles={dropDownStyle}
-                  placeholder="Select Allocation"
-                  options={IDropDown.Allocation}
-                  selectedKey={
-                    itemDatas.Allocation.TL
-                      ? itemDatas.Allocation.TL.toString()
-                      : ""
-                  }
-                  onChange={(e, value) => {
-                    getUserList(
-                      "TL",
-                      parseInt(value.key as string),
-                      itemDatas,
-                      []
-                    );
-                  }}
-                />
-              </div>
+            {/* QA Tester section */}
+            {htmlBuilder("Tester", "QA Tester")}
 
-              <div
-                style={{
-                  width: "58%",
-                  margin: "0px 34px",
-                }}
-              >
-                <TextField
-                  styles={disableTextField}
-                  disabled
-                  value={itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "TL"
-                  )
-                    .map((_user: IUserDetails) => _user.Name)
-                    .join(", ")}
-                />
-              </div>
-
-              <EditOutlined
-                style={
-                  itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "TL"
-                  ).length > 0
-                    ? {
-                        color: "#1d1d7c",
-                        cursor: "pointer",
-                      }
-                    : {
-                        color: "#ababab",
-                        cursor: "not-allowed",
-                      }
-                }
-                onClick={(e) => {
-                  if (
-                    itemDatas.Members.filter(
-                      (user: IUserDetails) => user.Role == "TL"
-                    ).length > 0
-                  ) {
-                    getUserList(
-                      "TL",
-                      itemDatas.Allocation.TL,
-                      itemDatas,
-                      itemDatas.Members
-                    );
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Designer section */}
-          <div className="rightSection">
-            <Label>
-              Designer <span className="required">*</span>
-            </Label>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "24%",
-                }}
-              >
-                <Dropdown
-                  styles={dropDownStyle}
-                  placeholder="Select Allocation"
-                  options={IDropDown.Allocation}
-                  selectedKey={
-                    itemDatas.Allocation.Designer
-                      ? itemDatas.Allocation.Designer.toString()
-                      : ""
-                  }
-                  onChange={(e, value) => {
-                    getUserList(
-                      "Designer",
-                      parseInt(value.key as string),
-                      itemDatas,
-                      []
-                    );
-                  }}
-                />
-              </div>
-
-              <div
-                style={{
-                  width: "58%",
-                  margin: "0px 34px",
-                }}
-              >
-                <TextField
-                  styles={disableTextField}
-                  disabled
-                  value={itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Designer"
-                  )
-                    .map((_user: IUserDetails) => _user.Name)
-                    .join(", ")}
-                />
-              </div>
-
-              <EditOutlined
-                style={
-                  itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Designer"
-                  ).length > 0
-                    ? {
-                        color: "#1d1d7c",
-                        cursor: "pointer",
-                      }
-                    : {
-                        color: "#ababab",
-                        cursor: "not-allowed",
-                      }
-                }
-                onClick={(e) => {
-                  if (
-                    itemDatas.Members.filter(
-                      (user: IUserDetails) => user.Role == "Designer"
-                    ).length > 0
-                  ) {
-                    getUserList(
-                      "Designer",
-                      itemDatas.Allocation.Designer,
-                      itemDatas,
-                      itemDatas.Members
-                    );
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          {/* QA Tester section */}
-          <div className="rightSection">
-            <Label>
-              QA Tester <span className="required">*</span>
-            </Label>
-            <div
-              style={{
-                alignItems: "center",
-                display: "flex",
-              }}
-            >
-              <div
-                style={{
-                  width: "24%",
-                }}
-              >
-                <Dropdown
-                  styles={dropDownStyle}
-                  placeholder="Select Allocation"
-                  options={IDropDown.Allocation}
-                  selectedKey={
-                    itemDatas.Allocation.Tester
-                      ? itemDatas.Allocation.Tester.toString()
-                      : ""
-                  }
-                  onChange={(e, value) => {
-                    getUserList(
-                      "Tester",
-                      parseInt(value.key as string),
-                      itemDatas,
-                      []
-                    );
-                  }}
-                />
-              </div>
-
-              <div
-                style={{
-                  width: "58%",
-                  margin: "0px 34px",
-                }}
-              >
-                <TextField
-                  styles={disableTextField}
-                  disabled
-                  value={itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Tester"
-                  )
-                    .map((_user: IUserDetails) => _user.Name)
-                    .join(", ")}
-                />
-              </div>
-
-              <EditOutlined
-                style={
-                  itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Tester"
-                  ).length > 0
-                    ? {
-                        color: "#1d1d7c",
-                        cursor: "pointer",
-                      }
-                    : {
-                        color: "#ababab",
-                        cursor: "not-allowed",
-                      }
-                }
-                onClick={(e) => {
-                  if (
-                    itemDatas.Members.filter(
-                      (user: IUserDetails) => user.Role == "Tester"
-                    ).length > 0
-                  ) {
-                    getUserList(
-                      "Tester",
-                      itemDatas.Allocation.Tester,
-                      itemDatas,
-                      itemDatas.Members
-                    );
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Developers section */}
-          <div className="rightSection">
-            <Label>
-              Developers <span className="required">*</span>
-            </Label>
-            <div
-              style={{
-                display: "flex",
-              }}
-            >
-              <div
-                style={{
-                  width: "24%",
-                }}
-              >
-                <Dropdown
-                  styles={dropDownStyle}
-                  placeholder="Select Allocation"
-                  options={IDropDown.Allocation}
-                  selectedKey={
-                    itemDatas.Allocation.Developer
-                      ? itemDatas.Allocation.Developer.toString()
-                      : ""
-                  }
-                  onChange={(e, value) => {
-                    getUserList(
-                      "Developer",
-                      parseInt(value.key as string),
-                      itemDatas,
-                      []
-                    );
-                  }}
-                />
-              </div>
-
-              <div
-                style={{
-                  width: "58%",
-                  margin: "0px 34px",
-                }}
-              >
-                <TextField
-                  styles={disableTextField}
-                  multiline
-                  disabled
-                  value={itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Developer"
-                  )
-                    .map((_user: IUserDetails) => _user.Name)
-                    .join(", ")}
-                />
-              </div>
-
-              <EditOutlined
-                style={
-                  itemDatas.Members.filter(
-                    (user: IUserDetails) => user.Role == "Developer"
-                  ).length > 0
-                    ? {
-                        color: "#1d1d7c",
-                        cursor: "pointer",
-                      }
-                    : {
-                        color: "#ababab",
-                        cursor: "not-allowed",
-                      }
-                }
-                onClick={(e) => {
-                  if (
-                    itemDatas.Members.filter(
-                      (user: IUserDetails) => user.Role == "Developer"
-                    ).length > 0
-                  ) {
-                    getUserList(
-                      "Developer",
-                      itemDatas.Allocation.Developer,
-                      itemDatas,
-                      itemDatas.Members
-                    );
-                  }
-                }}
-              />
-            </div>
+            {/* Developers section */}
+            {htmlBuilder("Developer", "Developers")}
           </div>
         </div>
 
@@ -1259,6 +947,39 @@ const ProjectForm = (props: IProps) => {
                   roleAcronyms[userListDetails.category]}
               </h3>
               <div className="rightboxScroll">
+                {filteredUsers.length > 0 && (
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                        padding: "5px 0px",
+                      }}
+                    >
+                      <span style={{ width: "10%" }}></span>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          color: "#4d9748",
+                          width: "60%",
+                          paddingLeft: 50,
+                        }}
+                      >
+                        Users
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          color: "#4d9748",
+                          width: "30%",
+                        }}
+                      >
+                        Availability
+                      </span>
+                    </div>
+                  </div>
+                )}
                 {filteredUsers.length > 0 &&
                   filteredUsers.map((user: ISelectedUsers) => {
                     return (
@@ -1274,6 +995,10 @@ const ProjectForm = (props: IProps) => {
                           style={{
                             width: "5%",
                           }}
+                          disabled={
+                            user.Availablity <
+                            itemDatas.Allocation[userListDetails.category]
+                          }
                           checked={user.isSelected}
                           onClick={() => {
                             membersOnChangeHandler(

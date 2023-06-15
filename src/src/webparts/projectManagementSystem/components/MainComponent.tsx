@@ -269,48 +269,42 @@ const MainComponent = (props: any) => {
   }, []);
 
   return (
-   (
-      <div style={{ width: "100%", display: "flex" }}>
-        <div
-          style={{
-            background: "#fff",
-            width: "15%",
-            height: "100vh",
-            borderRight: "1px solid #dfdfdf",
-          }}
-        >
-          <SideNavebar navigation={getNavigation} _selectNave={currentPage} />
-        </div>
-        <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
-          {currentPage == "Dashboard" ? (
-            <Dashboard
-              navigation={getNavigation}
-              masterRecords={masterRecords}
-              getMasterDatas={getMasterDatas}
-            />
-          ) : currentPage == "Members" ? (
-            <Members
-              masterRecords={masterRecords}
-              _masterUsersDetails={_masterUsersDetails}
-              sp={props.sp}
-              context={props.context}
-            />
-          ) : (
-            <ProjectForm
-              navigation={getNavigation}
-              item={_itemObj}
-              masterRecords={masterRecords}
-              getMasterDatas={getMasterDatas}
-              _count={
-                masterRecords.length == 0
-                  ? 0
-                  : masterRecords[masterRecords.length - 1].ID
-              }
-            />
-          )}
-        </div>
+    <div style={{ width: "100%", display: "flex" }}>
+      <div
+        style={{
+          background: "#fff",
+          width: "15%",
+          height: "100vh",
+          borderRight: "1px solid #dfdfdf",
+        }}
+      >
+        <SideNavebar navigation={getNavigation} _selectNave={currentPage} />
       </div>
-    )
+      <div style={{ width: "85%", background: "#fff", height: "100vh" }}>
+        {currentPage == "Dashboard" ? (
+          <Dashboard
+            navigation={getNavigation}
+            masterRecords={masterRecords}
+            getMasterDatas={getMasterDatas}
+          />
+        ) : currentPage == "Members" ? (
+          <Members
+            masterRecords={masterRecords}
+            _masterUsersDetails={_masterUsersDetails}
+            sp={props.sp}
+            context={props.context}
+          />
+        ) : (
+          <ProjectForm
+            navigation={getNavigation}
+            item={_itemObj}
+            masterRecords={masterRecords}
+            getMasterDatas={getMasterDatas}
+            _count={masterRecords.length}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 
