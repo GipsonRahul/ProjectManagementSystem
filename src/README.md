@@ -4,23 +4,34 @@
 
 This is a project management application that helps us in managing project details, team members, and allocation of resources. It consists of three main components: Dashboard, Add/Edit Form, and Members Details.
 
+## Demo
+
+![Dashboard Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEaseDemo.GIF?raw=true)
+
 ## Dashboard
 
 The Dashboard component provides a visually appealing interface to view project details and team member information. It displays essential information about the projects, such as project status, progress, and project cost details. Additionally, it shows the list of team members associated with each project.
 
-![Dashboard Screenshot](https://technorucs365-my.sharepoint.com/:i:/g/personal/gipsonrahul_j_technorucs_com/ETibtciNzm5Djq1aaX34tUYBJ1dJFTok8OkrsCbidtSDAQ?e=DB7VgS)
+##### Dashboard Screenshot
+
+![Dashboard Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEase_Dashboard.png?raw=true)
 
 ## Add / Edit Form
 
 The Add/Edit Form module allows users to add and edit project details. It provides a user-friendly interface to input project-specific information, such as project name, start date, project description, resource allocation and project cost details. This module ensures that all necessary project details are captured accurately.
 
-![Add/Edit Form Screenshot](placeholder_image_url)
+##### Add Form Screenshot
+![Add/Edit Form Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEase_AddForm.png?raw=true)
+
+##### Edit Form Screenshot
+![Add/Edit Form Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEase_UpdateForm.png?raw=true)
 
 ## Members Details
 
 The Members Management module facilitates the allocation of managers, team lead, developers, designers, and testers to projects based on their availability. It helps in efficiently assigning team members to projects by considering their free allocation time within the company. This module simplifies the process of adding and managing members within a project.
 
-![Members Management Screenshot](placeholder_image_url)
+##### Members Screenshot
+![Members Management Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEase_Members.png?raw=true)
 
 ## Data Storage
 
@@ -45,7 +56,6 @@ Please note that we use JSON as backend because it is for demonstration .But we 
 Start debugging the project by hitting the `F5` key in Visual Studio Code. Alternatively use the `Run and Debug Activity Panel` in Visual Studio Code and click the `Start Debugging` green arrow button.
 
 - `Teams workbench` is the default debug configuration. Using this configuration, you can install the SPFx app within Teams context as a Teams app.
-- `Hosted workbench`. You need to navigate to [launch.json](../.vscode/launch.json), replace `enter-your-SharePoint-site` with your SharePoint site, eg. `https://{your-tenant-name}.sharepoint.com/sites/{your-team-name}/_layouts/workbench.aspx`. You can also use root site if you haven't created one, eg. `https://{your-tenant-name}.sharepoint.com/_layouts/workbench.aspx`.
 
 ## Minimal Path to Awesome
 
