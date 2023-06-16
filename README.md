@@ -4,6 +4,10 @@
 
 This is a project management application that helps us in managing project details, team members, and allocation of resources. It consists of three main components: Dashboard, Add/Edit Form, and Members Details.
 
+## Demo
+
+![Dashboard Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEaseDemo.GIF?raw=true)
+
 ## Dashboard
 
 The Dashboard component provides a visually appealing interface to view project details and team member information. It displays essential information about the projects, such as project status, progress, and project cost details. Additionally, it shows the list of team members associated with each project.
