@@ -6,7 +6,7 @@ This is a project management application that helps us in managing project detai
 
 ## Demo
 
-![Dashboard Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEaseDemo.GIF?raw=true)
+![Dashboard Screenshot](https://github.com/GipsonRahul/ProjectManagementSystem/blob/main/src/src/ExternalDocs/ProjectEaseDemo.gif?raw=true)
 
 ## Dashboard
 
